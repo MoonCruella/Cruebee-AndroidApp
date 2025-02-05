@@ -1,14 +1,14 @@
 package com.example.project;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,25 +22,25 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.project.helpers.StringHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
     EditText email,username, password, re_password;
-
+    Button register_btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.register_activity), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -49,13 +49,25 @@ public class RegisterActivity extends AppCompatActivity {
         username = (EditText) findViewById(R.id.username);
         password= (EditText) findViewById(R.id.password);
         re_password= (EditText) findViewById(R.id.re_password);
+
+        register_btn = (Button) findViewById(R.id.register);
+        register_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerUser(v);
+            }
+        });
     }
 
     public void registerUser(View view){
+
+        if(!validateEmail() || !validateUsername() || !validatePassword()){
+            return;
+        }
+
         String email1 = email.getText().toString();
         String username1 = username.getText().toString();
         String password1 = password.getText().toString();
-        String re_password1 = re_password.getText().toString();
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
@@ -73,6 +85,16 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         progressDialog.hide();
                         Toast.makeText(RegisterActivity.this,"" + response,Toast.LENGTH_SHORT).show();
+                        if(response.equals("User registration successful")){
+                            Intent intent = new Intent(RegisterActivity.this,ConfirmOTPActivity.class);
+
+                            // Su dung putExtra để pass biến email1 qua Activity khác
+                            intent.putExtra("USER_EMAIL",email1);
+                            startActivity(intent);
+                        }
+                        else{
+                            Toast.makeText(RegisterActivity.this, "Registration failed. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -112,4 +134,52 @@ public class RegisterActivity extends AppCompatActivity {
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
     }
+
+    // Validate username field
+    public boolean validateUsername(){
+        String user_name = username.getText().toString();
+        if(user_name.isEmpty()){
+            username.setError("Username cannot be empty");
+            return false;
+        }
+        username.setError(null);
+        return true;
+    }
+
+    // Validate email field
+    public boolean validateEmail(){
+        String user_email = email.getText().toString();
+        if(user_email.isEmpty()){
+            email.setError("Email cannot be empty");
+            return false;
+        }
+        else if(!StringHelper.isEmailValid(user_email)){
+            email.setError("Please enter a valid email");
+            return false;
+        }
+        email.setError(null);
+        return true;
+    }
+
+    // Validate password field
+    public boolean validatePassword(){
+        String pass = password.getText().toString();
+        String pass_confirm = re_password.getText().toString();
+        if(pass.isEmpty() || pass_confirm.isEmpty()){
+            password.setError("Password cannot be empty!");
+            re_password.setError("Confirm field cannot be empty!");
+            return false;
+        }
+        else if(!pass.equals(pass_confirm)){
+            password.setError(null);
+            re_password.setError("Confirm field doesn't match with password!!!");
+            return false;
+        }
+        password.setError(null);
+        re_password.setError(null);
+        return true;
+    }
+
+
+
 }
