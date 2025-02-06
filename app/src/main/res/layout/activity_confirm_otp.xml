@@ -15,6 +15,15 @@
         android:layout_height="wrap_content"
         android:hint="Enter OTP"
         android:id="@+id/otp"/>
+    <TextView
+        android:id="@+id/resend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resend"
+        android:textColor="@android:color/holo_blue_light"
+        android:padding="16dp"
+        android:textSize="18sp"
+        android:onClick="resendOTP"/>
 
     <Button
         android:id="@+id/verify"

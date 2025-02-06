@@ -5,7 +5,10 @@
     android:id="@+id/home_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    tools:context=".HomeActivity"
+    android:padding="20dp"
+    android:gravity="center"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView"
@@ -16,4 +19,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:onClick="returnMainActivity"/>
+
 </LinearLayout>

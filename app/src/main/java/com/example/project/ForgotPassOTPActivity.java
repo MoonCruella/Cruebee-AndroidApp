@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -28,6 +29,7 @@ import java.util.Map;
 public class ForgotPassOTPActivity extends AppCompatActivity {
 
     EditText user_otp;
+    TextView resend_tv;
     String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +42,13 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
             return insets;
         });
         user_otp = (EditText) findViewById(R.id.otp);
+        resend_tv = (TextView) findViewById(R.id.resend);
+        resend_tv.setVisibility(View.INVISIBLE);
         Intent intent = getIntent();
         email = intent.getStringExtra("USER_EMAIL");
     }
     public void verifyOTP(View view) {
+
         String otp = user_otp.getText().toString();
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -67,8 +72,8 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
                             intent.putExtra("USER_EMAIL",email);
                             startActivity(intent);
                         }
-                        else{
-                            Toast.makeText(ForgotPassOTPActivity.this, "Try again!", Toast.LENGTH_SHORT).show();
+                        else if(response.equals("OTP has expired. Please regenerate and try again.")){
+                            resend_tv.setVisibility(View.VISIBLE);
                         }
                     }
                 },
@@ -85,6 +90,44 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
                 HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("email", email);
                 hashMap.put("otp",otp);
+                return hashMap;
+            }
+
+        };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(stringRequest);
+    }
+    public void resendOTP(View view)
+    {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Loading... Please wait...!!");
+        progressDialog.show();
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.PUT,
+                "http://192.168.1.7:8888/regenerate-otp",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        progressDialog.hide();
+                        Toast.makeText(ForgotPassOTPActivity.this, "" + response, Toast.LENGTH_SHORT).show();
+                        resend_tv.setVisibility(View.INVISIBLE);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.hide();
+                        Toast.makeText(ForgotPassOTPActivity.this, "" + error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("email", email);
                 return hashMap;
             }
 

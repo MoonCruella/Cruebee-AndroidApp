@@ -168,10 +168,13 @@ public class MainActivity extends AppCompatActivity {
             password.setError("Password cannot be empty!");
             return false;
         }
+        else if(!StringHelper.isValidPassword(pass)){
+            password.setError("Password is not valid!");
+            return false;
+        }
         password.setError(null);
         return true;
     }
-
 
 
 

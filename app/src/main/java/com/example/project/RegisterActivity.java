@@ -64,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
         if(!validateEmail() || !validateUsername() || !validatePassword()){
             return;
         }
-
+        register_btn.setEnabled(false);
         String email1 = email.getText().toString();
         String username1 = username.getText().toString();
         String password1 = password.getText().toString();
@@ -85,15 +85,12 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         progressDialog.hide();
                         Toast.makeText(RegisterActivity.this,"" + response,Toast.LENGTH_SHORT).show();
+                        register_btn.setEnabled(true);
                         if(response.equals("User registration successful")){
                             Intent intent = new Intent(RegisterActivity.this,ConfirmOTPActivity.class);
-
                             // Su dung putExtra để pass biến email1 qua Activity khác
                             intent.putExtra("USER_EMAIL",email1);
                             startActivity(intent);
-                        }
-                        else{
-                            Toast.makeText(RegisterActivity.this, "Registration failed. Please try again.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -102,6 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.hide();
                         Toast.makeText(RegisterActivity.this,"" + error,Toast.LENGTH_SHORT).show();
+                        register_btn.setEnabled(true);
                     }
                 }
         ){
@@ -173,6 +171,10 @@ public class RegisterActivity extends AppCompatActivity {
         else if(!pass.equals(pass_confirm)){
             password.setError(null);
             re_password.setError("Confirm field doesn't match with password!!!");
+            return false;
+        }
+        else if(!StringHelper.isValidPassword(pass)){
+            password.setError("Password is not valid!");
             return false;
         }
         password.setError(null);

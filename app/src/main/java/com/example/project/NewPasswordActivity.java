@@ -116,6 +116,10 @@ public class NewPasswordActivity extends AppCompatActivity {
             re_password.setError("Confirm field doesn't match with password!!!");
             return false;
         }
+        else if(!StringHelper.isValidPassword(pass)){
+            password.setError("Password is not valid!");
+            return false;
+        }
         password.setError(null);
         re_password.setError(null);
         return true;

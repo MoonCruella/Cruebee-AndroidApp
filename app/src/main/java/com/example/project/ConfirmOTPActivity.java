@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -32,6 +33,7 @@ import java.util.Map;
 public class ConfirmOTPActivity extends AppCompatActivity {
 
     EditText user_otp;
+    TextView resend_tv;
     String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +51,14 @@ public class ConfirmOTPActivity extends AppCompatActivity {
         email = intent.getStringExtra("USER_EMAIL");
 
         user_otp = (EditText) findViewById(R.id.otp);
+        resend_tv = (TextView) findViewById(R.id.resend);
+        resend_tv.setVisibility(View.INVISIBLE);
     }
 
     public void verifyOTP(View view) {
         String otp = user_otp.getText().toString();
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading");
         progressDialog.setMessage("Loading... Please wait...!!");
@@ -72,6 +75,12 @@ public class ConfirmOTPActivity extends AppCompatActivity {
                         Toast.makeText(ConfirmOTPActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                         if (response.equals("OTP verified. You can login")) {
                             Intent intent = new Intent(ConfirmOTPActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+
+                        // Hiện nút resend
+                        else if(response.equals("OTP has expired. Please regenerate and try again.")){
+                            resend_tv.setVisibility(View.VISIBLE);
                         }
                     }
                 },
@@ -88,6 +97,44 @@ public class ConfirmOTPActivity extends AppCompatActivity {
                 HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("email", email);
                 hashMap.put("otp",otp);
+                return hashMap;
+            }
+
+        };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(stringRequest);
+    }
+    public void resendOTP(View view)
+    {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Loading... Please wait...!!");
+        progressDialog.show();
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.PUT,
+                "http://192.168.1.7:8888/regenerate-otp",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        progressDialog.hide();
+                        Toast.makeText(ConfirmOTPActivity.this, "" + response, Toast.LENGTH_SHORT).show();
+                        resend_tv.setVisibility(View.INVISIBLE);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.hide();
+                        Toast.makeText(ConfirmOTPActivity.this, "" + error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("email", email);
                 return hashMap;
             }
 
