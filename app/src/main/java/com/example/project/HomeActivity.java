@@ -61,7 +61,7 @@ public class HomeActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET,
-                "http://192.168.1.7:8888/logout",
+                "http://172.20.10.7:8888/logout",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

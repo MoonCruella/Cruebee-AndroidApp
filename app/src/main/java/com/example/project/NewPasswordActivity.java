@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -43,6 +44,11 @@ public class NewPasswordActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        //Hide title bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
         password = (EditText) findViewById(R.id.password);
         re_password= (EditText) findViewById(R.id.re_password);
         Intent intent = getIntent();
@@ -64,7 +70,7 @@ public class NewPasswordActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://192.168.1.7:8888/reset-password",
+                "http://172.20.10.7:8888/reset-password",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

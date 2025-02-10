@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -46,6 +47,10 @@ public class ConfirmOTPActivity extends AppCompatActivity {
             return insets;
         });
 
+        //Hide title bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
         // Lay biến USER_EMAIL được truyền từ RegisterActivity
         Intent intent = getIntent();
         email = intent.getStringExtra("USER_EMAIL");
@@ -67,7 +72,7 @@ public class ConfirmOTPActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://192.168.1.7:8888/verify-account",
+                "http://172.20.10.7:8888/verify-account",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -114,7 +119,7 @@ public class ConfirmOTPActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://192.168.1.7:8888/regenerate-otp",
+                "http://172.20.10.7:8888/regenerate-otp",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

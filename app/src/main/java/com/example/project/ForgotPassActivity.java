@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -38,6 +39,11 @@ public class ForgotPassActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        //Hide title bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
         email = (EditText) findViewById(R.id.email);
     }
 
@@ -51,7 +57,7 @@ public class ForgotPassActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
         Request.Method.PUT,
-                "http://192.168.1.7:8888/forget-password",
+                "http://172.20.10.7:8888/forget-password",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

@@ -6,47 +6,76 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RegisterActivity"
+    android:background="#1E1F22"
     android:padding="40dp"
     android:orientation="vertical"
     android:gravity="center">
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Email"
         android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:hint="Email"
+        android:textStyle="bold"
+        android:textColorHint="#fff"
+        android:background="@drawable/forget"
+        android:textColor="#fff"
         android:inputType="textEmailAddress"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="30dp"
+        android:paddingLeft="20dp"/>
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Username"
         android:id="@+id/username"
-        android:layout_marginBottom="16dp"/>
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:hint="Username"
+        android:textStyle="bold"
+        android:textColorHint="#fff"
+        android:background="@drawable/forget"
+        android:textColor="#fff"
+        android:layout_marginTop="30dp"
+        android:paddingLeft="20dp"/>
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Password"
         android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:hint="Password"
+        android:textStyle="bold"
         android:inputType="textPassword"
-        android:layout_marginBottom="16dp"/>
+        android:textColorHint="#fff"
+        android:background="@drawable/forget"
+        android:textColor="#fff"
+        android:layout_marginTop="30dp"
+        android:paddingLeft="20dp"/>
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Rewrite Password"
         android:id="@+id/re_password"
-        android:inputType="textPassword"
-        android:layout_marginBottom="16dp"/>
-
-    <Button
-        android:id="@+id/register"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="registerUser"
-        android:text="Register" />
+        android:layout_height="45dp"
+        android:hint="Confirm Password"
+        android:textStyle="bold"
+        android:textColorHint="#fff"
+        android:inputType="textPassword"
+        android:background="@drawable/forget"
+        android:textColor="#fff"
+        android:layout_marginTop="30dp"
+        android:paddingLeft="20dp"/>
+
+
+    <TextView
+        android:id="@+id/register"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:background="@drawable/button"
+        android:text="Register"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:padding="12dp"
+        android:onClick="registerUser"/>
 
 
 </LinearLayout>

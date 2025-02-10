@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -41,6 +42,11 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        //Hide title bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
         user_otp = (EditText) findViewById(R.id.otp);
         resend_tv = (TextView) findViewById(R.id.resend);
         resend_tv.setVisibility(View.INVISIBLE);
@@ -61,7 +67,7 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://192.168.1.7:8888/verify-otp",
+                "http://172.20.10.7:8888/verify-otp",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -107,7 +113,7 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://192.168.1.7:8888/regenerate-otp",
+                "http://172.20.10.7:8888/regenerate-otp",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
