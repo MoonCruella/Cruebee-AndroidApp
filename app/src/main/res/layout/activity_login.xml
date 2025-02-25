@@ -2,80 +2,72 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/register_activity"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity"
     android:background="#1E1F22"
-    android:padding="40dp"
-    android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textColor="#fff"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        android:layout_marginTop="200dp"/>
+    
     <EditText
         android:id="@+id/email"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="45dp"
         android:hint="Email"
-        android:textStyle="bold"
         android:textColorHint="#fff"
         android:background="@drawable/forget"
         android:textColor="#fff"
-        android:inputType="textEmailAddress"
-        android:layout_marginTop="30dp"
-        android:paddingLeft="20dp"/>
-
-    <EditText
-        android:id="@+id/username"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:hint="Username"
         android:textStyle="bold"
-        android:textColorHint="#fff"
-        android:background="@drawable/forget"
-        android:textColor="#fff"
         android:layout_marginTop="30dp"
         android:paddingLeft="20dp"/>
 
     <EditText
         android:id="@+id/password"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="45dp"
         android:hint="Password"
-        android:textStyle="bold"
-        android:inputType="textPassword"
         android:textColorHint="#fff"
         android:background="@drawable/forget"
-        android:textColor="#fff"
-        android:layout_marginTop="30dp"
-        android:paddingLeft="20dp"/>
-
-    <EditText
-        android:id="@+id/re_password"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:hint="Confirm Password"
-        android:textStyle="bold"
-        android:textColorHint="#fff"
         android:inputType="textPassword"
-        android:background="@drawable/forget"
         android:textColor="#fff"
+        android:textStyle="bold"
         android:layout_marginTop="30dp"
         android:paddingLeft="20dp"/>
-
 
     <TextView
-        android:id="@+id/register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forget Password?"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="20dp"
+        android:onClick="openForgotPassActivity"/>
+
+    <TextView
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:background="@drawable/button"
-        android:text="Register"
+        android:text="Login"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:layout_marginTop="50dp"
         android:gravity="center"
         android:padding="12dp"
-        android:onClick="registerUser"/>
+        android:onClick="openHomeActivity"/>
+
+
 
 
 </LinearLayout>
+
