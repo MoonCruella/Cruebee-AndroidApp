@@ -2,11 +2,10 @@ package com.example.project;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -33,16 +32,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegisterActivity extends AppCompatActivity {
-
-    EditText email,username, password, re_password;
-    TextView register_btn;
+public class LoginActivity extends AppCompatActivity {
+    EditText email, password;
+    String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_register);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.register_activity), (v, insets) -> {
+        setContentView(R.layout.activity_login);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -53,27 +51,15 @@ public class RegisterActivity extends AppCompatActivity {
         actionBar.hide();
 
         email= (EditText) findViewById(R.id.email);
-        username = (EditText) findViewById(R.id.username);
         password= (EditText) findViewById(R.id.password);
-        re_password= (EditText) findViewById(R.id.re_password);
-
-        register_btn = (TextView) findViewById(R.id.register);
-        register_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerUser(v);
-            }
-        });
     }
 
-    public void registerUser(View view){
-
-        if(!validateEmail() || !validateUsername() || !validatePassword()){
+    public void openHomeActivity(View view){
+        if(!validateEmail() || !validatePassword()){
             return;
         }
-        register_btn.setEnabled(false);
+
         String email1 = email.getText().toString();
-        String username1 = username.getText().toString();
         String password1 = password.getText().toString();
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -86,18 +72,36 @@ public class RegisterActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
-                "http://196.169.4.27:8888/register",
+                "http://196.169.4.27:8888/loginn",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         progressDialog.hide();
-                        Toast.makeText(RegisterActivity.this,"" + response,Toast.LENGTH_SHORT).show();
-                        register_btn.setEnabled(true);
-                        if(response.equals("User registration successful")){
-                            Intent intent = new Intent(RegisterActivity.this,ConfirmOTPActivity.class);
-                            // Su dung putExtra để pass biến email1 qua Activity khác
-                            intent.putExtra("USER_EMAIL",email1);
-                            startActivity(intent);
+                        try {
+                            // Parse the JSON response from the backend
+                            JSONObject jsonResponse = new JSONObject(response);
+                            // Assuming the token is in the 'token' field
+                            if (jsonResponse.has("token")) {
+
+                                token = jsonResponse.getString("token");
+                                System.out.println(token);
+                                // Store the token in SharedPreferences for future use
+                                SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("auth_token", token);  // Save token with the key 'auth_token'
+                                editor.apply();
+
+                                // Proceed to the HomeActivity (or other actions)
+                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                intent.putExtra("USER_EMAIL", email1);
+                                startActivity(intent);
+                            } else {
+                                String errorMessage = jsonResponse.getString("message");
+                                Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(LoginActivity.this, "Error processing login response.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -105,8 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.hide();
-                        Toast.makeText(RegisterActivity.this,"" + error,Toast.LENGTH_SHORT).show();
-                        register_btn.setEnabled(true);
+                        Toast.makeText(LoginActivity.this,"" + error,Toast.LENGTH_SHORT).show();
                     }
                 }
         ){
@@ -116,7 +119,6 @@ public class RegisterActivity extends AppCompatActivity {
                 JSONObject jsonBody = new JSONObject();
                 try {
                     jsonBody.put("email", email1);
-                    jsonBody.put("username", username1);
                     jsonBody.put("password", password1);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -130,7 +132,6 @@ public class RegisterActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headerMap = new HashMap<String, String>();
                 headerMap.put("Content-Type", "application/json");
-                //headerMap.put("Authorization", "No Auth");
                 return headerMap;
             }
         };
@@ -140,15 +141,8 @@ public class RegisterActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    // Validate username field
-    public boolean validateUsername(){
-        String user_name = username.getText().toString();
-        if(user_name.isEmpty()){
-            username.setError("Username cannot be empty");
-            return false;
-        }
-        username.setError(null);
-        return true;
+    public void openForgotPassActivity(View view){
+        startActivity(new Intent(LoginActivity.this,ForgotPassActivity.class));
     }
 
     // Validate email field
@@ -169,15 +163,8 @@ public class RegisterActivity extends AppCompatActivity {
     // Validate password field
     public boolean validatePassword(){
         String pass = password.getText().toString();
-        String pass_confirm = re_password.getText().toString();
-        if(pass.isEmpty() || pass_confirm.isEmpty()){
+        if(pass.isEmpty()){
             password.setError("Password cannot be empty!");
-            re_password.setError("Confirm field cannot be empty!");
-            return false;
-        }
-        else if(!pass.equals(pass_confirm)){
-            password.setError(null);
-            re_password.setError("Confirm field doesn't match with password!!!");
             return false;
         }
         else if(!StringHelper.isValidPassword(pass)){
@@ -185,10 +172,8 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
         password.setError(null);
-        re_password.setError(null);
         return true;
     }
-
 
 
 }
