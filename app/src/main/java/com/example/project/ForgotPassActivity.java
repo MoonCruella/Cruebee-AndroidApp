@@ -57,7 +57,7 @@ public class ForgotPassActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
         Request.Method.PUT,
-                "http://172.20.10.7:8888/forget-password",
+                "http://196.169.4.27:8888/forget-password",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

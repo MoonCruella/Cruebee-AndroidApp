@@ -67,7 +67,7 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://172.20.10.7:8888/verify-otp",
+                "http://192.168.1.5:8888/verify-otp",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -113,7 +113,7 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://172.20.10.7:8888/regenerate-otp",
+                "http://192.168.1.5:8888/regenerate-otp",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

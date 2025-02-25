@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
-                "http://172.20.10.7:8888/loginn",
+                "http://196.169.4.27:8888/loginn",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

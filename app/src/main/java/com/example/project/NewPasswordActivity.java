@@ -70,7 +70,7 @@ public class NewPasswordActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://172.20.10.7:8888/reset-password",
+                "http://196.169.4.27:8888/reset-password",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

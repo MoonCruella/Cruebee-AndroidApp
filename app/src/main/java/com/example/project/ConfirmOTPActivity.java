@@ -72,7 +72,7 @@ public class ConfirmOTPActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://172.20.10.7:8888/verify-account",
+                "http://196.169.4.27:8888/verify-account",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -119,7 +119,7 @@ public class ConfirmOTPActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://172.20.10.7:8888/regenerate-otp",
+                "http://196.169.4.27:8888/regenerate-otp",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
