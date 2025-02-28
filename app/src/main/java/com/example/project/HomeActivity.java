@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
 
-    TextView text;
+    private TextView text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

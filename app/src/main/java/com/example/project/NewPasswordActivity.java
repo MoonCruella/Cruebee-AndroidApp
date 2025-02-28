@@ -32,8 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NewPasswordActivity extends AppCompatActivity {
-    EditText password,re_password;
-    String email;
+    private EditText password,re_password;
+    private String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

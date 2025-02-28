@@ -35,7 +35,7 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText email,username, password, re_password;
+    private EditText email,username, password, re_password;
     TextView register_btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

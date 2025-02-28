@@ -42,5 +42,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.volley)
     implementation(libs.cardview)
+    implementation(libs.glide)
 
 }
