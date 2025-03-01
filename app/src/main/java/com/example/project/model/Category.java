@@ -5,15 +5,14 @@ import java.util.List;
 public class Category {
     private int id;
     private String name;
-    private int image;
+    private String image;
     private boolean active;
     private List<Product> products;
 
-    public Category(int id, String name, int image, boolean active) {
+    public Category(int id, String name, String image) {
         this.id = id;
         this.name = name;
         this.image = image;
-        this.active = active;
         //this.products = products;
     }
 
@@ -25,7 +24,7 @@ public class Category {
         this.name = name;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -45,7 +44,7 @@ public class Category {
         return name;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 

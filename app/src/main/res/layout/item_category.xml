@@ -13,8 +13,7 @@
         android:id="@+id/imgCategory"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:scaleType="fitCenter"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/txtCategory"

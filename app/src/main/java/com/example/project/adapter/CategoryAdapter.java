@@ -1,5 +1,6 @@
-package com.example.project.model;
+package com.example.project.adapter;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,15 +11,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.project.R;
+import com.example.project.model.Category;
 
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
     private List<Category> categoryList;
+    private Context context;
     private int selectedPosition = -1;
 
-    public CategoryAdapter(List<Category> categoryList) {
+    public CategoryAdapter(Context context,List<Category> categoryList) {
+        this.context = context;
         this.categoryList = categoryList;
     }
 
@@ -35,7 +40,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Category category = categoryList.get(position);
         holder.txtCategory.setText(category.getName());
-        holder.imgCategory.setImageResource(category.getImage());
+        Glide.with(context).load(category.getImage()).into(holder.imgCategory);
 
         holder.viewUnderline.setVisibility(position == selectedPosition ? View.VISIBLE : View.GONE);
         holder.txtCategory.setTypeface(null, position == selectedPosition ? Typeface.BOLD : Typeface.NORMAL);
