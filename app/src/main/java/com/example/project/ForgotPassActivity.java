@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class ForgotPassActivity extends AppCompatActivity {
 
-    EditText email;
+    private EditText email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -30,12 +30,12 @@ public class MenuActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
-        // Dữ liệu danh mục
+        // D? li?u danh m?c
         categoryList = new ArrayList<>();
-        categoryList.add(new Category(1,"Gà rán", R.drawable.avt,true));
+        categoryList.add(new Category(1,"G� r�n", R.drawable.avt,true));
         categoryList.add(new Category(2,"Burger", R.drawable.avt,true));
         categoryList.add(new Category(3,"Spaghetti", R.drawable.avt,true));
-        categoryList.add(new Category(4,"Thức uống", R.drawable.avt,true));
+        categoryList.add(new Category(4,"Th?c u?ng", R.drawable.avt,true));
 
         LinearLayoutManager = new LinearLayoutManager(MenuActivity.this,LinearLayoutManager.HORIZONTAL,false);
 

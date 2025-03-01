@@ -29,9 +29,9 @@ import java.util.Map;
 
 public class ForgotPassOTPActivity extends AppCompatActivity {
 
-    EditText user_otp;
-    TextView resend_tv;
-    String email;
+    private EditText user_otp;
+    private TextView resend_tv;
+    private String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

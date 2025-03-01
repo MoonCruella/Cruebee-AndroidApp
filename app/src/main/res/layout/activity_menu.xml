@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/fredoka_semibold"
-            android:text="Chọn món"
+            android:text="Ch?n m�n"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
