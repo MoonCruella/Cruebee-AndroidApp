@@ -1,6 +1,8 @@
 package com.example.project.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.project.R;
+import com.example.project.ShowDetailActivity;
 import com.example.project.model.Food;
 
 import java.text.DecimalFormat;
@@ -38,10 +42,25 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHoder> {
         Food food = foodList.get(position);
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         String formattedPrice = decimalFormat.format(food.getPrice()) + " đ";
-
         holder.name.setText(food.getName());
         holder.price.setText(formattedPrice);
         Glide.with(context).load(food.getImage()).into(holder.imageView);
+
+        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ShowDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("name",food.getName());
+                bundle.putInt("price",food.getPrice());
+                bundle.putString("image",food.getImage());
+                bundle.putInt("foodId",food.getId());
+                bundle.putString("description",food.getDescription());
+
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
 
     }
 
@@ -54,11 +73,13 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHoder> {
 
         ImageView imageView;
         TextView name,price;
+        ConstraintLayout constraintLayout;
         public FoodHoder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageview);
             name = itemView.findViewById(R.id.name);
             price = itemView.findViewById(R.id.price);
+            constraintLayout = itemView.findViewById(R.id.main_layout);
         }
 
     }

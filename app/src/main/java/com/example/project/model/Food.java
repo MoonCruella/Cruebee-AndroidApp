@@ -88,10 +88,12 @@ public class Food {
         this.image = image;
     }
 
-    public Food(String name,int price,String image){
+    public Food(int id,String name,int price,String image,String description){
+        this.id = id;
         this.name = name;
         this.price = price;
         this.image = image;
+        this.description = description;
     }
 
 }

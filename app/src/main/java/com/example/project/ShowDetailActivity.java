@@ -14,12 +14,15 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.GenericLifecycleObserver;
 
 import com.bumptech.glide.Glide;
+import com.example.project.utils.UrlUtil;
+
+import java.text.DecimalFormat;
 
 public class ShowDetailActivity extends AppCompatActivity {
     private TextView addToCartBtn;
     private TextView titleTxt,feeTxt,desTxt,countTxt;
     private ImageView plusBtn,minusBtn,picFood;
-    String img = "http://192.168.1.2:8888/download/352e5c64-7e86-4be9-8d3e-ccc921deb388";
+
     private int numberOrder = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +52,18 @@ public class ShowDetailActivity extends AppCompatActivity {
         minusBtn = findViewById(R.id.minusImgView);
         picFood = findViewById(R.id.foodImgView);
 
+        Bundle bundle = getIntent().getExtras();
+        String fName = bundle.getString("name");
+        int fPrice = bundle.getInt("price");
+        int fId = bundle.getInt("foodId");
+        String img = bundle.getString("image");
+        String des = bundle.getString("description");
+        titleTxt.setText(fName.toString());
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        String formattedPrice = decimalFormat.format(fPrice) + " đ";
+        feeTxt.setText(formattedPrice);
+        desTxt.setText(des);
         Glide.with(this).load(img).into(picFood);
-
 
     }
 

@@ -75,11 +75,13 @@ public class MenuActivity extends AppCompatActivity {
                 for(int i = 0; i < response.length();i ++){
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
+                        int id = jsonObject.getInt("id");
                         String name = jsonObject.getString("name");
                         int price = jsonObject.getInt("price");
                         String imageId = jsonObject.getString("attachmentId");
                         String image = UrlUtil.ADDRESS + "download/" + imageId;
-                        Food food = new Food(name,price,image);
+                        String des = jsonObject.getString("description");
+                        Food food = new Food(id,name,price,image,des);
                         foodList.add(food);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
