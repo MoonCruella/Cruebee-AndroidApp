@@ -10,6 +10,7 @@ constraintlayout = "2.2.0"
 volley="1.2.1"
 cardview="1.0.0"
 glide="4.16.0"
+litertSupportApi = "1.1.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -22,6 +23,7 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 volley = {group="com.android.volley", name ="volley", version.ref ="volley"}
 cardview = {group ="androidx.cardview",name="cardview",version.ref="cardview"}
 glide = {group = "com.github.bumptech.glide",name = "glide", version.ref = "glide"}
+litert-support-api = { group = "com.google.ai.edge.litert", name = "litert-support-api", version.ref = "litertSupportApi" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
