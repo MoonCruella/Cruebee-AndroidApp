@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +22,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     private List<Category> categoryList;
     private Context context;
     private int selectedPosition = -1;
+
+    private AdapterView.OnItemClickListener listener;
+
 
     public CategoryAdapter(Context context,List<Category> categoryList) {
         this.context = context;

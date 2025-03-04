@@ -7,13 +7,16 @@ public class Category {
     private String name;
     private String image;
     private boolean active;
-    private List<Product> products;
+    private List<Food> foods;
 
     public Category(int id, String name, String image) {
         this.id = id;
         this.name = name;
         this.image = image;
-        //this.products = products;
+    }
+    public Category(String name, List<Food> foods) {
+        this.name = name;
+        this.foods = foods;
     }
 
     public void setId(int id) {
@@ -32,8 +35,8 @@ public class Category {
         this.active = active;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setFoods(List<Food> foods) {
+        this.foods = foods;
     }
 
     public int getId() {
@@ -52,7 +55,7 @@ public class Category {
         return active;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<Food>getFoods () {
+        return foods;
     }
 }

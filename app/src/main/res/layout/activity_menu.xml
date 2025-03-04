@@ -13,7 +13,8 @@
         android:layout_height="50dp"
         android:background="@color/red"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp">
+        tools:layout_editor_absoluteX="0dp"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -33,7 +34,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCategory"
-        android:layout_width="412dp"
+        android:layout_width="410dp"
         android:layout_height="168dp"
         android:orientation="horizontal"
 
