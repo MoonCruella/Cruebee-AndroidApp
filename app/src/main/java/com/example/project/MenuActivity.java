@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -8,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -17,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.project.adapter.CategoryListAdapter;
 import com.example.project.adapter.FoodAdapter;
+import com.example.project.interfaces.OnItemClickListener;
 import com.example.project.model.Category;
 import com.example.project.adapter.CategoryAdapter;
 import com.example.project.model.Food;
@@ -28,7 +31,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MenuActivity extends AppCompatActivity {
 
@@ -38,6 +43,11 @@ public class MenuActivity extends AppCompatActivity {
     private List<Food> foodList;
     private List<Category> categoryList1;
     private List<Category> categoryList;
+    CategoryAdapter adapter;
+    private Map<Integer, Category> categoryMap = new LinkedHashMap<>();
+    private int position;
+    private int totalCategories = 0; // ??m t?ng s? danh m?c c?n t?i
+    private int loadedCategories = 0; // ??m s? danh m?c ?ã t?i xong món ?n
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +77,7 @@ public class MenuActivity extends AppCompatActivity {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                totalCategories = response.length();
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -76,7 +87,7 @@ public class MenuActivity extends AppCompatActivity {
                         String image = UrlUtil.ADDRESS + "download/" + imageId;
                         Category category = new Category(id, name, image);
                         categoryList1.add(category);
-
+                        categoryMap.put(id, new Category(name, new ArrayList<>()));
                         // Tien hanh fetch cac san pham thuoc category nay
                         fetchFoodByCategoryId(id, name);
 
@@ -84,10 +95,29 @@ public class MenuActivity extends AppCompatActivity {
                         throw new RuntimeException(e);
                     }
 
-                    CategoryAdapter adapter = new CategoryAdapter(MenuActivity.this, categoryList1);
-                    recyclerViewCategory.setAdapter(adapter);
+                    adapter = new CategoryAdapter(MenuActivity.this, categoryList1, new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                            LinearSmoothScroller smoothScroller = new LinearSmoothScroller(recyclerView.getContext()) {
+                                @Override
+                                protected int getVerticalSnapPreference() {
+                                    return SNAP_TO_START; // Ensures the item scrolls to the top
+                                }
+                            };
 
+                            // Set the target position to scroll to
+                            smoothScroller.setTargetPosition(position);
+
+                            // Smoothly scroll to the position
+                            layoutManager.startSmoothScroll(smoothScroller);
+                        }
+                    });
+                    recyclerViewCategory.setAdapter(adapter);
                 }
+                categoryList.addAll(categoryMap.values());
+                CategoryListAdapter itemAdapter = new CategoryListAdapter(MenuActivity.this, categoryList);
+                recyclerView.setAdapter(itemAdapter);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -122,15 +152,11 @@ public class MenuActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-
                 Category category = new Category(categoryName, foodList);
-                categoryList.add(category);
+                categoryMap.put(categoryId, category);
 
-                // Sau khi lay duoc tat ca san pham cua 1 category,luc nay ta co du thong tin catename va listprouct =>  tien hanh set Adapter
-                CategoryListAdapter adapter = new CategoryListAdapter(MenuActivity.this, categoryList);
-                RecyclerView.ItemDecoration decoration = new DividerItemDecoration(getApplicationContext(),DividerItemDecoration.VERTICAL);
-                recyclerView.addItemDecoration(decoration);
-                recyclerView.setAdapter(adapter);
+                loadedCategories++; // ??m s? danh m?c ?ã t?i xong
+                checkAndUpdateRecyclerView();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -140,6 +166,17 @@ public class MenuActivity extends AppCompatActivity {
         });
 
         requestQueue.add(jsonArrayRequest);
+    }
+    private void checkAndUpdateRecyclerView() {
+        if (loadedCategories == totalCategories) { // Khi t?t c? danh m?c ?ã t?i xong
+            List<Category> orderedCategoryList = new ArrayList<>(categoryMap.values());
+
+            CategoryListAdapter itemAdapter = new CategoryListAdapter(MenuActivity.this, orderedCategoryList);
+            recyclerView.setAdapter(itemAdapter);
+
+            RecyclerView.ItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
+            recyclerView.addItemDecoration(decoration);
+        }
     }
 
 }
