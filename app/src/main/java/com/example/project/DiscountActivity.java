@@ -24,9 +24,6 @@ public class DiscountActivity extends AppCompatActivity {
         });
 
 
-        //Hide title bar
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
 
 
     }

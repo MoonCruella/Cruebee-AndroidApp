@@ -47,9 +47,6 @@ public class ConfirmOTPActivity extends AppCompatActivity {
             return insets;
         });
 
-        //Hide title bar
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
 
         // Lay biến USER_EMAIL được truyền từ RegisterActivity
         Intent intent = getIntent();

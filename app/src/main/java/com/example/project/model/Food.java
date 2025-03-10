@@ -1,8 +1,11 @@
 package com.example.project.model;
 
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Food {
+public class Food implements Serializable {
     private int id;
     private String name;
     private String description;
@@ -11,6 +14,7 @@ public class Food {
     private boolean active;
     private LocalDateTime generatedTime;
 
+    private int numberInCart;
     private String image;
 
     public String getImage() {
@@ -77,6 +81,14 @@ public class Food {
         this.price = price;
     }
 
+    public int getNumberInCart() {
+        return numberInCart;
+    }
+
+    public void setNumberInCart(int numberInCart) {
+        this.numberInCart = numberInCart;
+    }
+
     public Food(int id, String name, String description, int price, int soldCount, boolean active, LocalDateTime generatedTime, String image){
         this.id = id;
         this.name = name;
@@ -88,6 +100,14 @@ public class Food {
         this.image = image;
     }
 
+    public Food(int id,String name,int price,String image,String description,int numberInCart){
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.image = image;
+        this.description = description;
+        this.numberInCart = numberInCart;
+    }
     public Food(int id,String name,int price,String image,String description){
         this.id = id;
         this.name = name;
@@ -95,5 +115,6 @@ public class Food {
         this.image = image;
         this.description = description;
     }
+
 
 }

@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,9 +44,6 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        //Hide title bar
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
 
         recyclerViewCategory = findViewById(R.id.recyclerViewCategory);
         recyclerViewCategory.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -87,8 +85,8 @@ public class MenuActivity extends AppCompatActivity {
                     }
 
                     CategoryAdapter adapter = new CategoryAdapter(MenuActivity.this, categoryList1);
-
                     recyclerViewCategory.setAdapter(adapter);
+
                 }
             }
         }, new Response.ErrorListener() {
@@ -130,6 +128,8 @@ public class MenuActivity extends AppCompatActivity {
 
                 // Sau khi lay duoc tat ca san pham cua 1 category,luc nay ta co du thong tin catename va listprouct =>  tien hanh set Adapter
                 CategoryListAdapter adapter = new CategoryListAdapter(MenuActivity.this, categoryList);
+                RecyclerView.ItemDecoration decoration = new DividerItemDecoration(getApplicationContext(),DividerItemDecoration.VERTICAL);
+                recyclerView.addItemDecoration(decoration);
                 recyclerView.setAdapter(adapter);
             }
         }, new Response.ErrorListener() {

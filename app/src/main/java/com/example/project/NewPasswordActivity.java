@@ -45,9 +45,6 @@ public class NewPasswordActivity extends AppCompatActivity {
             return insets;
         });
 
-        //Hide title bar
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
 
         password = (EditText) findViewById(R.id.password);
         re_password= (EditText) findViewById(R.id.re_password);

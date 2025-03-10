@@ -48,9 +48,6 @@ public class RegisterActivity extends AppCompatActivity {
             return insets;
         });
 
-        //Hide title bar
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
 
         email= (EditText) findViewById(R.id.email);
         username = (EditText) findViewById(R.id.username);

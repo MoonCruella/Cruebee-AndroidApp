@@ -46,9 +46,6 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        //Hide title bar
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
 
         email= (EditText) findViewById(R.id.email);
         password= (EditText) findViewById(R.id.password);

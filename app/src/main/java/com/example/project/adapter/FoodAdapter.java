@@ -3,6 +3,7 @@ package com.example.project.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,14 +51,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHoder> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ShowDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("name",food.getName());
-                bundle.putInt("price",food.getPrice());
-                bundle.putString("image",food.getImage());
-                bundle.putInt("foodId",food.getId());
-                bundle.putString("description",food.getDescription());
-
-                intent.putExtras(bundle);
+                intent.putExtra("object",food);
                 context.startActivity(intent);
             }
         });

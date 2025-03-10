@@ -40,9 +40,6 @@ public class ForgotPassActivity extends AppCompatActivity {
             return insets;
         });
 
-        //Hide title bar
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
 
         email = (EditText) findViewById(R.id.email);
     }

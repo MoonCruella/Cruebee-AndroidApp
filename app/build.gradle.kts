@@ -44,5 +44,6 @@ dependencies {
     implementation(libs.volley)
     implementation(libs.cardview)
     implementation(libs.glide)
+    implementation(libs.gson)
 
 }

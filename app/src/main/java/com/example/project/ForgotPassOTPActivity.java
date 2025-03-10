@@ -43,9 +43,6 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
             return insets;
         });
 
-        //Hide title bar
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
 
         user_otp = (EditText) findViewById(R.id.otp);
         resend_tv = (TextView) findViewById(R.id.resend);

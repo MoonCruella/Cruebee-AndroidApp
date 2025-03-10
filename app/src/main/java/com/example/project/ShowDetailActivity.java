@@ -14,6 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.GenericLifecycleObserver;
 
 import com.bumptech.glide.Glide;
+import com.example.project.helpers.ManagementCart;
+import com.example.project.model.Food;
 import com.example.project.utils.UrlUtil;
 
 import java.text.DecimalFormat;
@@ -22,6 +24,8 @@ public class ShowDetailActivity extends AppCompatActivity {
     private TextView addToCartBtn;
     private TextView titleTxt,feeTxt,desTxt,countTxt;
     private ImageView plusBtn,minusBtn,picFood;
+    private ManagementCart managementCart;
+    private Food object;
 
     private int numberOrder = 1;
     @Override
@@ -35,9 +39,7 @@ public class ShowDetailActivity extends AppCompatActivity {
             return insets;
         });
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
-
+        managementCart = new ManagementCart(this);
         initView();
         getBundle();
     }
@@ -52,22 +54,19 @@ public class ShowDetailActivity extends AppCompatActivity {
         minusBtn = findViewById(R.id.minusImgView);
         picFood = findViewById(R.id.foodImgView);
 
-        Bundle bundle = getIntent().getExtras();
-        String fName = bundle.getString("name");
-        int fPrice = bundle.getInt("price");
-        int fId = bundle.getInt("foodId");
-        String img = bundle.getString("image");
-        String des = bundle.getString("description");
-        titleTxt.setText(fName.toString());
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        String formattedPrice = decimalFormat.format(fPrice) + " đ";
-        feeTxt.setText(formattedPrice);
-        desTxt.setText(des);
-        Glide.with(this).load(img).into(picFood);
+
 
     }
 
     private void getBundle(){
+
+        object = (Food) getIntent().getSerializableExtra("object");
+        titleTxt.setText(object.getName());
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        String formattedPrice = decimalFormat.format(object.getPrice()) + " đ";
+        feeTxt.setText(formattedPrice);
+        desTxt.setText(object.getDescription());
+        Glide.with(this).load(object.getImage()).into(picFood);
         plusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +82,14 @@ public class ShowDetailActivity extends AppCompatActivity {
                     numberOrder -= 1;
                 }
                 countTxt.setText(String.valueOf(numberOrder));
+            }
+        });
+
+        addToCartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                object.setNumberInCart(numberOrder);
+                managementCart.insertFood(object);
             }
         });
     }
