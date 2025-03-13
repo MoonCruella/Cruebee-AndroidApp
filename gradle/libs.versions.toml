@@ -12,6 +12,7 @@ cardview="1.0.0"
 glide="4.16.0"
 litertSupportApi = "1.1.2"
 gson = "2.8.2"
+play_services_location = "21.3.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -26,7 +27,7 @@ cardview = {group ="androidx.cardview",name="cardview",version.ref="cardview"}
 glide = {group = "com.github.bumptech.glide",name = "glide", version.ref = "glide"}
 litert-support-api = { group = "com.google.ai.edge.litert", name = "litert-support-api", version.ref = "litertSupportApi" }
 gson = {group = "com.google.code.gson",name ="gson",version.ref="gson"}
-
+play_services_location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play_services_location" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 
