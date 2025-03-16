@@ -75,6 +75,19 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
                 });
             }
         });
+
+        holder.deleteItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                managementCart.deleteFood(foods, position, new ChangeNumberItemsListener() {
+                    @Override
+                    public void change() {
+                        notifyDataSetChanged();
+                        changeNumberItemsListener.change();
+                    }
+                });
+            }
+        });
     }
 
     @Override

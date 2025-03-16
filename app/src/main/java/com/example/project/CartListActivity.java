@@ -2,6 +2,7 @@ package com.example.project;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
@@ -67,6 +68,13 @@ public class CartListActivity extends Dialog {
         thanhToanBtn = (TextView) findViewById(R.id.thanhToanBtn);
         emptyTxt = (TextView) findViewById(R.id.emptyTxt);
 
+        themMonBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(),MenuActivity.class);
+                getContext().startActivity(intent);
+            }
+        });
     }
 
     private void initList(){

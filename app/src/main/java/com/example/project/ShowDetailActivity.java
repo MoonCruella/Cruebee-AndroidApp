@@ -90,6 +90,9 @@ public class ShowDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 object.setNumberInCart(numberOrder);
                 managementCart.insertFood(object);
+
+                //Quay tro lai man hinh chon menu
+                finish();
             }
         });
     }

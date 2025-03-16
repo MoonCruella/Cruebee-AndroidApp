@@ -57,6 +57,12 @@ public class ManagementCart {
         changeNumberItemsListener.change();
 
     }
+    public void deleteFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+        listFood.remove(position);
+        tinyDB.putListObject("CartList", listFood);
+        Toast.makeText(context, "Đã xóa sản phẩm", Toast.LENGTH_SHORT).show();
+        changeNumberItemsListener.change();
+    }
 
     public int getTotalFee() {
         int total = 0;
