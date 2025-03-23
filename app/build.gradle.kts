@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.cardview)
     implementation(libs.glide)
     implementation(libs.gson)
-
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
 
 }
