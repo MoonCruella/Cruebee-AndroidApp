@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddressTest">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:paddingTop="20dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.1"
+        android:background="@color/red"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingHorizontal="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/fredoka_semibold"
+                android:textColor="#ffffff"
+                android:text="Địa chỉ"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:textStyle="bold" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Nội dung chính -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.9"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/red"
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/border"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/border"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <!-- Icon Bản đồ -->
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/find" />
+
+                <!-- Địa chỉ -->
+                <EditText
+                    android:layout_width="0dp"
+                    android:id="@+id/edtAddress"
+                    android:textSize="16sp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/black"
+                    android:layout_marginEnd="16dp"
+                    android:hint="Nhập địa chỉ của bạn"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/border"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <!-- Icon Bản đồ -->
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/maps_and_flags" />
+
+                <!-- Địa chỉ -->
+                <TextView
+                    android:layout_width="0dp"
+                    android:id="@+id/txtAccessAddress"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/red"
+                    android:layout_marginEnd="16dp"
+                    android:text="Truy cập vị trí của tôi"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="10dp" />
+
+        <!-- Form nhập địa chỉ (ban đầu ẩn) -->
+        <LinearLayout
+            android:id="@+id/address_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="20dp">
+
+            <EditText
+                android:id="@+id/edtHouseNumber"
+                android:layout_width="match_parent"
+                android:background="@drawable/border"
+                android:layout_height="60dp"
+                android:layout_marginBottom="16dp"
+                android:padding="16dp"
+                android:hint="Số nhà" />
+            <EditText
+                android:id="@+id/edtStreet"
+                android:layout_width="match_parent"
+                android:background="@drawable/border"
+                android:layout_height="60dp"
+                android:layout_marginBottom="16dp"
+                android:padding="16dp"
+                android:hint="Đường" />
+            <EditText
+                android:id="@+id/edtWard"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/border"
+                android:layout_height="60dp"
+                android:padding="16dp"
+                android:hint="Phuong" />
+            <EditText
+                android:id="@+id/edtDistrict"
+                android:layout_width="match_parent"
+                android:background="@drawable/border"
+                android:layout_marginBottom="16dp"
+                android:layout_height="60dp"
+                android:padding="16dp"
+                android:hint="Huyen/TP" />
+            <EditText
+                android:id="@+id/edtProvince"
+                android:layout_width="match_parent"
+                android:background="@drawable/border"
+                android:layout_height="60dp"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                android:hint="Tinh" />
+
+            <TextView
+                android:id="@+id/btnOk"
+                android:background="@drawable/border"
+                android:backgroundTint="#ffffff"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:textColor="@color/red"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:text="OK" />
+        </LinearLayout>
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

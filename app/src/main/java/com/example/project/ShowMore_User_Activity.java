@@ -19,11 +19,6 @@ public class ShowMore_User_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_show_more_user);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         init();
     }
@@ -64,26 +59,5 @@ public class ShowMore_User_Activity extends AppCompatActivity {
             }
         });
     }
-    public void openCartActivity(View view){
-        CartListActivity cartListActivity = new CartListActivity(ShowMore_User_Activity.this);
-        cartListActivity.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-        cartListActivity.setCancelable(true);
-        cartListActivity.show();
-    }
-    public void openMenuActivity(View view){
-        Intent intent = new Intent(ShowMore_User_Activity.this,MenuActivity.class);
-        startActivity(intent);
-    }
-    public void openHomeActivity(View view){
-        Intent intent = new Intent(ShowMore_User_Activity.this,HomeActivity.class);
-        startActivity(intent);
-    }
-    public void openShowMoreActivity(View view){
-        Intent intent = new Intent(ShowMore_User_Activity.this,ShowMoreAcitivity.class);
-        startActivity(intent);
-    }
-    public void openDiscountActivity(View view){
-        Intent intent = new Intent(ShowMore_User_Activity.this,DiscountActivity.class);
-        startActivity(intent);
-    }
+
 }
