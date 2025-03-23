@@ -92,7 +92,7 @@
         <activity
             android:name=".MenuActivity"
             android:exported="true" />
-        <activity android:name=".AddressTest" />
+        <activity android:name=".AddressActivity" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

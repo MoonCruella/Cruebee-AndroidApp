@@ -1,14 +1,11 @@
 package com.example.project;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,8 +13,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,17 +21,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.project.R;
 import com.example.project.adapter.AddressAdapter;
 import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
@@ -45,10 +36,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -56,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class AddressTest extends AppCompatActivity {
+public class AddressActivity extends AppCompatActivity {
 
     EditText edtAddress,edtHouseNumber, edtStreet, edtWard, edtDistrict, edtProvince;
     ListView listView;
@@ -76,7 +64,7 @@ public class AddressTest extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_address_test);
+        setContentView(R.layout.activity_address);
 
         edtAddress = findViewById(R.id.edtAddress);
         listView = findViewById(R.id.listView);
@@ -208,15 +196,15 @@ public class AddressTest extends AppCompatActivity {
 
                 // Kiểm tra nếu form nhập đầy đủ
                 if (houseNumber.isEmpty() || ward.isEmpty() || district.isEmpty() || province.isEmpty()) {
-                    Toast.makeText(AddressTest.this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddressActivity.this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
                 } else {
 
                     // Luu vao de dung sau nay
                     tinyDB.putString("UserAddress",selectedAddress);
                     Log.d("TinyDB", "Địa chỉ đã lưu: " + tinyDB.getString("UserAddress"));
 
-                    Toast.makeText(AddressTest.this, "Đã lưu địa chỉ!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(AddressTest.this, HomeActivity.class));
+                    Toast.makeText(AddressActivity.this, "Đã lưu địa chỉ!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(AddressActivity.this, HomeActivity.class));
 
                 }
             }
