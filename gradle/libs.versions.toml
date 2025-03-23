@@ -7,6 +7,7 @@ appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.10.0"
 constraintlayout = "2.2.0"
+materialVersion = "1.8.0"
 volley="1.2.1"
 cardview="1.0.0"
 glide="4.16.0"
@@ -22,6 +23,7 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+material-v180 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 volley = {group="com.android.volley", name ="volley", version.ref ="volley"}
 cardview = {group ="androidx.cardview",name="cardview",version.ref="cardview"}
 glide = {group = "com.github.bumptech.glide",name = "glide", version.ref = "glide"}

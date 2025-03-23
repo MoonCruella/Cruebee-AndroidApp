@@ -71,7 +71,16 @@ public class CartListActivity extends Dialog {
         themMonBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dismiss();
                 Intent intent = new Intent(getContext(),MenuActivity.class);
+                getContext().startActivity(intent);
+            }
+        });
+        thanhToanBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                Intent intent = new Intent(getContext(),Payment.class);
                 getContext().startActivity(intent);
             }
         });
