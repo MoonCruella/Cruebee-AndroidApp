@@ -20,16 +20,18 @@ public class ManagementCart {
     public void insertFood(Food food) {
         ArrayList<Food> listFood = getListCart();
         boolean existAlready = false;
+        int existedCount = 0;
         int n = 0;
         for (int i = 0; i < listFood.size(); i++) {
             if (listFood.get(i).getName().equals(food.getName())) {
                 existAlready = true;
+                existedCount = listFood.get(i).getNumberInCart();
                 n = i;
                 break;
             }
         }
         if (existAlready) {
-            listFood.get(n).setNumberInCart(food.getNumberInCart());
+            listFood.get(n).setNumberInCart(food.getNumberInCart() + existedCount);
         } else {
             listFood.add(food);
         }
