@@ -26,15 +26,14 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_base);
 
-        View bottomAppBar = findViewById(R.id.bottomNavigation);
-        ViewCompat.setOnApplyWindowInsetsListener(bottomAppBar, (v, insets) -> {
-            int bottomPadding = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
-            v.setPadding(0, 0, 0, bottomPadding);
-            return insets;
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
+            getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        }
         // Ánh xạ gạch đỏ
         homeUnderline = findViewById(R.id.homeUnderline);
         menuUnderline = findViewById(R.id.menuUnderline);
@@ -53,6 +52,18 @@ public class BaseActivity extends AppCompatActivity {
 
         // Gạch đỏ mặc định
         updateUI(homeUnderline);
+
+        // Lấy flag từ Intent
+        boolean openMenu = getIntent().getBooleanExtra("openMenu", false);
+        if (openMenu) {
+            switchFragment("MENU"); // Chuyển sang MenuFragment
+        }
+
+        // Lấy flag từ Intent
+        boolean openHome = getIntent().getBooleanExtra("openHome", false);
+        if (openHome) {
+            switchFragment("HOME"); // Chuyển sang MenuFragment
+        }
 
         // Bắt sự kiện click
         findViewById(R.id.homeButton).setOnClickListener(v -> switchFragment("HOME"));
