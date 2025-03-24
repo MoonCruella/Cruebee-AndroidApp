@@ -80,7 +80,7 @@ public class CartListActivity extends Dialog {
             @Override
             public void onClick(View v) {
                 dismiss();
-                Intent intent = new Intent(getContext(),Payment.class);
+                Intent intent = new Intent(getContext(),PaymentActivity.class);
                 getContext().startActivity(intent);
             }
         });
