@@ -14,21 +14,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.project.R;
+import com.example.project.interfaces.OnItemClickListener;
 import com.example.project.model.Category;
 
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
     private List<Category> categoryList;
+    private OnItemClickListener onItemClickListener;
     private Context context;
-    private int selectedPosition = -1;
+    public int selectedPosition = -1;
 
     private AdapterView.OnItemClickListener listener;
 
 
-    public CategoryAdapter(Context context,List<Category> categoryList) {
+    public CategoryAdapter(Context context,List<Category> categoryList, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.categoryList = categoryList;
+        this.onItemClickListener = onItemClickListener;
     }
 
     //Tạo ViewHolder cho từng item
@@ -49,9 +52,20 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.viewUnderline.setVisibility(position == selectedPosition ? View.VISIBLE : View.GONE);
         holder.txtCategory.setTypeface(null, position == selectedPosition ? Typeface.BOLD : Typeface.NORMAL);
         // Xử lý sự kiện click
-        holder.itemView.setOnClickListener(v -> {
-            selectedPosition = position; // Cập nhật vị trí đã chọn
-            notifyDataSetChanged(); // Cập nhật giao diện RecyclerView
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(onItemClickListener != null){
+                    int oldPosition = selectedPosition;
+                    selectedPosition = position;
+
+                    onItemClickListener.onItemClick(view, position);
+
+                    // Chỉ cập nhật lại các mục cần thiết thay vì toàn bộ danh sách
+                    notifyItemChanged(oldPosition);
+                    notifyItemChanged(selectedPosition);
+                }
+            }
         });
     }
 
