@@ -28,9 +28,15 @@ public class CartDialog extends Dialog {
 
     private CartListAdapter adapter;
     private TextView giaTxt, themMonBtn, thanhToanBtn, emptyTxt;
+    public interface OnFragmentSwitchListener {
+        void onSwitchToFragment(String fragmentTag);
+    }
 
-    public CartDialog(@NonNull Context context) {
+    private OnFragmentSwitchListener listener;
+
+    public CartDialog(@NonNull Context context, OnFragmentSwitchListener listener) {
         super(context);
+        this.listener = listener;
     }
 
     @Override
@@ -60,11 +66,19 @@ public class CartDialog extends Dialog {
         thanhToanBtn = findViewById(R.id.thanhToanBtn);
         emptyTxt = findViewById(R.id.emptyTxt);
 
+        // Chuyển sang MenuFragment khi bấm nút
         themMonBtn.setOnClickListener(v -> {
-            Context context = getContext();
-            if (context != null) {
-                Intent intent = new Intent(context, MenuFragment.class);
-                context.startActivity(intent);
+            if (listener != null) {
+                listener.onSwitchToFragment("MENU"); // Gọi phương thức để chuyển Fragment
+            }
+            dismiss();
+        });
+        thanhToanBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                Intent intent = new Intent(getContext(),PaymentActivity.class);
+                getContext().startActivity(intent);
             }
         });
     }

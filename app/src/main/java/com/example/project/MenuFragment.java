@@ -2,13 +2,15 @@
 
     import android.os.Bundle;
     import android.util.DisplayMetrics;
+    import android.view.LayoutInflater;
     import android.view.View;
+    import android.view.ViewGroup;
     import android.widget.Toast;
 
-    import androidx.appcompat.app.ActionBar;
-    import androidx.appcompat.app.AppCompatActivity;
+    import androidx.annotation.NonNull;
+    import androidx.annotation.Nullable;
+    import androidx.fragment.app.Fragment;
     import androidx.recyclerview.widget.DividerItemDecoration;
-    import androidx.recyclerview.widget.GridLayoutManager;
     import androidx.recyclerview.widget.LinearLayoutManager;
     import androidx.recyclerview.widget.LinearSmoothScroller;
     import androidx.recyclerview.widget.RecyclerView;
@@ -19,7 +21,6 @@
     import com.android.volley.VolleyError;
     import com.android.volley.toolbox.JsonArrayRequest;
     import com.example.project.adapter.CategoryListAdapter;
-    import com.example.project.adapter.FoodAdapter;
     import com.example.project.interfaces.OnCategoryScrollListener;
     import com.example.project.interfaces.OnItemClickListener;
     import com.example.project.model.Category;
@@ -37,7 +38,7 @@
     import java.util.List;
     import java.util.Map;
 
-    public class MenuActivity extends AppCompatActivity {
+    public class MenuFragment extends Fragment {
 
         private RecyclerView recyclerViewCategory;
         private OnCategoryScrollListener onCategoryScrollListener;
@@ -50,27 +51,28 @@
         private Map<Integer, Category> categoryMap = new LinkedHashMap<>();
         private int position;
         private int totalCategories = 0; // ??m t?ng s? danh m?c c?n t?i
-        private int loadedCategories = 0; // ??m s? danh m?c ?ã t?i xong món ?n
+        private int loadedCategories = 0; // ??m s? danh m?c ?ï¿½ t?i xong mï¿½n ?n
 
+        @Nullable
         @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_menu);
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                                 @Nullable Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.fragment_menu, container, false);
 
-
-            recyclerViewCategory = findViewById(R.id.recyclerViewCategory);
-            recyclerViewCategory.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            recyclerViewCategory = view.findViewById(R.id.recyclerViewCategory);
+            recyclerViewCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
             recyclerViewCategory.setHasFixedSize(true);
 
-            recyclerView = findViewById(R.id.recyclerview);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView = view.findViewById(R.id.recyclerview);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setHasFixedSize(true);
 
-            requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
+            requestQueue = VolleySingleton.getmInstance(getContext()).getRequestQueue();
             categoryList = new ArrayList<>();
             categoryList1 = new ArrayList<>();
             fetchCategoryList();
 
+            return view;
         }
 
         public void fetchCategoryList() {
@@ -98,7 +100,7 @@
                             throw new RuntimeException(e);
                         }
 
-                        adapter = new CategoryAdapter(MenuActivity.this, categoryList1, new OnItemClickListener() {
+                        adapter = new CategoryAdapter(getContext(), categoryList1, new OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
                                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -140,7 +142,7 @@
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(MenuActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -173,31 +175,31 @@
                     Category category = new Category(categoryName, foodList);
                     categoryMap.put(categoryId, category);
 
-                    loadedCategories++; // ??m s? danh m?c ?ã t?i xong
+                    loadedCategories++; // ??m s? danh m?c ?ï¿½ t?i xong
                     checkAndUpdateRecyclerView();
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(MenuActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
 
             requestQueue.add(jsonArrayRequest);
         }
         private void checkAndUpdateRecyclerView() {
-            if (loadedCategories == totalCategories) { // Khi t?t c? danh m?c ?ã t?i xong
+            if (loadedCategories == totalCategories) { // Khi t?t c? danh m?c ?ï¿½ t?i xong
                 List<Category> orderedCategoryList = new ArrayList<>(categoryMap.values());
 
-                CategoryListAdapter itemAdapter = new CategoryListAdapter(MenuActivity.this, orderedCategoryList, new OnCategoryScrollListener() {
+                CategoryListAdapter itemAdapter = new CategoryListAdapter(getContext(), orderedCategoryList, new OnCategoryScrollListener() {
                     @Override
                     public void onCategoryScrolled(int position) {
-                        // C?p nh?t RecyclerView Category khi cu?n danh sách món ?n
+                        // C?p nh?t RecyclerView Category khi cu?n danh sï¿½ch mï¿½n ?n
                         if (adapter != null) {
                             adapter.selectedPosition = position;
                             adapter.notifyDataSetChanged();
 
-                            // Cu?n danh m?c v? ?úng v? trí
+                            // Cu?n danh m?c v? ?ï¿½ng v? trï¿½
                             LinearLayoutManager layoutManagerCate = (LinearLayoutManager) recyclerViewCategory.getLayoutManager();
                             LinearSmoothScroller smoothScrollerCate = new LinearSmoothScroller(recyclerViewCategory.getContext()) {
                                 private static final float MILLISECONDS_PER_INCH = 1f;
@@ -222,7 +224,7 @@
                 recyclerView.setAdapter(itemAdapter);
                 itemAdapter.attachScrollListenerToRecyclerView(recyclerView);
 
-                RecyclerView.ItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
+                RecyclerView.ItemDecoration decoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
                 recyclerView.addItemDecoration(decoration);
             }
         }

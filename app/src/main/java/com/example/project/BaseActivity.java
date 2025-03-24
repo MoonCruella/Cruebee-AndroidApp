@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.Insets;
 import android.os.Build;
@@ -48,38 +49,65 @@ public class BaseActivity extends AppCompatActivity {
         transaction.add(R.id.contentFrame, menuFragment, "MENU").hide(menuFragment);
         transaction.add(R.id.contentFrame, discountFragment, "DISCOUNT").hide(discountFragment);
         transaction.add(R.id.contentFrame, showMoreFragment, "MORE").hide(showMoreFragment);
-
         transaction.commit();
 
         // Gạch đỏ mặc định
         updateUI(homeUnderline);
 
         // Bắt sự kiện click
-        findViewById(R.id.homeButton).setOnClickListener(v -> switchFragment(homeFragment, homeUnderline));
-        findViewById(R.id.menuButton).setOnClickListener(v -> switchFragment(menuFragment, menuUnderline));
-        findViewById(R.id.discountButton).setOnClickListener(v -> switchFragment(discountFragment, discountUnderline));
-        findViewById(R.id.moreButton).setOnClickListener(v -> switchFragment(showMoreFragment, moreUnderline));
+        findViewById(R.id.homeButton).setOnClickListener(v -> switchFragment("HOME"));
+        findViewById(R.id.menuButton).setOnClickListener(v -> switchFragment("MENU"));
+        findViewById(R.id.discountButton).setOnClickListener(v -> switchFragment("DISCOUNT"));
+        findViewById(R.id.moreButton).setOnClickListener(v -> switchFragment("MORE"));
+        findViewById(R.id.cartButton).setOnClickListener(v -> {
+            CartDialog cartDialog = new CartDialog(BaseActivity.this, menuFragment -> {
+                switchFragment(menuFragment);
+            });
+            cartDialog.show();
+        });
+
     }
 
-    private void switchFragment(Fragment fragment, View selectedUnderline) {
+    private void switchFragment(String fragmentTag) {
+        Fragment fragment = null;
+        View underline = null;
+
+        switch (fragmentTag) {
+            case "HOME":
+                fragment = homeFragment;
+                underline = homeUnderline;
+                break;
+            case "MENU":
+                fragment = menuFragment;
+                underline = menuUnderline;
+                break;
+            case "DISCOUNT":
+                fragment = discountFragment;
+                underline = discountUnderline;
+                break;
+            case "MORE":
+                fragment = showMoreFragment;
+                underline = moreUnderline;
+                break;
+            default:
+                return;
+        }
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        // ⚡ Tối ưu hiển thị
-        transaction.setReorderingAllowed(true);
-
-        // Ẩn tất cả Fragment trước khi hiện Fragment mới
+        // Ẩn tất cả Fragment trước khi hiển thị Fragment mới
         transaction.hide(homeFragment);
         transaction.hide(menuFragment);
         transaction.hide(discountFragment);
         transaction.hide(showMoreFragment);
 
-        // Hiện Fragment mới
+        // Hiển thị Fragment mới
         transaction.show(fragment);
         transaction.commit();
 
         // Cập nhật giao diện gạch đỏ
-        updateUI(selectedUnderline);
+        updateUI(underline);
     }
 
     private void updateUI(View selectedUnderline) {

@@ -3,19 +3,13 @@ package com.example.project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.project.adapter.CartListAdapter;
 import com.example.project.adapter.FoodListPaymentAdapter;
 import com.example.project.helpers.ManagementCart;
 import com.example.project.interfaces.ChangeNumberItemsListener;
@@ -52,7 +46,7 @@ public class PaymentActivity extends AppCompatActivity {
         themMonBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PaymentActivity.this,MenuActivity.class);
+                Intent intent = new Intent(PaymentActivity.this, MenuFragment.class);
                 startActivity(intent);
             }
         });
