@@ -1,10 +1,13 @@
 package com.example.project;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project.adapter.CartListAdapter;
 import com.example.project.helpers.ManagementCart;
+import com.example.project.helpers.TinyDB;
 
 import java.text.DecimalFormat;
 
@@ -25,7 +29,7 @@ public class CartDialog extends Dialog {
     private ImageView closeBtn;
     private RecyclerView recyclerView;
     private ManagementCart managementCart;
-
+    private TinyDB tinyDB;
     private CartListAdapter adapter;
     private TextView giaTxt, themMonBtn, thanhToanBtn, emptyTxt;
     public interface OnFragmentSwitchListener {
@@ -65,7 +69,7 @@ public class CartDialog extends Dialog {
         themMonBtn = findViewById(R.id.themMonBtn);
         thanhToanBtn = findViewById(R.id.thanhToanBtn);
         emptyTxt = findViewById(R.id.emptyTxt);
-
+        tinyDB = new TinyDB(getContext());
         // Chuyển sang MenuFragment khi bấm nút
         themMonBtn.setOnClickListener(v -> {
             if (listener != null) {
@@ -83,7 +87,13 @@ public class CartDialog extends Dialog {
         });
         thanhToanBtn.setOnClickListener(v -> {
             Context context = getContext();
-            if (context != null) {
+            String fullAddress = tinyDB.getString("UserAddress");
+            if (fullAddress == "")
+            {
+                Intent intent = new Intent(context, BaseActivity.class);
+                context.startActivity(intent);
+            }
+            else if (context != null) {
                 Intent intent = new Intent(context, PaymentActivity.class);
                 context.startActivity(intent);
             }

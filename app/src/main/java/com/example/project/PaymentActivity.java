@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project.adapter.FoodListPaymentAdapter;
 import com.example.project.helpers.ManagementCart;
+import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.ChangeNumberItemsListener;
 
 import java.text.DecimalFormat;
@@ -19,9 +20,9 @@ import java.text.DecimalFormat;
 public class PaymentActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ManagementCart managementCart;
-
+    private TinyDB tinyDB;
     private FoodListPaymentAdapter adapter;
-    private TextView giaTxt,themMonBtn,giaDKTxt;
+    private TextView giaTxt,themMonBtn,giaDKTxt,addressTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,10 @@ public class PaymentActivity extends AppCompatActivity {
         giaTxt = (TextView) findViewById(R.id.txtTotalCost);
         themMonBtn = (TextView) findViewById(R.id.btnAddFood);
         giaDKTxt = (TextView) findViewById(R.id.txtCost);
+        addressTxt = findViewById(R.id.txtAddress);
+        tinyDB = new TinyDB(this);
+        String fullAddress = tinyDB.getString("UserAddress");
+        addressTxt.setText(fullAddress);
         themMonBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

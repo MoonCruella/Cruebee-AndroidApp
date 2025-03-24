@@ -49,5 +49,6 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
     implementation(libs.gravitysnaphelper)
-
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
 }
