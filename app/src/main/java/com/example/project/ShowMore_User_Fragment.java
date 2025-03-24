@@ -1,34 +1,33 @@
 package com.example.project;
 
-import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
-public class ShowMoreAcitivity extends AppCompatActivity {
-
+public class ShowMore_User_Fragment extends Fragment {
     ConstraintLayout supportBtn,verifyBtn,newsBtn,settingsBtn;
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_show_more);
-
-        init();
-
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_show_more_user, container, false);
+        init(view);
+        return view;
     }
-    private void init(){
-        supportBtn = (ConstraintLayout) findViewById(R.id.supportBtn);
-        verifyBtn = (ConstraintLayout) findViewById(R.id.verifyBtn);
-        newsBtn = (ConstraintLayout) findViewById(R.id.newsBtn);
-        settingsBtn = (ConstraintLayout) findViewById(R.id.settingsBtn);
+    private void init(View view){
+        supportBtn = (ConstraintLayout) view.findViewById(R.id.supportBtn);
+        verifyBtn = (ConstraintLayout) view.findViewById(R.id.verifyBtn);
+        newsBtn = (ConstraintLayout) view.findViewById(R.id.newsBtn);
+        settingsBtn = (ConstraintLayout) view.findViewById(R.id.settingsBtn);
 
 
         supportBtn.setOnClickListener(new View.OnClickListener() {

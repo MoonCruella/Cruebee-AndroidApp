@@ -14,6 +14,7 @@ litertSupportApi = "1.1.2"
 gson = "2.8.2"
 play-services-location  = "21.3.0"
 play-services-maps  = "19.1.0"
+gravitysnaphelper = "2.2.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -30,6 +31,7 @@ litert-support-api = { group = "com.google.ai.edge.litert", name = "litert-suppo
 gson = {group = "com.google.code.gson",name ="gson",version.ref="gson"}
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "play-services-maps" }
+gravitysnaphelper = {group = "com.github.rubensousa",name = "gravitysnaphelper",version.ref="gravitysnaphelper"}
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 
