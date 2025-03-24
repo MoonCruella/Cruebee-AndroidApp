@@ -8,12 +8,10 @@
     tools:context=".HomeFragment">
 
     <androidx.appcompat.widget.Toolbar
-        android:paddingTop="20dp"
-        android:paddingBottom="10dp"
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintHeight_percent="0.1"
         android:background="@color/red"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
