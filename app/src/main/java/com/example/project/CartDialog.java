@@ -63,7 +63,7 @@ public class CartDialog extends Dialog {
         themMonBtn.setOnClickListener(v -> {
             Context context = getContext();
             if (context != null) {
-                Intent intent = new Intent(context, MenuActivity.class);
+                Intent intent = new Intent(context, MenuFragment.class);
                 context.startActivity(intent);
             }
         });

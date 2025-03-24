@@ -1,0 +1,17 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Hiệu ứng bóng mờ -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#33000000"/> <!-- Màu đen mờ -->
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+
+    <!-- Viền chính của CardView -->
+    <item android:left="0dp" android:right="1.5dp" android:top="1.2dp" android:bottom="1.5dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/white"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+</layer-list>
