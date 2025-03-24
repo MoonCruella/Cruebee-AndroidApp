@@ -5,17 +5,19 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Payment">
+    tools:context=".PaymentActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="411dp"
-        android:layout_height="50dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:background="@color/red"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -79,9 +81,9 @@
 
                 <TextView
                     android:id="@+id/txtAddress"
-                    android:layout_width="310dp"
-                    android:layout_height="51dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_width="305dp"
+                    android:layout_height="32dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="28dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -91,11 +93,11 @@
                     android:id="@+id/textViewAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:text="Địa chỉ:"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/txtAddress"
-                    app:layout_constraintHorizontal_bias="0.758"
+                    app:layout_constraintHorizontal_bias="0.696"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -365,10 +367,10 @@
                     android:id="@+id/imageViewAddress"
                     android:layout_width="38dp"
                     android:layout_height="39dp"
-                    android:layout_marginTop="80dp"
+                    android:layout_marginTop="12dp"
                     android:layout_marginEnd="28dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txtAddress"
                     app:srcCompat="@drawable/pen" />
 
 

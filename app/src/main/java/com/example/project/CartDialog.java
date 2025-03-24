@@ -67,6 +67,13 @@ public class CartDialog extends Dialog {
                 context.startActivity(intent);
             }
         });
+        thanhToanBtn.setOnClickListener(v -> {
+            Context context = getContext();
+            if (context != null) {
+                Intent intent = new Intent(context, PaymentActivity.class);
+                context.startActivity(intent);
+            }
+        });
     }
 
     private void initList() {
