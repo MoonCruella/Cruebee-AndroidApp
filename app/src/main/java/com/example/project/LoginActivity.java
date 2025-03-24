@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -89,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.apply();
 
                                 // Proceed to the HomeActivity (or other actions)
-                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, HomeFragment.class);
                                 intent.putExtra("USER_EMAIL", email1);
                                 startActivity(intent);
                             } else {

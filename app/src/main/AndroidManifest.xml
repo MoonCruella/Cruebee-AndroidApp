@@ -24,77 +24,37 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".PaymentActivity"
-            android:exported="false" />
-        <activity
-            android:name=".HomeActivity"
+            android:name=".BaseActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".DiscountActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".ShowMoreAcitivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ShowMoreAcitivity"
-            android:exported="true"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+    </activity>
         <activity
             android:name=".ShowDetailActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:exported="false">
         </activity>
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".ConfirmOTPActivity"
-            android:exported="true" />
+            android:exported="false" />
 
         <activity
             android:name=".ForgotPassActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".NewPasswordActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".ForgotPassOTPActivity"
-            android:exported="true" />
-        <activity
-            android:name=".MenuActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity android:name=".AddressActivity" />
         <meta-data
             android:name="preloaded_fonts"

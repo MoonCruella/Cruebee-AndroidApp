@@ -50,7 +50,7 @@
         private Map<Integer, Category> categoryMap = new LinkedHashMap<>();
         private int position;
         private int totalCategories = 0; // ??m t?ng s? danh m?c c?n t?i
-        private int loadedCategories = 0; // ??m s? danh m?c ?Ã£ t?i xong mÃ³n ?n
+        private int loadedCategories = 0; // ??m s? danh m?c ?ã t?i xong món ?n
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -173,7 +173,7 @@
                     Category category = new Category(categoryName, foodList);
                     categoryMap.put(categoryId, category);
 
-                    loadedCategories++; // ??m s? danh m?c ?Ã£ t?i xong
+                    loadedCategories++; // ??m s? danh m?c ?ã t?i xong
                     checkAndUpdateRecyclerView();
                 }
             }, new Response.ErrorListener() {
@@ -186,18 +186,18 @@
             requestQueue.add(jsonArrayRequest);
         }
         private void checkAndUpdateRecyclerView() {
-            if (loadedCategories == totalCategories) { // Khi t?t c? danh m?c ?Ã£ t?i xong
+            if (loadedCategories == totalCategories) { // Khi t?t c? danh m?c ?ã t?i xong
                 List<Category> orderedCategoryList = new ArrayList<>(categoryMap.values());
 
                 CategoryListAdapter itemAdapter = new CategoryListAdapter(MenuActivity.this, orderedCategoryList, new OnCategoryScrollListener() {
                     @Override
                     public void onCategoryScrolled(int position) {
-                        // C?p nh?t RecyclerView Category khi cu?n danh sÃ¡ch mÃ³n ?n
+                        // C?p nh?t RecyclerView Category khi cu?n danh sách món ?n
                         if (adapter != null) {
                             adapter.selectedPosition = position;
                             adapter.notifyDataSetChanged();
 
-                            // Cu?n danh m?c v? ?Ãºng v? trÃ­
+                            // Cu?n danh m?c v? ?úng v? trí
                             LinearLayoutManager layoutManagerCate = (LinearLayoutManager) recyclerViewCategory.getLayoutManager();
                             LinearSmoothScroller smoothScrollerCate = new LinearSmoothScroller(recyclerViewCategory.getContext()) {
                                 private static final float MILLISECONDS_PER_INCH = 1f;

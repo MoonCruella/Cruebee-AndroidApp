@@ -204,7 +204,7 @@ public class AddressActivity extends AppCompatActivity {
                     Log.d("TinyDB", "Địa chỉ đã lưu: " + tinyDB.getString("UserAddress"));
 
                     Toast.makeText(AddressActivity.this, "Đã lưu địa chỉ!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(AddressActivity.this, HomeActivity.class));
+                    startActivity(new Intent(AddressActivity.this, HomeFragment.class));
 
                 }
             }
