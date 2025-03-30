@@ -2,8 +2,6 @@ package com.example.project.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +31,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHoder> {
     @NonNull
     @Override
     public FoodHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.food_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_food, parent, false);
         return new FoodHoder(view);
     }
 

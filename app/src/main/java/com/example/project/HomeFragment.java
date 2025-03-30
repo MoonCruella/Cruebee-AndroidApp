@@ -40,7 +40,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private TextView addressTxt;
+    private TextView addressTxt,usernameTxt;
     private RecyclerView recyclerView;
     private ImageView editAddress;
     private List<Food> rcmFoodList;
@@ -69,12 +69,17 @@ public class HomeFragment extends Fragment {
         addressTxt = view.findViewById(R.id.addressTxt);
         editAddress = view.findViewById(R.id.editAddress);
         recyclerView = view.findViewById(R.id.rcmFoodList);
+        usernameTxt = view.findViewById(R.id.usernameTxt);
         tinyDB = new TinyDB(requireContext());
         requestQueue = VolleySingleton.getmInstance(requireContext()).getRequestQueue();
         rcmFoodList = new ArrayList<>();
 
         String fullAddress = tinyDB.getString("UserAddress");
-        Log.d("SharedPreferences", "Đọc địa chỉ: " + fullAddress);
+        if(tinyDB.getBoolean("is_logged_in")){
+            String username = tinyDB.getString("username");
+            String token = tinyDB.getString("auth_token");
+            usernameTxt.setText(username);
+        }
         addressTxt.setText(fullAddress);
 
         Animation inAnimation = AnimationUtils.loadAnimation(requireContext(), android.R.anim.slide_in_left);
@@ -126,7 +131,6 @@ public class HomeFragment extends Fragment {
                     throw new RuntimeException(e);
                 }
             }
-
             RcmFoodAdapter adapter = new RcmFoodAdapter(requireContext(), rcmFoodList);
             recyclerView.setAdapter(adapter);
         }, error -> Toast.makeText(requireContext(), error.getMessage(), Toast.LENGTH_SHORT).show());

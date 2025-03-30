@@ -2,8 +2,7 @@ package com.example.project;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -60,6 +59,8 @@ public class BaseActivity extends AppCompatActivity implements CartDialog.OnFrag
         fab = findViewById(R.id.fabAction);
 
 
+
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +68,7 @@ public class BaseActivity extends AppCompatActivity implements CartDialog.OnFrag
                 cartDialog.show();
             }
         });
+
 
         fab.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -102,7 +104,9 @@ public class BaseActivity extends AppCompatActivity implements CartDialog.OnFrag
                         if (newX < margin) newX = margin;  // Không vượt qua mép trái
                         if (newX > screenWidth - fabWidth - margin) newX = screenWidth - fabWidth - margin; // Không vượt qua mép phải
                         if (newY < toolbarHeight + margin) newY = toolbarHeight;  // Không kéo lên trên Toolbar
-                        if (newY > screenHeight - tabLayoutHeight - fabHeight - margin) newY = screenHeight - tabLayoutHeight - fabHeight - margin; // Không kéo xuống TabLayout
+                        if (newY > screenHeight - tabLayoutHeight - fabHeight - margin ) {
+                            newY = screenHeight - tabLayoutHeight - fabHeight - margin;
+                        }
 
 
                         view.setX(newX);
@@ -123,11 +127,11 @@ public class BaseActivity extends AppCompatActivity implements CartDialog.OnFrag
             }
         });
 
-        viewPager.setAdapter(new ViewPager2Adapter(getSupportFragmentManager(),getLifecycle()));
+        viewPager.setAdapter(new ViewPager2Adapter(getSupportFragmentManager(),getLifecycle(),this));
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             // Gán layout tùy chỉnh cho từng tab
-            View customTab = LayoutInflater.from(this).inflate(R.layout.tab_item, null);
+            View customTab = LayoutInflater.from(this).inflate(R.layout.item_tab, null);
             ImageView tabIcon = customTab.findViewById(R.id.tabIcon);
             TextView tabText = customTab.findViewById(R.id.tabText);
 
@@ -137,6 +141,15 @@ public class BaseActivity extends AppCompatActivity implements CartDialog.OnFrag
             tab.setCustomView(customTab);
         }).attach();
 
+        TabLayout.Tab defaultTab = tabLayout.getTabAt(0); // Tab "Trang chủ"
+        if (defaultTab != null) {
+            View tabView = defaultTab.getCustomView();
+            if (tabView != null) {
+                View tabUnderline = tabView.findViewById(R.id.tabUnderline);
+                tabUnderline.setAlpha(1); // Hiển thị underline mặc định
+            }
+        }
+
         // Xử lý sự kiện khi chọn tab
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -145,7 +158,7 @@ public class BaseActivity extends AppCompatActivity implements CartDialog.OnFrag
                 View tabView = tab.getCustomView();
                 if (tabView != null) {
                     View tabUnderline = tabView.findViewById(R.id.tabUnderline);
-                    tabUnderline.setVisibility(View.VISIBLE);  // Hiện underline
+                    tabUnderline.setAlpha(1);  // Hiện underline
                 }
             }
 
@@ -154,7 +167,7 @@ public class BaseActivity extends AppCompatActivity implements CartDialog.OnFrag
                 View tabView = tab.getCustomView();
                 if (tabView != null) {
                     View tabUnderline = tabView.findViewById(R.id.tabUnderline);
-                    tabUnderline.setVisibility(View.GONE);  // Ẩn underline
+                    tabUnderline.setAlpha(0);  // Ẩn underline
                 }
             }
 
@@ -179,4 +192,5 @@ public class BaseActivity extends AppCompatActivity implements CartDialog.OnFrag
             viewPager.setCurrentItem(1, true); // Chuyển đến tab "Thực Đơn"
         }
     }
+
 }

@@ -24,6 +24,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".SettingUserActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChangeLanguageActivity"
             android:exported="false" />
         <activity
@@ -48,7 +51,7 @@
             android:name=".PromotionDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".BaseActivity"
+            android:name=".LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -61,7 +64,7 @@
             android:name=".ShowDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".BaseActivity"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
