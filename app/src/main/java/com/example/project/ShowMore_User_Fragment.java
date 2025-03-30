@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -13,8 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.example.project.helpers.TinyDB;
+
 public class ShowMore_User_Fragment extends Fragment {
     ConstraintLayout supportBtn,verifyBtn,settingsBtn,couponBtn,specialBtn,addressBtn,orderBtn;
+    TextView usernameTxt;
+    TinyDB tinyDB;
 
     @Nullable
     @Override
@@ -32,6 +37,11 @@ public class ShowMore_User_Fragment extends Fragment {
         specialBtn = (ConstraintLayout) view.findViewById(R.id.specialBtn);
         addressBtn = (ConstraintLayout) view.findViewById(R.id.addressBtn);
         orderBtn = (ConstraintLayout) view.findViewById(R.id.orderBtn);
+        usernameTxt = view.findViewById(R.id.usernameTxt);
+
+        tinyDB = new TinyDB(getContext());
+        String uname = tinyDB.getString("username");
+        usernameTxt.setText(uname);
 
         verifyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +82,7 @@ public class ShowMore_User_Fragment extends Fragment {
         settingsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(),SettingActivity.class));
+                startActivity(new Intent(getActivity(),SettingUserActivity.class));
             }
         });
 

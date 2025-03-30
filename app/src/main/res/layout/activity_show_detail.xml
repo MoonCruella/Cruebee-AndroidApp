@@ -50,37 +50,34 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="16dp">
 
                 <ImageView
                     android:id="@+id/minusImgView"
-                    android:layout_width="0dp"
+                    android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginLeft="150dp"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/minus" />
+                    app:srcCompat="@drawable/minus"/>
 
                 <TextView
                     android:id="@+id/countTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:text="1"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:textAlignment="center"
-                    android:textColor="#373b54"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textColor="#373b54"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="20dp"
+                    android:textAlignment="center"/>
 
                 <ImageView
                     android:id="@+id/plusImgView"
-                    android:layout_width="0dp"
+                    android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginRight="150dp"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/plus" />
+                    app:srcCompat="@drawable/plus"/>
             </LinearLayout>
+
 
             <TextView
                 android:id="@+id/descriptionTxt"

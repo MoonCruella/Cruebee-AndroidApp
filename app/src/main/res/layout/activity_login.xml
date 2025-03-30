@@ -5,67 +5,145 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1F22"
-    android:gravity="center_horizontal"
+    android:background="@color/red"
     android:orientation="vertical">
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:background="@drawable/jolibee_avt">
+    </ImageView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:textColor="#fff"
-        android:textSize="50sp"
-        android:textStyle="bold"
-        android:layout_marginTop="200dp"/>
-    
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="350dp"
-        android:layout_height="45dp"
-        android:hint="Email"
-        android:textColorHint="#fff"
-        android:background="@drawable/forget"
-        android:textColor="#fff"
-        android:textStyle="bold"
-        android:layout_marginTop="30dp"
-        android:paddingLeft="20dp"/>
-
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="350dp"
-        android:layout_height="45dp"
-        android:hint="Password"
-        android:textColorHint="#fff"
-        android:background="@drawable/forget"
-        android:inputType="textPassword"
-        android:textColor="#fff"
-        android:textStyle="bold"
-        android:layout_marginTop="30dp"
-        android:paddingLeft="20dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Forget Password?"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
+        android:text="Đăng nhập"
         android:layout_marginTop="20dp"
-        android:onClick="openForgotPassActivity"/>
+        android:fontFamily="@font/fredoka_semibold"
+        android:textColor="#fff"
+        android:layout_marginStart="16dp"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/input1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:boxBackgroundMode="none"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:hint="Email *"
+            android:background="@drawable/border"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/tvError1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="* Không được để trống"
+        android:textColor="@color/yellow"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/input1"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:endIconMode="password_toggle"
+        android:id="@+id/input2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:boxBackgroundMode="none"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:hint="Mật khẩu *"
+            android:background="@drawable/border"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:inputType="textPassword"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/tvError2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="* Không được để trống"
+        android:textColor="@color/yellow"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/input2"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_margin="16dp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đăng kí ngay"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:onClick="openRegisterActivity"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quên mật khẩu?"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:textAlignment="textEnd"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:onClick="openForgotPassActivity"/>
+    </LinearLayout>
+
 
     <TextView
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:background="@drawable/button"
-        android:text="Login"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/orange_button"
+        android:fontFamily="@font/fredoka_semibold"
         android:gravity="center"
-        android:padding="12dp"
-        android:onClick="openHomeActivity"/>
+        android:layout_margin="20dp"
+        android:padding="14dp"
+        android:text="Đăng Nhập"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:onClick="openHomeActivity">
+    </TextView>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/orange_button"
+        android:gravity="center"
+        android:id="@+id/notLogin"
+        android:layout_margin="20dp"
+        android:padding="14dp"
+        android:fontFamily="@font/fredoka_semibold"
+        android:text="Đặt Hàng Không Cần Đăng Nhập"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold">
+    </TextView>
 
 
 

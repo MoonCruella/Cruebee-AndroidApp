@@ -1,9 +1,11 @@
 package com.example.project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -11,10 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 
 public class ShowMoreFragment extends Fragment {
 
-    ConstraintLayout supportBtn,verifyBtn,newsBtn,settingsBtn;
+    ConstraintLayout supportBtn,verifyBtn,settingsBtn;
+    LinearLayout btn_login;
 
     @Nullable
     @Override
@@ -27,38 +31,36 @@ public class ShowMoreFragment extends Fragment {
     private void init(View view){
         supportBtn = (ConstraintLayout) view.findViewById(R.id.supportBtn);
         verifyBtn = (ConstraintLayout) view.findViewById(R.id.verifyBtn);
-        newsBtn = (ConstraintLayout) view.findViewById(R.id.newsBtn);
         settingsBtn = (ConstraintLayout) view.findViewById(R.id.settingsBtn);
+        btn_login = view.findViewById(R.id.btn_login);
 
+        btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),LoginActivity.class));
+            }
+        });
         supportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                supportBtn.getBackground().setAlpha(245);
-            }
-        });
-
-        supportBtn.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                supportBtn.getBackground().setAlpha(245);
-                return true;
+                startActivity(new Intent(getContext(),SupportActivity.class));
             }
         });
 
         verifyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                verifyBtn.getBackground().setAlpha(245);
+                startActivity(new Intent(getContext(),PolicyActivity.class));
             }
         });
 
-        verifyBtn.setOnLongClickListener(new View.OnLongClickListener() {
+        settingsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                verifyBtn.getBackground().setAlpha(245);
-                return true;
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),SettingActivity.class));
             }
         });
+
     }
 
 }

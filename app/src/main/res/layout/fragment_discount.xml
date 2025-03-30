@@ -11,7 +11,6 @@
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.08"
         android:id="@+id/toolbar"
         android:background="@color/red"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,7 +23,7 @@
             android:fontFamily="@font/fredoka_semibold"
             android:text="Khuyến mãi"
             android:textColor="@color/white"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 

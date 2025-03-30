@@ -16,8 +16,6 @@ import com.example.project.helpers.ManagementCart;
 import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.model.Food;
 
-import org.checkerframework.checker.units.qual.C;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -36,7 +34,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
     @NonNull
     @Override
     public CartListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.food_in_cart_item,parent,false);
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_food_in_cart,parent,false);
         return new CartListViewHolder(inflate);
     }
 

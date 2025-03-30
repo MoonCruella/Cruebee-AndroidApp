@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
 import androidx.activity.result.ActivityResultLauncher;
@@ -19,16 +18,15 @@ import android.net.Uri;
 import android.provider.Settings;
 import androidx.core.app.NotificationManagerCompat;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingUserActivity extends AppCompatActivity {
     private SwitchMaterial switchNotification;
-    private ConstraintLayout changeLanguBtn;
-    private TextView btn_login;
+    ConstraintLayout changePwdBtn,changeLanguBtn;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
+        setContentView(R.layout.activity_setting_user);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
             getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
@@ -37,20 +35,19 @@ public class SettingActivity extends AppCompatActivity {
         }
         // Ánh xạ
         switchNotification = findViewById(R.id.switch_notification);
+        changePwdBtn = findViewById(R.id.changePwdBtn);
         changeLanguBtn = findViewById(R.id.changeLanguBtn);
-        btn_login = findViewById(R.id.btn_login);
 
-        btn_login.setOnClickListener(new View.OnClickListener() {
+        changePwdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SettingActivity.this,LoginActivity.class));
+                startActivity(new Intent(SettingUserActivity.this,ChangePwdActivity.class));
             }
         });
-
         changeLanguBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SettingActivity.this,ChangeLanguageActivity.class));
+                startActivity(new Intent(SettingUserActivity.this,ChangeLanguageActivity.class));
             }
         });
 

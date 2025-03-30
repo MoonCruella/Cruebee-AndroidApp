@@ -1,11 +1,15 @@
 package com.example.project;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -23,6 +27,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.StringHelper;
+import com.example.project.helpers.TinyDB;
+import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleySingleton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,42 +40,137 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText email, password;
+    private TextView tvError1,tvError2,notLogin;
+    private RequestQueue requestQueue;
+    private TinyDB tinyDB;
     private String token;
+    private String username;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
 
 
         email= (EditText) findViewById(R.id.email);
         password= (EditText) findViewById(R.id.password);
+        tvError1 = findViewById(R.id.tvError1);
+        tvError2 = findViewById(R.id.tvError2);
+        notLogin =findViewById(R.id.notLogin);
+
+        tinyDB = new TinyDB(this);
+        requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
+
+        password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Thực hiện hành động nếu cần trước khi text thay đổi
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Bạn có thể cập nhật giao diện khi text thay đổi nếu cần
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String pass = s.toString().trim();
+
+                if (pass.isEmpty()) {
+                    tvError2.setText("* Không được để trống");
+                    tvError2.setVisibility(View.VISIBLE);
+                } else {
+                    tvError2.setVisibility(View.GONE);
+                }
+            }
+        });
+        password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                // Khi mất focus (người dùng rời khỏi ô nhập)
+                if (!hasFocus) {
+                    String input = password.getText().toString().trim();
+                    if (input.isEmpty()) {
+                        tvError2.setText("Không được để trống");
+                        tvError2.setVisibility(View.VISIBLE);
+                    } else {
+                        tvError2.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
+        email.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Thực hiện hành động nếu cần trước khi text thay đổi
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Bạn có thể cập nhật giao diện khi text thay đổi nếu cần
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String ema = s.toString().trim();
+
+                if (ema.isEmpty()) {
+                    tvError1.setText("* Không được để trống");
+                    tvError1.setVisibility(View.VISIBLE);
+                }
+                else if(!StringHelper.isEmailValid(ema)){
+                    tvError1.setText("* Email không hợp lệ");
+                    tvError1.setVisibility(View.VISIBLE);
+                }
+                else {
+                    tvError1.setVisibility(View.GONE);
+                }
+            }
+        });
+        email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                // Khi mất focus (người dùng rời khỏi ô nhập)
+                if (!hasFocus) {
+                    String input = email.getText().toString().trim();
+                    if (input.isEmpty()) {
+                        tvError1.setText("Không được để trống");
+                        tvError1.setVisibility(View.VISIBLE);
+                    } else {
+                        tvError1.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
+        notLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tinyDB.putBoolean("is_logged_in",false);
+                startActivity(new Intent(LoginActivity.this,BaseActivity.class));
+            }
+        });
     }
 
     public void openHomeActivity(View view){
-        if(!validateEmail() || !validatePassword()){
-            return;
-        }
 
         String email1 = email.getText().toString();
         String password1 = password.getText().toString();
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading");
         progressDialog.setMessage("Loading... Please wait...!!");
         progressDialog.show();
 
-
+        String url = UrlUtil.ADDRESS + "loginn";
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
-                "http://196.169.4.27:8888/loginn",
+                url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -77,19 +179,18 @@ public class LoginActivity extends AppCompatActivity {
                             // Parse the JSON response from the backend
                             JSONObject jsonResponse = new JSONObject(response);
                             // Assuming the token is in the 'token' field
-                            if (jsonResponse.has("token")) {
+                            if (jsonResponse.has("token") & jsonResponse.has("username")) {
 
                                 token = jsonResponse.getString("token");
+                                username = jsonResponse.getString("username");
                                 System.out.println(token);
-                                // Store the token in SharedPreferences for future use
-                                SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("auth_token", token);  // Save token with the key 'auth_token'
-                                editor.apply();
 
-                                // Proceed to the HomeActivity (or other actions)
-                                Intent intent = new Intent(LoginActivity.this, HomeFragment.class);
-                                intent.putExtra("USER_EMAIL", email1);
+                                // Store the token in SharedPreferences for future use
+                                tinyDB.putString("auth_token",token);
+                                tinyDB.putString("username",username);
+                                tinyDB.putBoolean("is_logged_in",true);
+
+                                Intent intent = new Intent(LoginActivity.this, BaseActivity.class);
                                 startActivity(intent);
                             } else {
                                 String errorMessage = jsonResponse.getString("message");
@@ -141,35 +242,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(LoginActivity.this,ForgotPassActivity.class));
     }
 
-    // Validate email field
-    public boolean validateEmail(){
-        String user_email = email.getText().toString();
-        if(user_email.isEmpty()){
-            email.setError("Email cannot be empty");
-            return false;
-        }
-        else if(!StringHelper.isEmailValid(user_email)){
-            email.setError("Please enter a valid email");
-            return false;
-        }
-        email.setError(null);
-        return true;
-    }
-
-    // Validate password field
-    public boolean validatePassword(){
-        String pass = password.getText().toString();
-        if(pass.isEmpty()){
-            password.setError("Password cannot be empty!");
-            return false;
-        }
-        else if(!StringHelper.isValidPassword(pass)){
-            password.setError("Password is not valid!");
-            return false;
-        }
-        password.setError(null);
-        return true;
-    }
 
 
 }
