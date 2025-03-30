@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/tabIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/home" />
+
+    <TextView
+        android:id="@+id/tabText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trang chủ"
+        android:textSize="12sp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/black"/>
+
+    <View
+        android:id="@+id/tabUnderline"
+        android:layout_width="30dp"
+        android:layout_height="3dp"
+        android:background="@color/red"
+        android:visibility="gone"/>
+</LinearLayout>

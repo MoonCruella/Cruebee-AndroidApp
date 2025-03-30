@@ -69,7 +69,12 @@ public class ShowMore_User_Fragment extends Fragment {
                 startActivity(new Intent(getActivity(), AdvantageActivity.class));
             }
         });
-
+        settingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(),SettingActivity.class));
+            }
+        });
 
 
     }

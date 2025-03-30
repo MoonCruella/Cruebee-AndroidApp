@@ -2,13 +2,13 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 <item android:state_pressed="true">
     <shape android:shape="rectangle">
-        <solid android:color="#C62828"/> <!-- Màu đỏ đậm khi nhấn -->
+        <solid android:color="#d24150"/> <!-- Màu đỏ binh thuong khi nhấn -->
         <corners android:radius="12dp"/>
     </shape>
 </item>
 <item>
     <shape android:shape="rectangle">
-        <solid android:color="#d24150"/> <!-- Màu đỏ bình thường -->
+        <solid android:color="#CC0D2C"/> <!-- Màu đỏ dam -->
         <corners android:radius="12dp"/>
     </shape>
 </item>

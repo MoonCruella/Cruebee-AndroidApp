@@ -32,6 +32,8 @@ public class CartDialog extends Dialog {
     private TinyDB tinyDB;
     private CartListAdapter adapter;
     private TextView giaTxt, themMonBtn, thanhToanBtn, emptyTxt;
+
+
     public interface OnFragmentSwitchListener {
         void onSwitchToFragment(String fragmentTag);
     }
