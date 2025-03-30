@@ -1,132 +1,182 @@
 package com.example.project;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
+import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.Insets;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import androidx.activity.EdgeToEdge;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager2.widget.ViewPager2;
 
-public class BaseActivity extends AppCompatActivity {
+import com.example.project.adapter.ViewPager2Adapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
-    private View homeUnderline, menuUnderline, discountUnderline, moreUnderline;
-    private Fragment homeFragment = new HomeFragment();
-    private Fragment menuFragment = new MenuFragment();
-    private Fragment discountFragment = new DiscountFragment();
-    private Fragment showMoreFragment = new ShowMore_User_Fragment();
+public class BaseActivity extends AppCompatActivity implements CartDialog.OnFragmentSwitchListener  {
+    private ViewPager2 viewPager;
+    private TabLayout tabLayout;
+    private FloatingActionButton fab;
+    private float dX, dY;
+    private int lastAction;
+    private final int[] tabIcons = {
+            R.drawable.home,       // Icon cho Trang chủ
+            R.drawable.menu,       // Icon cho Thực đơn
+            R.drawable.discount,   // Icon cho Khuyến mãi
+            R.drawable.three_dots  // Icon cho Thêm
+    };
 
+    private final String[] tabTitles = {
+            "Trang chủ",
+            "Thực đơn",
+            "Khuyến mãi",
+            "Thêm"
+    };
+
+    @SuppressLint("ClickableViewAccessibility")
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
-            getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        }
-        // Ánh xạ gạch đỏ
-        homeUnderline = findViewById(R.id.homeUnderline);
-        menuUnderline = findViewById(R.id.menuUnderline);
-        discountUnderline = findViewById(R.id.discountUnderline);
-        moreUnderline = findViewById(R.id.moreUnderline);
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
 
-        // Thêm tất cả Fragment vào FragmentManager, chỉ hiện HomeFragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        viewPager = findViewById(R.id.viewPager);
+        viewPager.setUserInputEnabled(false);
+        tabLayout = findViewById(R.id.tabLayout);
+        fab = findViewById(R.id.fabAction);
 
-        transaction.add(R.id.contentFrame, homeFragment, "HOME");
-        transaction.add(R.id.contentFrame, menuFragment, "MENU").hide(menuFragment);
-        transaction.add(R.id.contentFrame, discountFragment, "DISCOUNT").hide(discountFragment);
-        transaction.add(R.id.contentFrame, showMoreFragment, "MORE").hide(showMoreFragment);
-        transaction.commit();
 
-        // Gạch đỏ mặc định
-        updateUI(homeUnderline);
-
-        // Lấy flag từ Intent
-        boolean openMenu = getIntent().getBooleanExtra("openMenu", false);
-        if (openMenu) {
-            switchFragment("MENU"); // Chuyển sang MenuFragment
-        }
-
-        // Lấy flag từ Intent
-        boolean openHome = getIntent().getBooleanExtra("openHome", false);
-        if (openHome) {
-            switchFragment("HOME"); // Chuyển sang MenuFragment
-        }
-
-        // Bắt sự kiện click
-        findViewById(R.id.homeButton).setOnClickListener(v -> switchFragment("HOME"));
-        findViewById(R.id.menuButton).setOnClickListener(v -> switchFragment("MENU"));
-        findViewById(R.id.discountButton).setOnClickListener(v -> switchFragment("DISCOUNT"));
-        findViewById(R.id.moreButton).setOnClickListener(v -> switchFragment("MORE"));
-        findViewById(R.id.cartButton).setOnClickListener(v -> {
-            CartDialog cartDialog = new CartDialog(BaseActivity.this, menuFragment -> {
-                switchFragment(menuFragment);
-            });
-            cartDialog.show();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CartDialog cartDialog = new CartDialog((Context) BaseActivity.this, (CartDialog.OnFragmentSwitchListener) BaseActivity.this);
+                cartDialog.show();
+            }
         });
 
+        fab.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+
+                // Lấy kích thước FAB
+                int fabWidth = view.getWidth();
+                int fabHeight = view.getHeight();
+                int tabLayoutHeight = fab.getHeight();
+                // Lấy chiều cao của Toolbar
+                int toolbarHeight = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, 80, getResources().getDisplayMetrics()
+                );
+                int margin = (int) (20 * getResources().getDisplayMetrics().density);
+                // Lấy kích thước màn hình
+                int screenWidth = getResources().getDisplayMetrics().widthPixels;
+                int screenHeight = getResources().getDisplayMetrics().heightPixels;
+
+
+                switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        dX = view.getX() - event.getRawX();
+                        dY = view.getY() - event.getRawY();
+                        lastAction = MotionEvent.ACTION_DOWN;
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        float newX = event.getRawX() + dX;
+                        float newY = event.getRawY() + dY;
+
+
+                        // **Giới hạn với margin 20dp**
+                        if (newX < margin) newX = margin;  // Không vượt qua mép trái
+                        if (newX > screenWidth - fabWidth - margin) newX = screenWidth - fabWidth - margin; // Không vượt qua mép phải
+                        if (newY < toolbarHeight + margin) newY = toolbarHeight;  // Không kéo lên trên Toolbar
+                        if (newY > screenHeight - tabLayoutHeight - fabHeight - margin) newY = screenHeight - tabLayoutHeight - fabHeight - margin; // Không kéo xuống TabLayout
+
+
+                        view.setX(newX);
+                        view.setY(newY);
+                        lastAction = MotionEvent.ACTION_MOVE;
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                        // Nếu là kéo thả, không kích hoạt sự kiện click
+                        if (lastAction == MotionEvent.ACTION_DOWN) {
+                            view.performClick();
+                        }
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        viewPager.setAdapter(new ViewPager2Adapter(getSupportFragmentManager(),getLifecycle()));
+
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            // Gán layout tùy chỉnh cho từng tab
+            View customTab = LayoutInflater.from(this).inflate(R.layout.tab_item, null);
+            ImageView tabIcon = customTab.findViewById(R.id.tabIcon);
+            TextView tabText = customTab.findViewById(R.id.tabText);
+
+            tabIcon.setImageResource(tabIcons[position]);
+            tabText.setText(tabTitles[position]);
+
+            tab.setCustomView(customTab);
+        }).attach();
+
+        // Xử lý sự kiện khi chọn tab
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition()); // Chuyển Fragment theo vị trí tab
+                View tabView = tab.getCustomView();
+                if (tabView != null) {
+                    View tabUnderline = tabView.findViewById(R.id.tabUnderline);
+                    tabUnderline.setVisibility(View.VISIBLE);  // Hiện underline
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                View tabView = tab.getCustomView();
+                if (tabView != null) {
+                    View tabUnderline = tabView.findViewById(R.id.tabUnderline);
+                    tabUnderline.setVisibility(View.GONE);  // Ẩn underline
+                }
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                tabLayout.selectTab(tabLayout.getTabAt(position)); // Đồng bộ tab
+            }
+        });
+
+
     }
-
-    private void switchFragment(String fragmentTag) {
-        Fragment fragment = null;
-        View underline = null;
-
-        switch (fragmentTag) {
-            case "HOME":
-                fragment = homeFragment;
-                underline = homeUnderline;
-                break;
-            case "MENU":
-                fragment = menuFragment;
-                underline = menuUnderline;
-                break;
-            case "DISCOUNT":
-                fragment = discountFragment;
-                underline = discountUnderline;
-                break;
-            case "MORE":
-                fragment = showMoreFragment;
-                underline = moreUnderline;
-                break;
-            default:
-                return;
+    @Override
+    public void onSwitchToFragment(String fragmentTag) {
+        if (fragmentTag.equals("MENU")) {
+            viewPager.setCurrentItem(1, true); // Chuyển đến tab "Thực Đơn"
         }
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        // Ẩn tất cả Fragment trước khi hiển thị Fragment mới
-        transaction.hide(homeFragment);
-        transaction.hide(menuFragment);
-        transaction.hide(discountFragment);
-        transaction.hide(showMoreFragment);
-
-        // Hiển thị Fragment mới
-        transaction.show(fragment);
-        transaction.commit();
-
-        // Cập nhật giao diện gạch đỏ
-        updateUI(underline);
-    }
-
-    private void updateUI(View selectedUnderline) {
-        homeUnderline.setVisibility(View.GONE);
-        menuUnderline.setVisibility(View.GONE);
-        discountUnderline.setVisibility(View.GONE);
-        moreUnderline.setVisibility(View.GONE);
-
-        selectedUnderline.setVisibility(View.VISIBLE);
     }
 }

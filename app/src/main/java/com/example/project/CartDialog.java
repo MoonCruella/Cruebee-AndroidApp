@@ -28,6 +28,8 @@ public class CartDialog extends Dialog {
 
     private CartListAdapter adapter;
     private TextView giaTxt, themMonBtn, thanhToanBtn, emptyTxt;
+
+
     public interface OnFragmentSwitchListener {
         void onSwitchToFragment(String fragmentTag);
     }
