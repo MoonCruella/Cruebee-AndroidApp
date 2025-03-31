@@ -31,7 +31,7 @@
                 <ImageView
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:src="@drawable/logo">
+                    android:src="@drawable/appavt">
                 </ImageView>
             </androidx.cardview.widget.CardView>
             <TextView
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:fontFamily="@font/fredoka_semibold"
+                android:fontFamily="@font/fonts_com_merge_bold"
                 android:text="Khach hang"
                 android:textColor="#ffffff"
                 android:textSize="20sp"
@@ -52,7 +52,7 @@
                     android:id="@+id/editAccountTview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/fredoka_semibold"
+                    android:fontFamily="@font/fonts_com_merge_bold"
                     android:text="Chỉnh Sửa Tài Khoản"
                     android:textColor="#ffffff"
                     android:textSize="14sp"

@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:fontFamily="@font/fredoka_semibold"
+                android:fontFamily="@font/fonts_com_merge_bold"
                 android:textColor="#ffffff"
                 android:text="Địa chỉ"
                 android:textSize="20sp"

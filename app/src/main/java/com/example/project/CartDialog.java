@@ -48,7 +48,7 @@ public class CartDialog extends Dialog {
         if (getWindow() != null) {
             DisplayMetrics metrics = new DisplayMetrics();
             getWindow().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            int width = (int) (metrics.widthPixels * 0.9); // 90% chiều rộng màn hình
+            int width = (int) (metrics.widthPixels * 0.95); // 90% chiều rộng màn hình
             getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         managementCart = new ManagementCart(getContext());

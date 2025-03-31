@@ -23,6 +23,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleySingleton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +36,7 @@ import java.util.Map;
 public class ConfirmOTPActivity extends AppCompatActivity {
 
     private EditText user_otp;
+    private RequestQueue requestQueue;
     private TextView resend_tv;
     private String email;
     @Override
@@ -55,12 +58,11 @@ public class ConfirmOTPActivity extends AppCompatActivity {
         user_otp = (EditText) findViewById(R.id.otp);
         resend_tv = (TextView) findViewById(R.id.resend);
         resend_tv.setVisibility(View.INVISIBLE);
+        requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
     }
 
     public void verifyOTP(View view) {
         String otp = user_otp.getText().toString();
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading");
         progressDialog.setMessage("Loading... Please wait...!!");
@@ -68,15 +70,14 @@ public class ConfirmOTPActivity extends AppCompatActivity {
 
 
         StringRequest stringRequest = new StringRequest(
-                Request.Method.PUT,
-                "http://196.169.4.27:8888/verify-account",
+                Request.Method.PUT, UrlUtil.ADDRESS + "verify-account",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         progressDialog.hide();
                         Toast.makeText(ConfirmOTPActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                         if (response.equals("OTP verified. You can login")) {
-                            Intent intent = new Intent(ConfirmOTPActivity.this, MainActivity.class);
+                            Intent intent = new Intent(ConfirmOTPActivity.this, LoginActivity.class);
                             startActivity(intent);
                         }
 

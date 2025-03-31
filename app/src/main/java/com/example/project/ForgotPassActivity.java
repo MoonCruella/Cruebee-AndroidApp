@@ -3,8 +3,11 @@ package com.example.project;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -22,6 +25,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.project.helpers.StringHelper;
+import com.example.project.utils.UrlUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +34,7 @@ import java.util.Map;
 public class ForgotPassActivity extends AppCompatActivity {
 
     private EditText email;
+    private TextView tvError1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +46,51 @@ public class ForgotPassActivity extends AppCompatActivity {
             return insets;
         });
 
-
+        tvError1 = findViewById(R.id.tvError1);
         email = (EditText) findViewById(R.id.email);
+        email.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Thực hiện hành động nếu cần trước khi text thay đổi
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Bạn có thể cập nhật giao diện khi text thay đổi nếu cần
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String ema = s.toString().trim();
+
+                if (ema.isEmpty()) {
+                    tvError1.setText("* Không được để trống");
+                    tvError1.setVisibility(View.VISIBLE);
+                }
+                else if(!StringHelper.isEmailValid(ema)){
+                    tvError1.setText("* Email không hợp lệ");
+                    tvError1.setVisibility(View.VISIBLE);
+                }
+                else {
+                    tvError1.setVisibility(View.GONE);
+                }
+            }
+        });
+        email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                // Khi mất focus (người dùng rời khỏi ô nhập)
+                if (!hasFocus) {
+                    String input = email.getText().toString().trim();
+                    if (input.isEmpty()) {
+                        tvError1.setText("Không được để trống");
+                        tvError1.setVisibility(View.VISIBLE);
+                    } else {
+                        tvError1.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
     }
 
     public void openForgotPassOTPActivity(View view){
@@ -54,7 +103,7 @@ public class ForgotPassActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
         Request.Method.PUT,
-                "http://196.169.4.27:8888/forget-password",
+                  UrlUtil.ADDRESS + "forget-password",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

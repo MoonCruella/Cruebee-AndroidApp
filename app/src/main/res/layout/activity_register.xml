@@ -6,74 +6,225 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RegisterActivity"
-    android:background="#1E1F22"
+    android:background="@color/red"
     android:padding="40dp"
     android:orientation="vertical"
     android:gravity="center">
 
-    <EditText
-        android:id="@+id/email"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/fonts_com_merge_bold"
+        android:text="Đăng Ký Tài Khoản"
+        android:textColor="@color/white"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:text="Bạn vui lòng điền đầy đủ thông tin dưới đây"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:hint="Email"
-        android:textStyle="bold"
-        android:textColorHint="#fff"
-        android:background="@drawable/forget"
-        android:textColor="#fff"
-        android:inputType="textEmailAddress"
-        android:layout_marginTop="30dp"
-        android:paddingLeft="20dp"/>
-
-    <EditText
-        android:id="@+id/username"
+        android:layout_height="wrap_content"
+        android:id="@+id/input"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:boxBackgroundMode="none"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/sdt"
+            android:layout_width="match_parent"
+            android:hint="Số Điện Thoại *"
+            android:background="@drawable/border"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="* Không được để trống"
+        android:textColor="@color/black"
+        android:fontFamily="@font/roboto"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/input"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"/>
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:hint="Username"
-        android:textStyle="bold"
-        android:textColorHint="#fff"
-        android:background="@drawable/forget"
-        android:textColor="#fff"
-        android:layout_marginTop="30dp"
-        android:paddingLeft="20dp"/>
+        android:layout_height="wrap_content"
+        android:id="@+id/input1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:boxBackgroundMode="none"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:hint="Email *"
+            android:background="@drawable/border"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/tvError1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="* Không được để trống"
+        android:textColor="@color/black"
+        android:fontFamily="@font/roboto"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/input1"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"/>
 
-    <EditText
-        android:id="@+id/password"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:hint="Password"
-        android:textStyle="bold"
-        android:inputType="textPassword"
-        android:textColorHint="#fff"
-        android:background="@drawable/forget"
-        android:textColor="#fff"
-        android:layout_marginTop="30dp"
-        android:paddingLeft="20dp"/>
+        android:layout_height="wrap_content"
+        android:id="@+id/input2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:boxBackgroundMode="none"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:hint="Họ Tên *"
+            android:background="@drawable/border"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/tvError2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="* Không được để trống"
+        android:textColor="@color/black"
+        android:fontFamily="@font/roboto"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/input2"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"/>
 
-    <EditText
-        android:id="@+id/re_password"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:hint="Confirm Password"
-        android:textStyle="bold"
-        android:textColorHint="#fff"
-        android:inputType="textPassword"
-        android:background="@drawable/forget"
-        android:textColor="#fff"
-        android:layout_marginTop="30dp"
-        android:paddingLeft="20dp"/>
+        android:layout_height="wrap_content"
+        app:endIconMode="password_toggle"
+        android:id="@+id/input3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:boxBackgroundMode="none"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:hint="Mật Khẩu *"
+            android:background="@drawable/border"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:inputType="textPassword"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/tvError3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="* Không được để trống"
+        android:textColor="@color/black"
+        android:fontFamily="@font/roboto"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/input3"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"/>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        app:endIconMode="password_toggle"
+        android:layout_height="wrap_content"
+        android:id="@+id/input4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:boxBackgroundMode="none"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/re_password"
+            android:layout_width="match_parent"
+            android:hint="Xác Nhận Mật Khẩu *"
+            android:background="@drawable/border"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/tvError4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="* Không được để trống"
+        android:textColor="@color/black"
+        android:fontFamily="@font/roboto"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/input4"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"/>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:hint="Giới Tính *">
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:id="@+id/gender"
+            android:inputType="none"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:background="@drawable/border"
+            android:layout_height="wrap_content">
+        </AutoCompleteTextView>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/register"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:background="@drawable/button"
-        android:text="Register"
-        android:textSize="20sp"
+        android:background="@drawable/red_button"
+        android:text="Đăng Ký"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="#FFFFFF"
         android:layout_marginTop="50dp"
         android:gravity="center"
+        android:textColor="@color/white"
         android:padding="12dp"
         android:onClick="registerUser"/>
 

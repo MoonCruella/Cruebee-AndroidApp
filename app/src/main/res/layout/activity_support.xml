@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/fredoka_semibold"
+            android:fontFamily="@font/fonts_com_merge_bold"
             android:text="Hỗ trợ"
             android:textColor="@color/white"
             android:textSize="20sp"
@@ -51,48 +51,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <LinearLayout
-            android:id="@+id/phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:background="#ffffff"
-            android:gravity="center"
-            android:padding="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:background="@drawable/communication">
-            </ImageView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/fredoka_semibold"
-                android:text="Hãy Gọi"
-                android:layout_marginStart="20dp"
-                android:textColor="@color/yellow"
-                android:textSize="30sp"
-                android:textStyle="bold">
-            </TextView>
-        </LinearLayout>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:fontFamily="@font/fonts_com_merge_bold"
             android:text="1900 1009"
-            android:textStyle="bold"
-            android:textSize="46sp"
             android:textColor="@color/red"
-            android:fontFamily="@font/fredoka_semibold"
+            android:textSize="46sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/phone">
+            app:layout_constraintTop_toTopOf="parent">
         </TextView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -162,7 +132,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#ffffff"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:text="Về Chúng Tôi">
         </TextView>
@@ -170,7 +140,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#ffffff"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:layout_marginTop="10dp"
             android:textStyle="bold"
             android:text="Nhóm sinh viên Khoa CNTT - Đại học Sư Phạm Kĩ Thuật TPHCM">
@@ -180,7 +150,7 @@
             android:layout_height="wrap_content"
             android:textColor="#ffffff"
             android:layout_marginTop="10dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:text="Địa chỉ: 01 Võ Văn Ngân, Thủ Đức, TP Hồ Chí Minh">
         </TextView>
         <TextView
@@ -188,7 +158,7 @@
             android:layout_height="wrap_content"
             android:textColor="#ffffff"
             android:layout_marginTop="10dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:text="Hộp thư góp ý: nhunguyetpy206@gmail.com">
         </TextView>
     </LinearLayout>

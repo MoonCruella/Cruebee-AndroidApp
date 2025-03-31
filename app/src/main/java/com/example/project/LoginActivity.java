@@ -40,10 +40,11 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText email, password;
-    private TextView tvError1,tvError2,notLogin;
+    private TextView tvError1,tvError2,notLogin,registerBtn;
     private RequestQueue requestQueue;
     private TinyDB tinyDB;
     private String token;
+    private String id;
     private String username;
     @SuppressLint("MissingInflatedId")
     @Override
@@ -61,9 +62,17 @@ public class LoginActivity extends AppCompatActivity {
         tvError1 = findViewById(R.id.tvError1);
         tvError2 = findViewById(R.id.tvError2);
         notLogin =findViewById(R.id.notLogin);
+        registerBtn = findViewById(R.id.registerBtn);
 
         tinyDB = new TinyDB(this);
         requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
+
+        registerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+            }
+        });
 
         password.addTextChangedListener(new TextWatcher() {
             @Override
@@ -179,15 +188,23 @@ public class LoginActivity extends AppCompatActivity {
                             // Parse the JSON response from the backend
                             JSONObject jsonResponse = new JSONObject(response);
                             // Assuming the token is in the 'token' field
+
+
+                            if(jsonResponse.has("message"))
+                            {
+                                String mess = jsonResponse.getString("message");
+                                Toast.makeText(LoginActivity.this, mess, Toast.LENGTH_SHORT).show();
+                            }
                             if (jsonResponse.has("token") & jsonResponse.has("username")) {
 
                                 token = jsonResponse.getString("token");
                                 username = jsonResponse.getString("username");
-                                System.out.println(token);
+                                int userId = jsonResponse.getInt("userId");
 
                                 // Store the token in SharedPreferences for future use
-                                tinyDB.putString("auth_token",token);
+                                tinyDB.putString("token",token);
                                 tinyDB.putString("username",username);
+                                tinyDB.putInt("userId",userId);
                                 tinyDB.putBoolean("is_logged_in",true);
 
                                 Intent intent = new Intent(LoginActivity.this, BaseActivity.class);

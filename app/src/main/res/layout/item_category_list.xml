@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:text="Category Name"
         android:textSize="18sp"
+        android:fontFamily="@font/fonts_com_merge_bold"
         android:textStyle="bold"
         android:layout_margin="16dp"
         app:layout_constraintTop_toTopOf="parent"

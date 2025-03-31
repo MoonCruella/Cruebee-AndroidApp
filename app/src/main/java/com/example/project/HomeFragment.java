@@ -36,7 +36,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
@@ -47,6 +49,7 @@ public class HomeFragment extends Fragment {
     private RequestQueue requestQueue;
     private TinyDB tinyDB;
     private ViewFlipper viewFlipper;
+    String token;
     private ArrayList<Integer> discountList = new ArrayList<>();
 
     @Nullable
@@ -55,11 +58,9 @@ public class HomeFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        String token = sharedPreferences.getString("auth_token", null);
-
         init(view);
-        getListRcmFood();
+        Log.d("TOKEN", "Token được gửi: " + token);
+        getListRcmFood(token);
 
         return view;
     }
@@ -77,7 +78,7 @@ public class HomeFragment extends Fragment {
         String fullAddress = tinyDB.getString("UserAddress");
         if(tinyDB.getBoolean("is_logged_in")){
             String username = tinyDB.getString("username");
-            String token = tinyDB.getString("auth_token");
+            token = tinyDB.getString("token");
             usernameTxt.setText(username);
         }
         addressTxt.setText(fullAddress);
@@ -114,27 +115,33 @@ public class HomeFragment extends Fragment {
         editAddress.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddressActivity.class)));
     }
 
-    public void getListRcmFood() {
+    public void getListRcmFood(String token) {
         String url = UrlUtil.ADDRESS + "products/1";
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
-            for (int i = 0; i < response.length(); i++) {
-                try {
-                    JSONObject jsonObject = response.getJSONObject(i);
-                    int id = jsonObject.getInt("id");
-                    String name = jsonObject.getString("name");
-                    int price = jsonObject.getInt("price");
-                    String imageId = jsonObject.getString("attachmentId");
-                    String image = UrlUtil.ADDRESS + "download/" + imageId;
-                    String des = jsonObject.getString("description");
-                    rcmFoodList.add(new Food(id, name, price, image, des));
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            RcmFoodAdapter adapter = new RcmFoodAdapter(requireContext(), rcmFoodList);
-            recyclerView.setAdapter(adapter);
-        }, error -> Toast.makeText(requireContext(), error.getMessage(), Toast.LENGTH_SHORT).show());
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> {
+                    rcmFoodList.clear(); // Xóa danh sách cũ trước khi load mới
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            int id = jsonObject.getInt("id");
+                            String name = jsonObject.getString("name");
+                            int price = jsonObject.getInt("price");
+                            String imageId = jsonObject.getString("attachmentId");
+                            String image = UrlUtil.ADDRESS + "download/" + imageId;
+                            String des = jsonObject.getString("description");
+                            rcmFoodList.add(new Food(id, name, price, image, des));
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    RcmFoodAdapter adapter = new RcmFoodAdapter(requireContext(), rcmFoodList);
+                    recyclerView.setAdapter(adapter);
+                },
+                error -> Toast.makeText(requireContext(), "Lỗi: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+        );
 
         requestQueue.add(jsonArrayRequest);
     }
+
 }

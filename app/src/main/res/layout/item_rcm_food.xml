@@ -41,7 +41,7 @@
                     android:id="@+id/foodName"
                     android:layout_width="match_parent"
                     android:layout_height="22dp"
-                    android:fontFamily="@font/fredoka_semibold"
+                    android:fontFamily="@font/fonts_com_merge_bold"
                     android:maxWidth="200dp"
                     android:textSize="16sp"
                     android:text="Combo ăn một mình"
@@ -56,14 +56,13 @@
                     android:layout_marginBottom="10dp"
                     android:textColor="@color/red"
                     android:textSize="16sp"
-                    android:fontFamily="@font/fredoka_semibold"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/fredoka_semibold" />
 
                 <TextView
                     android:id="@+id/btnBuy"
                     android:background="@drawable/border"
                     android:backgroundTint="@color/red"
-                    android:fontFamily="@font/fredoka_semibold"
+                    android:fontFamily="@font/fonts_com_merge_bold"
                     android:paddingStart="30dp"
                     android:paddingEnd="30dp"
                     android:paddingTop="10dp"

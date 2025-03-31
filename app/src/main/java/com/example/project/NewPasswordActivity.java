@@ -23,6 +23,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.StringHelper;
+import com.example.project.utils.UrlUtil;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,14 +64,14 @@ public class NewPasswordActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://196.169.4.27:8888/reset-password",
+                UrlUtil.ADDRESS +"reset-password",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         progressDialog.hide();
                         Toast.makeText(NewPasswordActivity.this,"" + response,Toast.LENGTH_SHORT).show();
                         if(response.equals("Change password successful!")){
-                            Intent intent = new Intent(NewPasswordActivity.this,MainActivity.class);
+                            Intent intent = new Intent(NewPasswordActivity.this,LoginActivity.class);
                             startActivity(intent);
                         }
                         else{

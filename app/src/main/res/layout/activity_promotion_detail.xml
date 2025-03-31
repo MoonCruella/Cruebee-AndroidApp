@@ -75,6 +75,7 @@
             android:padding="15dp"
             android:background="@drawable/red_button"
             android:text="Mua ngay"
+            android:fontFamily="@font/fonts_com_merge_bold"
             android:gravity="center"
             android:textStyle="bold"
             android:textColor="@android:color/white"

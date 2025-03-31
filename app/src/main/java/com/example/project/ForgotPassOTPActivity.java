@@ -23,6 +23,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleySingleton;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +33,7 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
 
     private EditText user_otp;
     private TextView resend_tv;
+    private RequestQueue requestQueue;
     private String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
             return insets;
         });
 
-
+        requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
         user_otp = (EditText) findViewById(R.id.otp);
         resend_tv = (TextView) findViewById(R.id.resend);
         resend_tv.setVisibility(View.INVISIBLE);
@@ -64,7 +67,7 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://192.168.1.5:8888/verify-otp",
+                  UrlUtil.ADDRESS +"verify-otp",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -110,7 +113,7 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                "http://192.168.1.5:8888/regenerate-otp",
+                  UrlUtil.ADDRESS+"regenerate-otp",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

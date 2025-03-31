@@ -11,18 +11,19 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
-        android:background="@drawable/jolibee_avt">
+        android:scaleType="centerCrop"
+        android:background="@drawable/appavt1">
     </ImageView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Đăng nhập"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/fredoka_semibold"
-        android:textColor="#fff"
         android:layout_marginStart="16dp"
-        android:textSize="24sp"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/fonts_com_merge_bold"
+        android:text="Đăng nhập"
+        android:textColor="#ffffff"
+        android:textSize="26sp"
         android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -32,7 +33,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:boxBackgroundMode="none"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email"
@@ -40,8 +42,8 @@
             android:hint="Email *"
             android:background="@drawable/border"
             android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp" />
+            android:fontFamily="@font/roboto"
+            android:padding="16dp" />
     </com.google.android.material.textfield.TextInputLayout>
     <TextView
         android:id="@+id/tvError1"
@@ -49,6 +51,7 @@
         android:layout_height="wrap_content"
         android:text="* Không được để trống"
         android:textColor="@color/yellow"
+        android:fontFamily="@font/roboto"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/input1"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +66,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:boxBackgroundMode="none"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
@@ -71,8 +75,7 @@
             android:hint="Mật khẩu *"
             android:background="@drawable/border"
             android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
+            android:padding="16dp"
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
     <TextView
@@ -91,53 +94,58 @@
         android:layout_width="match_parent"
         android:layout_margin="16dp"
         android:layout_height="wrap_content">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/registerBtn"
+            android:fontFamily="@font/roboto_bold"
+            android:onClick="openRegisterActivity"
             android:text="Đăng kí ngay"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_weight="1"
             android:textColor="@color/white"
-            android:onClick="openRegisterActivity"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Quên mật khẩu?"
             android:layout_weight="1"
-            android:textSize="16sp"
+            android:fontFamily="@font/roboto_bold"
+            android:onClick="openForgotPassActivity"
+            android:text="Quên mật khẩu?"
             android:textAlignment="textEnd"
-            android:textStyle="bold"
             android:textColor="@color/white"
-            android:onClick="openForgotPassActivity"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/orange_button"
-        android:fontFamily="@font/fredoka_semibold"
-        android:gravity="center"
         android:layout_margin="20dp"
+        android:background="@drawable/orange_button"
+        android:fontFamily="@font/fonts_com_merge_bold"
+        android:gravity="center"
+        android:onClick="openHomeActivity"
         android:padding="14dp"
         android:text="Đăng Nhập"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:onClick="openHomeActivity">
+        android:textStyle="bold">
     </TextView>
 
     <TextView
+        android:id="@+id/notLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/orange_button"
-        android:gravity="center"
-        android:id="@+id/notLogin"
         android:layout_margin="20dp"
+        android:background="@drawable/orange_button"
+        android:fontFamily="@font/fonts_com_merge_bold"
+        android:gravity="center"
         android:padding="14dp"
-        android:fontFamily="@font/fredoka_semibold"
         android:text="Đặt Hàng Không Cần Đăng Nhập"
         android:textAlignment="center"
         android:textColor="@color/white"
