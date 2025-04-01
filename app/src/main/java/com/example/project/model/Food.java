@@ -89,16 +89,6 @@ public class Food implements Serializable {
         this.numberInCart = numberInCart;
     }
 
-    public Food(int id, String name, String description, int price, int soldCount, boolean active, LocalDateTime generatedTime, String image){
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.soldCount = soldCount;
-        this.active = active;
-        this.generatedTime = generatedTime;
-        this.image = image;
-    }
 
     public Food(int id,String name,int price,String image,String description,int numberInCart){
         this.id = id;

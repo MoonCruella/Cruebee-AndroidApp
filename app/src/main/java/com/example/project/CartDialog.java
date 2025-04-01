@@ -1,10 +1,13 @@
 package com.example.project;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,8 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project.adapter.CartListAdapter;
 import com.example.project.helpers.ManagementCart;
+import com.example.project.interfaces.CartResponse;
+import com.example.project.interfaces.TotalFeeResponse;
+import com.example.project.model.Food;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class CartDialog extends Dialog {
 
@@ -95,22 +102,46 @@ public class CartDialog extends Dialog {
     private void initList() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new CartListAdapter(managementCart.getListCart(), getContext(), this::updateTotalPrice);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(adapter);
 
-        if (managementCart.getListCart().isEmpty()) {
-            emptyTxt.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        } else {
-            emptyTxt.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-        }
+        managementCart.getListCart(new CartResponse() {
+            @Override
+            public void onSuccess(ArrayList<Food> cartList) {
+                if (cartList == null || cartList.isEmpty()) {
+                    emptyTxt.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                } else {
+                    emptyTxt.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    adapter = new CartListAdapter(cartList, getContext(), CartDialog.this::updateTotalPrice);
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, "Lỗi khi lấy giỏ hàng: " + errorMessage);
+                emptyTxt.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }
+        });
+
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
     }
 
+
     private void updateTotalPrice() {
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        String formattedPrice = decimalFormat.format(managementCart.getTotalFee()) + " đ";
-        giaTxt.setText(formattedPrice);
+        managementCart.getTotalFee(new TotalFeeResponse() {
+            @Override
+            public void onSuccess(int totalFee) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###");
+                String formattedPrice = decimalFormat.format(totalFee) + " đ";
+                giaTxt.setText(formattedPrice);
+            }
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, "Lỗi khi tính tổng tiền: " + errorMessage);
+            }
+        });
+
     }
 }

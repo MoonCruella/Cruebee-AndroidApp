@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -20,6 +21,7 @@ public class ShowMore_User_Fragment extends Fragment {
     ConstraintLayout supportBtn,verifyBtn,settingsBtn,couponBtn,specialBtn,addressBtn,orderBtn;
     TextView usernameTxt;
     TinyDB tinyDB;
+    LinearLayout editAccountBtn;
 
     @Nullable
     @Override
@@ -38,6 +40,14 @@ public class ShowMore_User_Fragment extends Fragment {
         addressBtn = (ConstraintLayout) view.findViewById(R.id.addressBtn);
         orderBtn = (ConstraintLayout) view.findViewById(R.id.orderBtn);
         usernameTxt = view.findViewById(R.id.usernameTxt);
+        editAccountBtn = view.findViewById(R.id.editAccountBtn);
+
+        editAccountBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         tinyDB = new TinyDB(getContext());
         String uname = tinyDB.getString("username");
