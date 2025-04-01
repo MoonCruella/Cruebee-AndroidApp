@@ -7,13 +7,13 @@
     android:layout_height="match_parent"
     android:background="@color/red"
     android:orientation="vertical">
+
     <ImageView
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
-        android:scaleType="centerCrop"
-        android:background="@drawable/appavt1">
-    </ImageView>
+        android:background="@drawable/cruebee_logo"
+        android:scaleType="centerCrop"></ImageView>
 
     <TextView
         android:layout_width="wrap_content"
