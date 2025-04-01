@@ -18,6 +18,7 @@ import com.example.project.model.Food;
 import com.example.project.model.PaymentProduct;
 
 import org.checkerframework.checker.units.qual.C;
+import org.json.JSONException;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -55,38 +56,50 @@ public class FoodListPaymentAdapter extends RecyclerView.Adapter<FoodListPayment
         holder.plusItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                managementCart.plusNumberFood(foods, position, new ChangeNumberItemsListener() {
-                    @Override
-                    public void change() {
-                        notifyDataSetChanged();
-                        changeNumberItemsListener.change();
-                    }
-                });
+                try {
+                    managementCart.plusNumberFood(foods, position, new ChangeNumberItemsListener() {
+                        @Override
+                        public void change() throws JSONException {
+                            notifyDataSetChanged();
+                            changeNumberItemsListener.change();
+                        }
+                    });
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         holder.minusItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                managementCart.minusNumberFood(foods, position, new ChangeNumberItemsListener() {
-                    @Override
-                    public void change() {
-                        notifyDataSetChanged();
-                        changeNumberItemsListener.change();
-                    }
-                });
+                try {
+                    managementCart.minusNumberFood(foods, position, new ChangeNumberItemsListener() {
+                        @Override
+                        public void change() throws JSONException {
+                            notifyDataSetChanged();
+                            changeNumberItemsListener.change();
+                        }
+                    });
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
         holder.deleteItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                managementCart.deleteFood(foods, position, new ChangeNumberItemsListener() {
-                    @Override
-                    public void change() {
-                        notifyDataSetChanged();
-                        changeNumberItemsListener.change();
-                    }
-                });
+                try {
+                    managementCart.deleteFood(foods, position, new ChangeNumberItemsListener() {
+                        @Override
+                        public void change() throws JSONException {
+                            notifyDataSetChanged();
+                            changeNumberItemsListener.change();
+                        }
+                    });
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
