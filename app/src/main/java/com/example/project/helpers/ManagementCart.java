@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -12,7 +13,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
+import com.example.project.interfaces.TotalFeeResponse;
 import com.example.project.model.Food;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
@@ -45,122 +50,241 @@ public class ManagementCart {
     }
 
     public void insertFood(Food food) {
-        ArrayList<Food> listFood = getListCart();
-        boolean existAlready = false;
-        int existedCount = 0;
-        int n = 0;
-        for (int i = 0; i < listFood.size(); i++) {
-            if (listFood.get(i).getName().equals(food.getName())) {
-                existAlready = true;
-                existedCount = listFood.get(i).getNumberInCart();
-                n = i;
-                break;
+        getListCart(new CartResponse() {
+            @Override
+            public void onSuccess(ArrayList<Food> listFood) {
+                boolean existAlready = false;
+                int existedCount = 0;
+                int n = 0;
+
+                // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+                for (int i = 0; i < listFood.size(); i++) {
+                    if (listFood.get(i).getName().equals(food.getName())) {
+                        existAlready = true;
+                        existedCount = listFood.get(i).getNumberInCart();
+                        n = i;
+                        break;
+                    }
+                }
+
+                // Nếu đã có sản phẩm trong giỏ, tăng số lượng
+                if (existAlready) {
+                    listFood.get(n).setNumberInCart(food.getNumberInCart() + existedCount);
+                } else {
+                    listFood.add(food); // Thêm sản phẩm mới vào giỏ
+                }
+
+                // Nếu người dùng đã đăng nhập, gọi API để cập nhật giỏ hàng trên server
+                if (is_logged_in) {
+                    updateCartOnServer(food,food.getNumberInCart());
+                    // Hiển thị thông báo cho người dùng
+                    Toast.makeText(context,"UserID : " + userId,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Đã thêm vào giỏ API", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Nếu chưa đăng nhập, lưu vào TinyDB
+                    tinyDB.putListObject("CartList", listFood);
+                    // Hiển thị thông báo cho người dùng
+                    Toast.makeText(context, "Đã thêm vào giỏ ", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
-        }
-        if (existAlready) {
-            listFood.get(n).setNumberInCart(food.getNumberInCart() + existedCount);
-        } else {
-            listFood.add(food);
-        }
-        tinyDB.putListObject("CartList", listFood);
-        Toast.makeText(context, "Đã thêm vào giỏ", Toast.LENGTH_SHORT).show();
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, "Lỗi khi lấy giỏ hàng: " + errorMessage);
+            }
+        });
     }
 
-    public ArrayList<Food> getListCart() {
+    // Hàm gọi API để cập nhật giỏ hàng khi người dùng đã đăng nhập
+    private void updateCartOnServer(Food food,int count) {
+        String url = UrlUtil.ADDRESS + "cart/add"; // Địa chỉ API
 
-        // Neu user da log in => Truy xuat san pham tu database
-        if(is_logged_in){
-            ArrayList<Food> foods = new ArrayList<>();
+        // Tạo JSONObject để gửi lên server
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("userId", userId); // ID người dùng
+            jsonBody.put("productId", food.getId()); // ID sản phẩm
+            jsonBody.put("quantity", count); // Số lượng
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Tạo JsonObjectRequest để gửi dữ liệu lên server
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST, url, jsonBody,
+                response -> {
+                    Log.d(TAG, "API Response: " + response.toString());
+                },
+                error -> {
+                    Log.e(TAG, "API Error: " + error.toString());
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token); // Thêm token nếu cần
+                return headers;
+            }
+        };
+
+        // Thêm request vào hàng đợi của Volley
+        requestQueue.add(jsonObjectRequest);
+    }
+
+
+    public void getListCart(CartResponse callback) {
+        if (is_logged_in) {
             String url = UrlUtil.ADDRESS + "cart/" + tinyDB.getInt("userId");
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                     Request.Method.GET, url, null,
-                    new Response.Listener<JSONArray>() {
-                        @Override
-                        public void onResponse(JSONArray response) {
-                            Log.d(TAG, "Response: " + response.toString());
-                            Toast.makeText(context, "Lấy giỏ hàng thành công!", Toast.LENGTH_SHORT).show();
+                    response -> {
+                        ArrayList<Food> foods = new ArrayList<>();
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject cartItem = response.getJSONObject(i);
+                                int quantity = cartItem.getInt("quantity");
+                                JSONObject product = cartItem.getJSONObject("product");
 
-                            try {
-                                for (int i = 0; i < response.length(); i++) {
-                                    JSONObject cartItem = response.getJSONObject(i);
-                                    int cart_id = cartItem.getInt("id");
-                                    int quantity = cartItem.getInt("quantity");
-
-                                    JSONObject product = cartItem.getJSONObject("product");
-                                    int id = product.getInt("id");
-                                    String name = product.getString("name");
-                                    int price = product.getInt("price");
-                                    String imageId = product.getString("attachmentId");
-                                    String image = UrlUtil.ADDRESS + "download/" + imageId;
-                                    String des = product.getString("description");
-
-                                    Food food = new Food(id, name, price, image, des, quantity);
-                                    foods.add(food);
-                                    Log.d(TAG, "Sản phẩm: " + name + ", Số lượng: " + quantity + ", Giá: " + price);
-                                }
-                            } catch (JSONException e) {
-                                Log.e(TAG, "Lỗi khi parse JSON: " + e.getMessage());
+                                foods.add(new Food(
+                                        product.getInt("id"),
+                                        product.getString("name"),
+                                        product.getInt("price"),
+                                        UrlUtil.ADDRESS + "download/" + product.getString("attachmentId"),
+                                        product.getString("description"),
+                                        quantity
+                                ));
+                                Log.d(TAG,"San pham: " + foods.get(0).getName());
                             }
+
+                            callback.onSuccess(foods);
+                        } catch (JSONException e) {
+                            callback.onError("Lỗi khi phân tích dữ liệu JSON");
                         }
                     },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, "Lỗi API: " + error.toString());
-                            Toast.makeText(context, "Lỗi khi lấy giỏ hàng!", Toast.LENGTH_SHORT).show();
-                        }
-                    }) {
+                    error -> callback.onError("Lỗi khi lấy giỏ hàng!")
+            ) {
                 @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
+                public Map<String, String> getHeaders() {
                     Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", "Bearer " + token); // Gửi token trong Header
+                    headers.put("Authorization", "Bearer " + token);
                     return headers;
                 }
             };
-
             requestQueue.add(jsonArrayRequest);
-
-            return foods;
-        }
-        else{
-            return tinyDB.getListObject("CartList");
+        } else {
+            callback.onSuccess(tinyDB.getListObject("CartList"));
         }
     }
 
+
     public void plusNumberFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
-        listFood.get(position).setNumberInCart(listFood.get(position).getNumberInCart() + 1);
-        tinyDB.putListObject("CartList", listFood);
+
+        if(is_logged_in){
+            Food food = listFood.get(position);
+            updateCartOnServer(food,1);
+            food.setNumberInCart(food.getNumberInCart() + 1);
+        }
+        else {
+            listFood.get(position).setNumberInCart(listFood.get(position).getNumberInCart() + 1);
+            tinyDB.putListObject("CartList", listFood);
+        }
         changeNumberItemsListener.change();
     }
 
     public void minusNumberFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+
+        Food food = listFood.get(position);
         if (listFood.get(position).getNumberInCart() == 1) {
+
+            // Kiem tra neu nguoi dung da login => Xoa sp trong Database Cart
+            if(is_logged_in){
+                deleteFromCart(food);
+            }
             listFood.remove(position);
-        } else {
-            listFood.get(position).setNumberInCart(listFood.get(position).getNumberInCart() - 1);
         }
-        tinyDB.putListObject("CartList", listFood);
+        else {
+            if(is_logged_in){
+                updateCartOnServer(food,- 1);
+                food.setNumberInCart(food.getNumberInCart() - 1);
+            }
+            else{
+                food.setNumberInCart(food.getNumberInCart() - 1);
+                tinyDB.putListObject("CartList", listFood);
+            }
+
+        }
         changeNumberItemsListener.change();
 
     }
     public void deleteFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+        Food food = listFood.get(position);
+        if(is_logged_in){
+            deleteFromCart(food);
+        }
         listFood.remove(position);
         tinyDB.putListObject("CartList", listFood);
         Toast.makeText(context, "Đã xóa sản phẩm", Toast.LENGTH_SHORT).show();
         changeNumberItemsListener.change();
+
     }
 
-    public int getTotalFee() {
-        int total = 0;
-        Food food;
-        ArrayList<Food> foods = getListCart();
-        for(int i = 0; i < foods.size();i++){
-            food = foods.get(i);
-            total += food.getNumberInCart() * food.getPrice();
+    public void getTotalFee(TotalFeeResponse callback) {
+        getListCart(new CartResponse() {
+            @Override
+            public void onSuccess(ArrayList<Food> foods) {
+                int total = 0;
+                if (foods != null && !foods.isEmpty()) {
+                    for (Food food : foods) {
+                        total += food.getNumberInCart() * food.getPrice();
+                    }
+                }
+                callback.onSuccess(total);
+            }
 
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, "Lỗi khi lấy giỏ hàng: " + errorMessage);
+                callback.onError(errorMessage);
+            }
+        });
+    }
+
+    // Hàm gọi API để cập nhật giỏ hàng khi người dùng đã đăng nhập
+    private void deleteFromCart(Food food) {
+        String url = UrlUtil.ADDRESS + "cart/delete"; // Địa chỉ API
+
+        // Tạo JSONObject để gửi lên server
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("userId", userId); // ID người dùng
+            jsonBody.put("productId", food.getId()); // ID sản phẩm
+            jsonBody.put("quantity", food.getNumberInCart()); // Số lượng
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return total;
+
+        // Tạo JsonObjectRequest để gửi dữ liệu lên server
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST, url, jsonBody,
+                response -> {
+                    Log.d(TAG, "API Response: " + response.toString());
+                },
+                error -> {
+                    Log.e(TAG, "API Error: " + error.toString());
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token); // Thêm token nếu cần
+                return headers;
+            }
+        };
+
+        // Thêm request vào hàng đợi của Volley
+        requestQueue.add(jsonObjectRequest);
     }
+
 }
 
 

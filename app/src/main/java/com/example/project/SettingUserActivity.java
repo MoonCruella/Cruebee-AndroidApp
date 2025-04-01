@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
 import androidx.activity.result.ActivityResultLauncher;
@@ -12,14 +13,33 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.example.project.helpers.TinyDB;
+import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleySingleton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
 import androidx.core.app.NotificationManagerCompat;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class SettingUserActivity extends AppCompatActivity {
     private SwitchMaterial switchNotification;
+    TextView logoutBtn;
+    TinyDB tinyDB;
+    private RequestQueue requestQueue;
     ConstraintLayout changePwdBtn,changeLanguBtn;
 
     @SuppressLint("MissingInflatedId")
@@ -37,7 +57,44 @@ public class SettingUserActivity extends AppCompatActivity {
         switchNotification = findViewById(R.id.switch_notification);
         changePwdBtn = findViewById(R.id.changePwdBtn);
         changeLanguBtn = findViewById(R.id.changeLanguBtn);
+        logoutBtn = findViewById(R.id.logoutBtn);
+        requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
+        tinyDB = new TinyDB(this);
 
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 String url = UrlUtil.ADDRESS + "logout";
+                 StringRequest stringRequest = new StringRequest(
+                         Request.Method.GET,
+                         url,
+                         new Response.Listener<String>() {
+                             @Override
+                             public void onResponse(String response) {
+                                 // Parse the JSON response from the backend
+                                 Toast.makeText(SettingUserActivity.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+                                 Intent intent = new Intent(SettingUserActivity.this, LoginActivity.class);
+                                 startActivity(intent);
+                             }
+                         },
+                         new Response.ErrorListener() {
+                             @Override
+                             public void onErrorResponse(VolleyError error) {
+
+                                 Toast.makeText(SettingUserActivity.this, "" + error, Toast.LENGTH_SHORT).show();
+                             }
+                         }) {
+                     @Override
+                     public Map<String, String> getHeaders() throws AuthFailureError {
+                         Map<String, String> headers = new HashMap<>();
+                         String token = tinyDB.getString("token");
+                         headers.put("Authorization", "Bearer " + token); // Thêm token nếu cần
+                         return headers;
+                     }
+                 };
+                 requestQueue.add(stringRequest);
+             }
+         });
         changePwdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

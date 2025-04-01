@@ -57,6 +57,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
                     public void change() {
                         notifyDataSetChanged();
                         changeNumberItemsListener.change();
+
                     }
                 });
             }
