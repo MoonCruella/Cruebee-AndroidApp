@@ -3,6 +3,7 @@ package com.example.project;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -49,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 public class PaymentActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -196,7 +198,7 @@ public class PaymentActivity extends AppCompatActivity {
 
                         productsArray.put(productObject);
                     }
-                    userObject.put("id", 1);
+                    userObject.put("id", tinyDB.getInt("userId"));
                     jsonBody.put("user", userObject);
                     jsonBody.put("addressUser", addUser);
                     jsonBody.put("addressShop", addShop);
