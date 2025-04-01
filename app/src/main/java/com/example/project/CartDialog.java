@@ -24,6 +24,8 @@ import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.TotalFeeResponse;
 import com.example.project.model.Food;
 
+import org.json.JSONException;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -61,8 +63,16 @@ public class CartDialog extends Dialog {
         managementCart = new ManagementCart(getContext());
 
         initView();
-        initList();
-        updateTotalPrice();
+        try {
+            initList();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            updateTotalPrice();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
         closeBtn.setOnClickListener(v -> dismiss());
     }
@@ -99,7 +109,7 @@ public class CartDialog extends Dialog {
         });
     }
 
-    private void initList() {
+    private void initList() throws JSONException {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -129,7 +139,7 @@ public class CartDialog extends Dialog {
     }
 
 
-    private void updateTotalPrice() {
+    private void updateTotalPrice() throws JSONException {
         managementCart.getTotalFee(new TotalFeeResponse() {
             @Override
             public void onSuccess(int totalFee) {

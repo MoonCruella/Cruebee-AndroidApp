@@ -49,7 +49,7 @@ public class ManagementCart {
         this.token = tinyDB.getString("token");
     }
 
-    public void insertFood(Food food) {
+    public void insertFood(Food food) throws JSONException {
         getListCart(new CartResponse() {
             @Override
             public void onSuccess(ArrayList<Food> listFood) {
@@ -133,7 +133,7 @@ public class ManagementCart {
     }
 
 
-    public void getListCart(CartResponse callback) {
+    public void getListCart(CartResponse callback) throws JSONException {
         if (is_logged_in) {
             String url = UrlUtil.ADDRESS + "cart/" + tinyDB.getInt("userId");
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -178,7 +178,7 @@ public class ManagementCart {
     }
 
 
-    public void plusNumberFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+    public void plusNumberFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) throws JSONException {
 
         if(is_logged_in){
             Food food = listFood.get(position);
@@ -192,7 +192,7 @@ public class ManagementCart {
         changeNumberItemsListener.change();
     }
 
-    public void minusNumberFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+    public void minusNumberFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) throws JSONException {
 
         Food food = listFood.get(position);
         if (listFood.get(position).getNumberInCart() == 1) {
@@ -217,7 +217,7 @@ public class ManagementCart {
         changeNumberItemsListener.change();
 
     }
-    public void deleteFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+    public void deleteFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) throws JSONException {
         Food food = listFood.get(position);
         if(is_logged_in){
             deleteFromCart(food);
@@ -229,10 +229,10 @@ public class ManagementCart {
 
     }
 
-    public void getTotalFee(TotalFeeResponse callback) {
+    public void getTotalFee(TotalFeeResponse callback) throws JSONException {
         getListCart(new CartResponse() {
             @Override
-            public void onSuccess(ArrayList<Food> foods) {
+            public void onSuccess(ArrayList<Food> foods) throws JSONException {
                 int total = 0;
                 if (foods != null && !foods.isEmpty()) {
                     for (Food food : foods) {

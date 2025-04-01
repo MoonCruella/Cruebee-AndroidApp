@@ -18,6 +18,8 @@ import com.example.project.helpers.ManagementCart;
 import com.example.project.model.Food;
 import com.example.project.utils.UrlUtil;
 
+import org.json.JSONException;
+
 import java.text.DecimalFormat;
 
 public class ShowDetailActivity extends AppCompatActivity {
@@ -89,7 +91,11 @@ public class ShowDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 object.setNumberInCart(numberOrder);
-                managementCart.insertFood(object);
+                try {
+                    managementCart.insertFood(object);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
 
                 //Quay tro lai man hinh chon menu
                 finish();

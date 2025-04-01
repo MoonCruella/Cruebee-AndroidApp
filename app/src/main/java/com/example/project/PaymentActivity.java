@@ -1,7 +1,10 @@
 package com.example.project;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,10 +31,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.project.adapter.CartListAdapter;
 import com.example.project.adapter.FoodListPaymentAdapter;
 import com.example.project.helpers.ManagementCart;
 import com.example.project.helpers.TinyDB;
+import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
+import com.example.project.interfaces.TotalFeeResponse;
+import com.example.project.model.Food;
 import com.example.project.model.PaymentProduct;
 import com.example.project.utils.UrlUtil;
 
@@ -65,6 +73,7 @@ public class PaymentActivity extends AppCompatActivity {
     private Switch utensils;
     private Button btnDatHang;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,11 +107,16 @@ public class PaymentActivity extends AppCompatActivity {
         });
 
         initView();
-        initList();
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        String formattedPrice = decimalFormat.format(managementCart.getTotalFee()) + " đ";
-        giaTxt.setText(formattedPrice);
-        giaDKTxt.setText(formattedPrice);
+        try {
+            initList();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            updateTotal();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
         firstName = findViewById(R.id.eTxtFName);
         lastName = findViewById(R.id.eTxtLName);
@@ -119,6 +133,7 @@ public class PaymentActivity extends AppCompatActivity {
             }
         });
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void payment(View view){
         if (!checkEditText())
         {
@@ -150,7 +165,6 @@ public class PaymentActivity extends AppCompatActivity {
         {
             dcu = true;
         }
-        Long totalPrice = (long)managementCart.getTotalFee();
         List<PaymentProduct> products = adapter.getFoodList();
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading");
@@ -198,6 +212,17 @@ public class PaymentActivity extends AppCompatActivity {
 
                         productsArray.put(productObject);
                     }
+                    managementCart.getTotalFee(new TotalFeeResponse() {
+                        @Override
+                        public void onSuccess(int totalFee) throws JSONException {
+                            jsonBody.put("totalPrice", totalFee);
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            Log.e(TAG, "Lỗi khi tính tổng tiền: " + errorMessage);
+                        }
+                    });
                     userObject.put("id", tinyDB.getInt("userId"));
                     jsonBody.put("user", userObject);
                     jsonBody.put("addressUser", addUser);
@@ -206,7 +231,6 @@ public class PaymentActivity extends AppCompatActivity {
                     jsonBody.put("lastName", lName);
                     jsonBody.put("sdt", phone);
                     jsonBody.put("utensils", finalDcu);
-                    jsonBody.put("totalPrice", totalPrice);
                     jsonBody.put("note", noted);
                     jsonBody.put("receivedDate", receiveTime);
                     jsonBody.put("products", productsArray);
@@ -246,22 +270,31 @@ public class PaymentActivity extends AppCompatActivity {
         });
     }
 
-    private void initList(){
+    private void initList() throws JSONException {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new FoodListPaymentAdapter(managementCart.getListCart(),this, new ChangeNumberItemsListener() {
+        managementCart.getListCart(new CartResponse() {
             @Override
-            public void change() {
-                DecimalFormat decimalFormat = new DecimalFormat("#,###");
-                String formattedPrice = decimalFormat.format(managementCart.getTotalFee()) + " đ";
-                giaTxt.setText(formattedPrice);
-                giaDKTxt.setText(formattedPrice);
+            public void onSuccess(ArrayList<Food> cartList) {
+                adapter = new FoodListPaymentAdapter(cartList,PaymentActivity.this, new ChangeNumberItemsListener() {
+                    @Override
+                    public void change() throws JSONException {
+                        updateTotal();
+                    }
+                });
+                RecyclerView.ItemDecoration decoration = new DividerItemDecoration(PaymentActivity.this,DividerItemDecoration.VERTICAL);
+                recyclerView.addItemDecoration(decoration);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, "Lỗi khi lấy giỏ hàng: " + errorMessage);
             }
         });
-        RecyclerView.ItemDecoration decoration = new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(decoration);
-        recyclerView.setAdapter(adapter);
+
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private String getDayOfWeek(DayOfWeek dayOfWeek) {
         switch (dayOfWeek) {
             case MONDAY: return "Thứ Hai";
@@ -278,6 +311,7 @@ public class PaymentActivity extends AppCompatActivity {
         timeList.clear();
         timeList.add("Bây giờ");
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateTimeListForTomorrow() {
         timeList.clear();
         LocalTime startTime = LocalTime.of(10, 0); // 10:00 AM
@@ -310,5 +344,21 @@ public class PaymentActivity extends AppCompatActivity {
         lastName.setError(null);
         sdt.setError(null);
         return true;
+    }
+ public void updateTotal() throws JSONException {
+        managementCart.getTotalFee(new TotalFeeResponse() {
+            @Override
+            public void onSuccess(int totalFee) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###");
+                String formattedPrice = decimalFormat.format(totalFee) + " đ";
+                giaTxt.setText(formattedPrice);
+                giaDKTxt.setText(formattedPrice);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e(TAG, "Lỗi khi tính tổng tiền: " + errorMessage);
+            }
+        });
     }
 }
