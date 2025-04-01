@@ -60,7 +60,7 @@
                     android:layout_width="185dp"
                     android:layout_height="41dp"
                     android:layout_marginTop="12dp"
-                    android:text="TextView"
+                    android:text=""
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.663"
                     app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +78,7 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txtAddress" />
-
+x
                 <TextView
                     android:id="@+id/txtAddress"
                     android:layout_width="305dp"
@@ -227,7 +227,7 @@
                     android:layout_marginTop="24dp"
                     android:ems="10"
                     android:inputType="text"
-                    android:text="Name"
+                    android:text=""
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.088"
                     app:layout_constraintStart_toEndOf="@+id/textViewNote"

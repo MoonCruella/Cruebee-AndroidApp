@@ -1,28 +1,43 @@
 package com.example.project;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.adapter.FoodListPaymentAdapter;
 import com.example.project.helpers.ManagementCart;
 import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.model.PaymentProduct;
+import com.example.project.utils.UrlUtil;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -30,8 +45,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class PaymentActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -44,6 +61,7 @@ public class PaymentActivity extends AppCompatActivity {
     private EditText firstName,lastName,sdt,note;
     private Spinner spinnerDate,spinnerTime;
     private Switch utensils;
+    private Button btnDatHang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +108,20 @@ public class PaymentActivity extends AppCompatActivity {
         note = findViewById(R.id.eTxtNote);
         addressShopTxt = findViewById(R.id.txtShop);
         utensils = findViewById(R.id.switch1);
+
+        btnDatHang = findViewById(R.id.btnDatHang);
+        btnDatHang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                payment(v);
+            }
+        });
     }
-    private void payment(){
+    private void payment(View view){
+        if (!checkEditText())
+        {
+            return;
+        }
         String addUser = addressTxt.getText().toString();
         String addShop = addressShopTxt.getText().toString();
         LocalDateTime receiveTime;
@@ -113,14 +143,88 @@ public class PaymentActivity extends AppCompatActivity {
         String lName = lastName.getText().toString();
         String phone = sdt.getText().toString();
         String noted = note.getText().toString();
-        Boolean dcu = false;
+        boolean dcu = false;
         if (utensils.isChecked())
         {
             dcu = true;
         }
-        Long totalPrice = Long.parseLong(giaTxt.getText().toString().trim());
+        Long totalPrice = (long)managementCart.getTotalFee();
         List<PaymentProduct> products = adapter.getFoodList();
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Loading... Please wait...!!");
+        progressDialog.show();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
+        String url = UrlUtil.ADDRESS + "payment";
+        boolean finalDcu = dcu;
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        progressDialog.hide();
+                        if(response.equals("Đặt hàng thành công!")){
+                            Toast.makeText(PaymentActivity.this, "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(PaymentActivity.this,BaseActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.hide();
+                        Toast.makeText(PaymentActivity.this,"" + error,Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ){
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                // Create a JSONObject and put data into it
+                JSONObject jsonBody = new JSONObject();
+                try {
+                    JSONObject userObject = new JSONObject();
+                    JSONArray productsArray = new JSONArray();
+                    for (PaymentProduct item : products) {
+                        JSONObject productObject = new JSONObject();
+                        JSONObject productIdObject = new JSONObject();
+
+                        productIdObject.put("id", item.getProduct().getId());
+                        productObject.put("product", productIdObject);
+                        productObject.put("quantity", item.getQuantity());
+
+                        productsArray.put(productObject);
+                    }
+                    userObject.put("id", 1);
+                    jsonBody.put("user", userObject);
+                    jsonBody.put("addressUser", addUser);
+                    jsonBody.put("addressShop", addShop);
+                    jsonBody.put("firstName", fName);
+                    jsonBody.put("lastName", lName);
+                    jsonBody.put("sdt", phone);
+                    jsonBody.put("utensils", finalDcu);
+                    jsonBody.put("totalPrice", totalPrice);
+                    jsonBody.put("note", noted);
+                    jsonBody.put("receivedDate", receiveTime);
+                    jsonBody.put("products", productsArray);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                // Return the byte[] of the JSON string
+                return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headerMap = new HashMap<String, String>();
+                headerMap.put("Content-Type", "application/json");
+                return headerMap;
+            }
+        };
+
+        requestQueue.add(stringRequest);
     }
     private void initView(){
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
@@ -182,5 +286,27 @@ public class PaymentActivity extends AppCompatActivity {
             timeList.add(startTime.format(timeFormatter));
             startTime = startTime.plusMinutes(15);
         }
+    }
+    public boolean checkEditText(){
+        String fName = firstName.getText().toString();
+        String lName = lastName.getText().toString();
+        String phone = sdt.getText().toString();
+        if(fName.isEmpty()){
+            firstName.setError("Vui lòng nhập thông tin!");
+            return false;
+        } else if (lName.isEmpty()) {
+            lastName.setError("Vui lòng nhập thông tin!");
+            return false;
+        } else if (phone.isEmpty()) {
+            sdt.setError("Vui lòng nhập thông tin!");
+            return false;
+        } else if (!phone.matches("^[0-9]{10}$")) {
+            sdt.setError("Số điện thoại không chính xác!");
+            return false;
+        }
+        firstName.setError(null);
+        lastName.setError(null);
+        sdt.setError(null);
+        return true;
     }
 }
