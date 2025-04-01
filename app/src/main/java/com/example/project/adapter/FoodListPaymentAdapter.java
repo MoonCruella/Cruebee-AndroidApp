@@ -15,11 +15,13 @@ import com.example.project.R;
 import com.example.project.helpers.ManagementCart;
 import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.model.Food;
+import com.example.project.model.PaymentProduct;
 
 import org.checkerframework.checker.units.qual.C;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FoodListPaymentAdapter extends RecyclerView.Adapter<FoodListPaymentAdapter.FoodListPaymentViewHolder> {
 
@@ -110,5 +112,15 @@ public class FoodListPaymentAdapter extends RecyclerView.Adapter<FoodListPayment
             deleteItem = itemView.findViewById(R.id.deleteBtn);
             editItem = itemView.findViewById(R.id.editBtn);
         }
+    }
+    public List<PaymentProduct> getFoodList() {
+        List<PaymentProduct> productList = new ArrayList<>();
+        for (Food food : foods) {
+            int quantity = food.getNumberInCart();
+            if (quantity > 0) {
+                productList.add(new PaymentProduct(food, quantity));
+            }
+        }
+        return productList;
     }
 }
