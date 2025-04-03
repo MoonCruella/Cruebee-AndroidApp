@@ -198,11 +198,13 @@ public class LoginActivity extends AppCompatActivity {
                             if (jsonResponse.has("token")) {
 
                                 token = jsonResponse.getString("token");
+                                String refresh_token = jsonResponse.getString("refresh_token");
                                 username = jsonResponse.getString("username");
                                 int userId = jsonResponse.getInt("userId");
 
                                 // Store the token in SharedPreferences for future use
                                 tinyDB.putString("token",token);
+                                tinyDB.putString("refresh_token",refresh_token);
                                 tinyDB.putString("username",username);
                                 tinyDB.putInt("userId",userId);
                                 tinyDB.putBoolean("is_logged_in",true);

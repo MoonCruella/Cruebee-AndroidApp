@@ -71,6 +71,10 @@ public class SettingUserActivity extends AppCompatActivity {
                          new Response.Listener<String>() {
                              @Override
                              public void onResponse(String response) {
+                                 tinyDB.remove("token");
+                                 tinyDB.remove("username");
+                                 tinyDB.remove("userId");
+                                 tinyDB.putBoolean("is_logged_in",false);
                                  // Parse the JSON response from the backend
                                  Toast.makeText(SettingUserActivity.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
                                  Intent intent = new Intent(SettingUserActivity.this, LoginActivity.class);
