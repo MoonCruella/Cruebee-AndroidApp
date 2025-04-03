@@ -195,7 +195,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String mess = jsonResponse.getString("message");
                                 Toast.makeText(LoginActivity.this, mess, Toast.LENGTH_SHORT).show();
                             }
-                            if (jsonResponse.has("token") & jsonResponse.has("username")) {
+                            if (jsonResponse.has("token")) {
 
                                 token = jsonResponse.getString("token");
                                 username = jsonResponse.getString("username");

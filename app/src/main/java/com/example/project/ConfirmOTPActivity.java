@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.project.helpers.TinyDB;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
 
@@ -70,20 +71,34 @@ public class ConfirmOTPActivity extends AppCompatActivity {
 
 
         StringRequest stringRequest = new StringRequest(
-                Request.Method.PUT, UrlUtil.ADDRESS + "verify-account",
+                Request.Method.POST, UrlUtil.ADDRESS + "verify-account",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.hide();
-                        Toast.makeText(ConfirmOTPActivity.this, "" + response, Toast.LENGTH_SHORT).show();
-                        if (response.equals("OTP verified. You can login")) {
-                            Intent intent = new Intent(ConfirmOTPActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                        }
+                        try {
+                            // Parse the JSON response from the backend
+                            JSONObject jsonResponse = new JSONObject(response);
+                            String mess = jsonResponse.getString("message");
+                            if(mess.equals("OTP verified. You can login.")){
+                                progressDialog.hide();
+                                Intent intent = new Intent(ConfirmOTPActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                String access_token = jsonResponse.getString("access_token");
+                                String refresh_token = jsonResponse.getString("refresh_token");
+                                TinyDB tinyDB = new TinyDB(ConfirmOTPActivity.this);
+                                tinyDB.putString("token",access_token);
+                                tinyDB.putString("refresh_token",refresh_token);
+                                Toast.makeText(ConfirmOTPActivity.this, access_token, Toast.LENGTH_SHORT).show();
+                            }
+                            // Hiện nút resend
+                            else if (mess.equals("OTP has expired. Please regenerate and try again.")) {
+                                resend_tv.setVisibility(View.VISIBLE);
+                            }
 
-                        // Hiện nút resend
-                        else if(response.equals("OTP has expired. Please regenerate and try again.")){
-                            resend_tv.setVisibility(View.VISIBLE);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ConfirmOTPActivity.this, "Error processing login response.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
