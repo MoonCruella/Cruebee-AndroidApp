@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,9 +73,12 @@ public class SettingUserActivity extends AppCompatActivity {
                              @Override
                              public void onResponse(String response) {
                                  tinyDB.remove("token");
-                                 tinyDB.remove("username");
                                  tinyDB.remove("userId");
-                                 tinyDB.putBoolean("is_logged_in",false);
+                                 tinyDB.remove("username");
+                                 tinyDB.putBoolean("is_logged_in", false);
+
+                                 Log.d("Logout", "Token after logout: " + tinyDB.getString("token"));
+
                                  // Parse the JSON response from the backend
                                  Toast.makeText(SettingUserActivity.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
                                  Intent intent = new Intent(SettingUserActivity.this, LoginActivity.class);

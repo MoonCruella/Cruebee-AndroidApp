@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import com.example.project.helpers.TinyDB;
@@ -27,11 +28,11 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
         tinyDB = new TinyDB(this);
         String token = tinyDB.getString("token");
-
+        Log.d("TOKEN", "Token after logout: " + tinyDB.getString("token"));
 
         // Giả lập màn hình chờ 2 giây trước khi kiểm tra token
         new Handler().postDelayed(() -> {
-            if (token != null) {
+            if (token != null && !token.isEmpty()) {
 
                 // Nếu đã đăng nhập, chuyển đến HomeActivity
                 startActivity(new Intent(SplashScreenActivity.this, BaseActivity.class));
