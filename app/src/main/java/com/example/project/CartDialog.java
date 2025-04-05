@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.project.adapter.CartListAdapter;
 import com.example.project.helpers.ManagementCart;
 import com.example.project.interfaces.CartResponse;
+import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.example.project.interfaces.TotalFeeResponse;
 import com.example.project.model.Food;
 
@@ -38,11 +39,6 @@ public class CartDialog extends Dialog {
     private CartListAdapter adapter;
     private TextView giaTxt, themMonBtn, thanhToanBtn, emptyTxt;
 
-
-    public interface OnFragmentSwitchListener {
-        void onSwitchToFragment(String fragmentTag);
-    }
-
     private OnFragmentSwitchListener listener;
 
     public CartDialog(@NonNull Context context, OnFragmentSwitchListener listener) {
@@ -57,7 +53,7 @@ public class CartDialog extends Dialog {
         if (getWindow() != null) {
             DisplayMetrics metrics = new DisplayMetrics();
             getWindow().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            int width = (int) (metrics.widthPixels * 0.95); // 90% chiều rộng màn hình
+            int width = (int) (metrics.widthPixels * 0.9); // 90% chiều rộng màn hình
             getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         managementCart = new ManagementCart(getContext());

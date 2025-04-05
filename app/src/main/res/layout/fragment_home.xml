@@ -135,9 +135,9 @@
                     app:layout_constraintTop_toBottomOf="@id/discountView"
                     app:layout_constraintBottom_toTopOf="@+id/rcmFoodList">
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Mon ngon phai thu"
+                        android:text="Món ngon phải thử"
                         android:textStyle="bold"
                         android:layout_marginStart="10dp"
                         android:layout_weight="0.6"
@@ -146,8 +146,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Xem tat ca"
-                        android:textColor="@color/black">
+                        android:text="Xem tất cả"
+                        android:textColor="@color/black"
+                        android:id="@+id/viewAllBtn">
                     </TextView>
                 </LinearLayout>
 

@@ -9,6 +9,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="60dp"
+        android:scaleType="centerCrop"
         android:layout_height="60dp"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/combo_my_khoai_nuoc"

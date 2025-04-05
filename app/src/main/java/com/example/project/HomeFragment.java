@@ -29,6 +29,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.project.adapter.RcmFoodAdapter;
 import com.example.project.helpers.TinyDB;
+import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.example.project.model.Food;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
@@ -42,26 +43,28 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
-    private TextView addressTxt,usernameTxt;
+    private TextView addressTxt,usernameTxt,viewAllBtn;
     private RecyclerView recyclerView;
     private ImageView editAddress;
     private List<Food> rcmFoodList;
     private RequestQueue requestQueue;
+    private OnFragmentSwitchListener listener;
     private TinyDB tinyDB;
     private ViewFlipper viewFlipper;
     String token;
     private ArrayList<Integer> discountList = new ArrayList<>();
+
+    public HomeFragment(OnFragmentSwitchListener listener) {
+        this.listener = listener;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
         init(view);
-        Log.d("TOKEN", "Token được gửi: " + token);
         getListRcmFood(token);
-
         return view;
     }
 
@@ -71,6 +74,7 @@ public class HomeFragment extends Fragment {
         editAddress = view.findViewById(R.id.editAddress);
         recyclerView = view.findViewById(R.id.rcmFoodList);
         usernameTxt = view.findViewById(R.id.usernameTxt);
+        viewAllBtn = view.findViewById(R.id.viewAllBtn);
         tinyDB = new TinyDB(requireContext());
         requestQueue = VolleySingleton.getmInstance(requireContext()).getRequestQueue();
         rcmFoodList = new ArrayList<>();
@@ -113,10 +117,12 @@ public class HomeFragment extends Fragment {
         }
 
         editAddress.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddressActivity.class)));
+
+        viewAllBtn.setOnClickListener(v -> listener.onSwitchToFragment("MENU"));
     }
 
     public void getListRcmFood(String token) {
-        String url = UrlUtil.ADDRESS + "products/1";
+        String url = UrlUtil.ADDRESS + "products/6";
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {

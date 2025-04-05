@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,7 +66,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHoder> {
 
         ImageView imageView;
         TextView name,price;
-        ConstraintLayout constraintLayout;
+        CardView constraintLayout;
         public FoodHoder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageview);

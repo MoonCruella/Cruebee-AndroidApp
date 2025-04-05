@@ -15,6 +15,7 @@ import com.example.project.MenuFragment;
 import com.example.project.ShowMoreFragment;
 import com.example.project.ShowMore_User_Fragment;
 import com.example.project.helpers.TinyDB;
+import com.example.project.interfaces.OnFragmentSwitchListener;
 
 public class ViewPager2Adapter extends FragmentStateAdapter {
 
@@ -34,9 +35,9 @@ public class ViewPager2Adapter extends FragmentStateAdapter {
         Boolean is_logged_in = tinyDB.getBoolean("is_logged_in");
         switch (position){
             case 0:
-                return new HomeFragment();
+                return new HomeFragment((OnFragmentSwitchListener) context);
             case 1:
-                return new MenuFragment();
+                return new MenuFragment((OnFragmentSwitchListener) context);
             case 2:
                 return new DiscountFragment();
             case 3:
@@ -46,7 +47,7 @@ public class ViewPager2Adapter extends FragmentStateAdapter {
                     return new ShowMoreFragment();
                 }
             default:
-                return new HomeFragment();
+                return new HomeFragment((OnFragmentSwitchListener) context);
         }
     }
 

@@ -15,7 +15,6 @@
         android:layout_height="0dp"
         android:background="@color/red"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -24,10 +23,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/fredoka_semibold"
+            android:fontFamily="@font/fonts_com_merge_bold"
             android:text="Thông tin đơn hàng"
             android:textColor="@color/white"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
             app:layout_constraintTop_toTopOf="@+id/toolbar"
@@ -37,12 +36,12 @@
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="413dp"
-        android:layout_height="781dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -78,15 +77,14 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txtAddress" />
-x
                 <TextView
                     android:id="@+id/txtAddress"
                     android:layout_width="305dp"
                     android:layout_height="32dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginEnd="28dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView

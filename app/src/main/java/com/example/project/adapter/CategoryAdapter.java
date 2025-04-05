@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -48,9 +49,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         Category category = categoryList.get(position);
         holder.txtCategory.setText(category.getName());
         Glide.with(context).load(category.getImage()).into(holder.imgCategory);
-
+        Typeface normalFont = ResourcesCompat.getFont(context, R.font.roboto);
+        Typeface boldFont = ResourcesCompat.getFont(context, R.font.fonts_com_merge_bold);
         holder.viewUnderline.setVisibility(position == selectedPosition ? View.VISIBLE : View.GONE);
-        holder.txtCategory.setTypeface(null, position == selectedPosition ? Typeface.BOLD : Typeface.NORMAL);
+        holder.txtCategory.setTypeface(position == selectedPosition ? boldFont : normalFont);
         // Xử lý sự kiện click
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -22,6 +22,7 @@
     import com.android.volley.toolbox.JsonArrayRequest;
     import com.example.project.adapter.CategoryListAdapter;
     import com.example.project.interfaces.OnCategoryScrollListener;
+    import com.example.project.interfaces.OnFragmentSwitchListener;
     import com.example.project.interfaces.OnItemClickListener;
     import com.example.project.model.Category;
     import com.example.project.adapter.CategoryAdapter;
@@ -39,13 +40,13 @@
     import java.util.Map;
 
     public class MenuFragment extends Fragment {
-
         private RecyclerView recyclerViewCategory;
         private OnCategoryScrollListener onCategoryScrollListener;
         private RecyclerView recyclerView;
         private RequestQueue requestQueue;
         private List<Food> foodList;
         private List<Category> categoryList1;
+        private OnFragmentSwitchListener listener;
         private List<Category> categoryList;
         CategoryAdapter adapter;
         private Map<Integer, Category> categoryMap = new LinkedHashMap<>();
@@ -53,6 +54,9 @@
         private int totalCategories = 0; // ??m t?ng s? danh m?c c?n t?i
         private int loadedCategories = 0; // ??m s? danh m?c ?� t?i xong m�n ?n
 
+        public MenuFragment(OnFragmentSwitchListener listener) {
+            this.listener = listener;
+        }
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,11 +18,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.project.adapter.ViewPager2Adapter;
+import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class BaseActivity extends AppCompatActivity implements CartDialog.OnFragmentSwitchListener  {
+public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchListener  {
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
     private FloatingActionButton fab;
@@ -64,7 +66,10 @@ public class BaseActivity extends AppCompatActivity implements CartDialog.OnFrag
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CartDialog cartDialog = new CartDialog((Context) BaseActivity.this, (CartDialog.OnFragmentSwitchListener) BaseActivity.this);
+                CartDialog cartDialog = new CartDialog( BaseActivity.this, (OnFragmentSwitchListener) BaseActivity.this);
+                cartDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                cartDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.custom_dialog_bg));
+                cartDialog.setCancelable(false);
                 cartDialog.show();
             }
         });
@@ -192,5 +197,6 @@ public class BaseActivity extends AppCompatActivity implements CartDialog.OnFrag
             viewPager.setCurrentItem(1, true); // Chuyển đến tab "Thực Đơn"
         }
     }
+
 
 }
