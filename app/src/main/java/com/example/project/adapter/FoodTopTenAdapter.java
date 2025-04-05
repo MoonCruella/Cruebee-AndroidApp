@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,31 +20,29 @@ import com.example.project.model.Food;
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHoder> {
-
+public class FoodTopTenAdapter extends RecyclerView.Adapter<FoodTopTenAdapter.FoodToptenHoder> {
     private Context context;
     private List<Food> foodList;
-    private int layoutId;
-    public FoodAdapter(Context context, List<Food> foods, int layoutId) {
+    public FoodTopTenAdapter(Context context, List<Food> foods) {
         this.context = context;
         this.foodList = foods;
-        this.layoutId = layoutId;
     }
     @NonNull
     @Override
-    public FoodHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(layoutId, parent, false);
-        return new FoodHoder(view);
+    public FoodToptenHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_food_top_ten, parent, false);
+        return new FoodToptenHoder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FoodHoder holder, int position) {
+    public void onBindViewHolder(@NonNull FoodToptenHoder holder, int position) {
 
         Food food = foodList.get(position);
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         String formattedPrice = decimalFormat.format(food.getPrice()) + " đ";
         holder.name.setText(food.getName());
         holder.price.setText(formattedPrice);
+        holder.soldCount.setText(String.valueOf(food.getSoldCount()));
         Glide.with(context).load(food.getImage()).into(holder.imageView);
 
         holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
@@ -64,17 +61,18 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHoder> {
         return foodList.size();
     }
 
-    public class FoodHoder extends RecyclerView.ViewHolder{
+    public class FoodToptenHoder extends RecyclerView.ViewHolder{
 
         ImageView imageView;
-        TextView name,price;
+        TextView name,price,soldCount;
         CardView constraintLayout;
-        public FoodHoder(@NonNull View itemView) {
+        public FoodToptenHoder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageview);
             name = itemView.findViewById(R.id.name);
             price = itemView.findViewById(R.id.price);
             constraintLayout = itemView.findViewById(R.id.main_layout);
+            soldCount = itemView.findViewById(R.id.soldCount);
         }
 
     }

@@ -41,7 +41,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         holder.categoryNameTextView.setText(category.getName());
 
         // Set the food items in the nested RecyclerView
-        FoodAdapter foodAdapter = new FoodAdapter(context, category.getFoods());
+        FoodAdapter foodAdapter = new FoodAdapter(context, category.getFoods(),R.layout.item_food);
         holder.foodRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));  // 2 columns for food items
         holder.foodRecyclerView.setAdapter(foodAdapter);
     }

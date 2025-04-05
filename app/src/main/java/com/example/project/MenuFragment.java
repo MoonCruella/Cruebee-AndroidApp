@@ -169,9 +169,9 @@
                             int price = jsonObject.getInt("price");
                             String imageId = jsonObject.getString("attachmentId");
                             String image = UrlUtil.ADDRESS + "download/" + imageId;
-                            String des = jsonObject.getString("description");
-                            Food food = new Food(id, name, price, image, des);
-                            foodList.add(food);
+                            String des = jsonObject.isNull("description") ? "" : jsonObject.getString("description");
+                            int soldCount = jsonObject.getInt("soldCount");
+                            foodList.add(new Food(id, name, price, image,soldCount, des));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

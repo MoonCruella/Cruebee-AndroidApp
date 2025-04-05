@@ -36,13 +36,17 @@
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="160dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/fonts_com_merge_bold"
+            android:maxLines="2"
             android:text="food-name"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/cardView"
             app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
@@ -51,10 +55,10 @@
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:text="price"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:textColor="@color/red"
             android:textSize="16sp"
-            android:fontFamily="@font/fredoka_semibold"
+            android:fontFamily="@font/fonts_com_merge_bold"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/name"

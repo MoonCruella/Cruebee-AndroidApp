@@ -145,13 +145,13 @@ public class ManagementCart {
                                 JSONObject cartItem = response.getJSONObject(i);
                                 int quantity = cartItem.getInt("quantity");
                                 JSONObject product = cartItem.getJSONObject("product");
-
+                                String des = product.isNull("description") ? "" : product.getString("description");
                                 foods.add(new Food(
                                         product.getInt("id"),
                                         product.getString("name"),
                                         product.getInt("price"),
                                         UrlUtil.ADDRESS + "download/" + product.getString("attachmentId"),
-                                        product.getString("description"),
+                                        des,
                                         quantity
                                 ));
                                 Log.d(TAG,"San pham: " + foods.get(0).getName());

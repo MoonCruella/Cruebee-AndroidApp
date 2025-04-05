@@ -14,9 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.card.MaterialCardView;
 
 public class PromotionDetailActivity extends AppCompatActivity {
 
+    MaterialCardView backBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +36,9 @@ public class PromotionDetailActivity extends AppCompatActivity {
         TextView titleView = findViewById(R.id.detailTitle);
         TextView descView = findViewById(R.id.detailDescription);
         TextView buyNowButton = findViewById(R.id.buyNowButton);
+        backBtn = findViewById(R.id.backBtn);
+
+        backBtn.setOnClickListener(v ->  getOnBackPressedDispatcher().onBackPressed());
 
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
@@ -52,7 +57,7 @@ public class PromotionDetailActivity extends AppCompatActivity {
 
         buyNowButton.setOnClickListener(v -> {
             Intent intent1 = new Intent(PromotionDetailActivity.this, BaseActivity.class);
-            intent1.putExtra("openMenu", true); // Gửi flag để mở MenuFragment
+            intent1.putExtra("opened_fragment", "MENU");; // Gửi flag để mở MenuFragment
             startActivity(intent1);
             finish(); // Đóng PromotionDetailActivity
         });

@@ -8,12 +8,15 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+
+import com.google.android.material.card.MaterialCardView;
 
 public class ShowMoreFragment extends Fragment {
 
