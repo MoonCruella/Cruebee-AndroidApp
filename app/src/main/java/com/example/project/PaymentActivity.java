@@ -35,6 +35,7 @@ import com.example.project.helpers.ManagementCart;
 import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
+import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.example.project.interfaces.TotalFeeResponse;
 import com.example.project.model.Food;
 import com.example.project.model.PaymentProduct;
@@ -266,7 +267,8 @@ public class PaymentActivity extends AppCompatActivity {
         themMonBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PaymentActivity.this, MenuFragment.class);
+                Intent intent=new Intent(PaymentActivity.this,BaseActivity.class);
+                intent.putExtra("opened_fragment", "MENU");
                 startActivity(intent);
             }
         });

@@ -60,9 +60,6 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
         tabLayout = findViewById(R.id.tabLayout);
         fab = findViewById(R.id.fabAction);
 
-
-
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,6 +186,14 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
             }
         });
 
+        Bundle b = getIntent().getExtras();
+        String name = (b != null) ? b.getString("opened_fragment") : null;
+
+        if ("MENU".equals(name)) {
+            viewPager.setCurrentItem(1, true);
+        } else {
+            viewPager.setCurrentItem(0, true);
+        }
 
     }
     @Override

@@ -64,7 +64,10 @@ public class AddressActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address);
-
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         edtAddress = findViewById(R.id.edtAddress);
         listView = findViewById(R.id.listView);
         addressForm = findViewById(R.id.address_form);
