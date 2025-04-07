@@ -131,8 +131,8 @@ public class ConfirmOTPActivity extends AppCompatActivity {
         progressDialog.show();
 
         StringRequest stringRequest = new StringRequest(
-                Request.Method.PUT,
-                "http://196.169.4.27:8888/regenerate-otp",
+                Request.Method.PUT, UrlUtil.ADDRESS +
+                "regenerate-otp",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

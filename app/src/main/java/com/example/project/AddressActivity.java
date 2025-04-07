@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -19,24 +20,29 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.adapter.AddressAdapter;
 import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
+import com.example.project.utils.UrlUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -51,6 +57,7 @@ public class AddressActivity extends AppCompatActivity {
     String selectedAddress;
 
     ProgressBar progressBar;
+    private ProgressDialog progressDialog;
     TinyDB tinyDB;
     private FusedLocationProviderClient fusedLocationClient;
     AddressAdapter addressAdapter;
@@ -123,6 +130,11 @@ public class AddressActivity extends AppCompatActivity {
             try {
                 JSONObject selectedJson = addressJsonList.get(position);
                 JSONObject addressDetails = selectedJson.getJSONObject("address");
+                // Lấy thông tin latitude và longitude từ đối tượng JSON
+                double latitude = selectedJson.getDouble("lat");
+                double longitude = selectedJson.getDouble("lon");
+                // In ra log để kiểm tra
+                Log.d("Coordinates", "Latitude: " + latitude + ", Longitude: " + longitude);
                 Log.d("Address" , addressDetails.toString());
 
                 // Lấy từng phần của địa chỉ
@@ -168,6 +180,8 @@ public class AddressActivity extends AppCompatActivity {
                     }
                 }
 
+                saveAddress(latitude,longitude,addressList.get(position));
+
                 // Cập nhật EditText
                 edtAddress.setText(addressList.get(position));
                 edtHouseNumber.setText(houseNumber);
@@ -202,12 +216,11 @@ public class AddressActivity extends AppCompatActivity {
                 } else {
 
                     // Luu vao de dung sau nay
-                    tinyDB.putString("UserAddress",selectedAddress);
-                    Log.d("TinyDB", "Địa chỉ đã lưu: " + tinyDB.getString("UserAddress"));
+                    tinyDB.putString("user_address",selectedAddress);
+                    Log.d("TinyDB", "Địa chỉ đã lưu: " + tinyDB.getString("user_address"));
 
                     Toast.makeText(AddressActivity.this, "Đã lưu địa chỉ!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddressActivity.this, BaseActivity.class);
-                    intent.putExtra("openHome", true); // Gửi dữ liệu để mở Home
+                    Intent intent = new Intent(AddressActivity.this, AddressShopActivity.class);
                     startActivity(intent);
                     finish();
 
@@ -319,6 +332,7 @@ public class AddressActivity extends AppCompatActivity {
                     // Tinh/Thanh pho
                     String state = address.getAdminArea();
 
+                    saveAddress(latitude,longitude,uAddress);
                     edtAddress.setText(uAddress);
                     selectedAddress = uAddress;
                     addressForm.setVisibility(View.VISIBLE);
@@ -343,6 +357,62 @@ public class AddressActivity extends AppCompatActivity {
         else{
             Toast.makeText(this, "Geocoder không có sẵn trên thiết bị", Toast.LENGTH_SHORT).show();
         }
+    }
+    private void saveAddress(Double latitude,Double longitude,String addressDetails){
+        tinyDB.putDouble("lat",latitude);
+        tinyDB.putDouble("lng",longitude);
+        int userId = tinyDB.getInt("userId");
+        int is_primary = 1;
+        com.example.project.model.Address addressRequest = new com.example.project.model.Address(userId,latitude,longitude,addressDetails,is_primary);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Saving your address...");
+        progressDialog.setCancelable(false);
+
+        progressDialog.show();
+
+        String url = UrlUtil.ADDRESS + "addresses/save"; // Replace with your backend URL
+
+        // Create the JSONObject for the POST request body
+        JSONObject requestBody = null;
+        try {
+            requestBody = addressRequest.toJson();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Create the JsonObjectRequest
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // Handle response from the server
+                        progressDialog.dismiss(); // Dismiss loading dialog
+                        Toast.makeText(AddressActivity.this, "Address saved successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle error
+                        progressDialog.dismiss(); // Dismiss loading dialog
+                        Toast.makeText(AddressActivity.this, "Failed to save address: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Set a retry policy if necessary
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                20 * 1000, // 20 seconds timeout
+                2,          // Max retries
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
+        // Add the request to the RequestQueue
+        requestQueue.add(jsonObjectRequest);
     }
 
 }

@@ -82,13 +82,14 @@ public class HomeFragment extends Fragment {
         rcmFoodList = new ArrayList<>();
         topTenFoodList = new ArrayList<>();
 
-        String fullAddress = tinyDB.getString("UserAddress");
+        String fullAddress = tinyDB.getString("user_address");
+        addressTxt.setText(fullAddress);
         if(tinyDB.getBoolean("is_logged_in")){
             String username = tinyDB.getString("username");
             token = tinyDB.getString("token");
             usernameTxt.setText(username);
         }
-        addressTxt.setText(fullAddress);
+
 
         Animation inAnimation = AnimationUtils.loadAnimation(requireContext(), android.R.anim.slide_in_left);
         Animation outAnimation = AnimationUtils.loadAnimation(requireContext(), android.R.anim.slide_out_right);
@@ -124,7 +125,7 @@ public class HomeFragment extends Fragment {
             viewFlipper.addView(imageView);
         }
 
-        editAddress.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddressActivity.class)));
+        editAddress.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddressShopActivity.class)));
 
         viewAllBtn.setOnClickListener(v -> listener.onSwitchToFragment("MENU"));
 

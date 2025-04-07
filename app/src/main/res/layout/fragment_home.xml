@@ -77,7 +77,6 @@
                         android:layout_height="0dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="10dp"
                         android:background="@drawable/border"
                         android:textAlignment="center"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,6 +88,7 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:layout_marginStart="10dp"
                             android:layout_gravity="center"
                             android:src="@drawable/maps_and_flags">
                         </ImageView>
@@ -100,7 +100,7 @@
                             android:layout_gravity="center"
                             android:layout_marginLeft="10dp"
                             android:layout_weight="0.6"
-                            android:text="Thêm địa chỉ của bạn"
+                            android:text="Chọn địa chỉ/cửa hàng"
                             tools:layout_editor_absoluteX="-23dp">
                         </TextView>
 
@@ -108,8 +108,9 @@
                             android:id="@+id/editAddress"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_gravity="center"
-                            android:layout_weight="0.2"
                             android:src="@drawable/pen">
                         </ImageView>
                     </LinearLayout>
