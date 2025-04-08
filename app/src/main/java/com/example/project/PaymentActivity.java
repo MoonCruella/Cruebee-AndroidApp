@@ -223,6 +223,7 @@ public class PaymentActivity extends AppCompatActivity {
                             Log.e(TAG, "Lỗi khi tính tổng tiền: " + errorMessage);
                         }
                     });
+                    Log.d("ID", "" + tinyDB.getInt("userId"));
                     userObject.put("id", tinyDB.getInt("userId"));
                     jsonBody.put("user", userObject);
                     jsonBody.put("addressUser", addUser);
