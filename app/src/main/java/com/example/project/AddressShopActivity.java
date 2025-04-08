@@ -90,7 +90,6 @@ public class AddressShopActivity extends AppCompatActivity {
     }
 
     private void findShopIn10Km(double lat, double lng) {
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading");
         progressDialog.setMessage("Loading... Please wait...!!");

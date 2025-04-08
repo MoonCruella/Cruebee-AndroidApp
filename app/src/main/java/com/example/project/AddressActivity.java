@@ -55,6 +55,7 @@ public class AddressActivity extends AppCompatActivity {
     EditText edtAddress,edtHouseNumber, edtStreet, edtWard, edtDistrict, edtProvince;
     ListView listView;
     String selectedAddress;
+    Double lng,lat;
 
     ProgressBar progressBar;
     private ProgressDialog progressDialog;
@@ -180,7 +181,8 @@ public class AddressActivity extends AppCompatActivity {
                     }
                 }
 
-                saveAddress(latitude,longitude,addressList.get(position));
+                this.lat = latitude;
+                this.lng = longitude;
 
                 // Cập nhật EditText
                 edtAddress.setText(addressList.get(position));
@@ -214,11 +216,7 @@ public class AddressActivity extends AppCompatActivity {
                 if (houseNumber.isEmpty() || ward.isEmpty() || district.isEmpty() || province.isEmpty()) {
                     Toast.makeText(AddressActivity.this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
                 } else {
-
-                    // Luu vao de dung sau nay
-                    tinyDB.putString("user_address",selectedAddress);
-                    Log.d("TinyDB", "Địa chỉ đã lưu: " + tinyDB.getString("user_address"));
-
+                    saveAddress(lat,lng,selectedAddress);
                     Toast.makeText(AddressActivity.this, "Đã lưu địa chỉ!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddressActivity.this, AddressShopActivity.class);
                     startActivity(intent);
@@ -284,12 +282,10 @@ public class AddressActivity extends AppCompatActivity {
                     Location newLocation = locationResult.getLastLocation();
                     progressBar.setVisibility(View.GONE);
 
-                    if (lastLocation == null || newLocation.distanceTo(lastLocation) > 50) { // Kiểm tra nếu vị trí thay đổi 50m
-                        lastLocation = newLocation;
-                        handleLocationResult(newLocation);
-                    } else {
-                        Log.d("Location", "Vị trí mới không khác xa vị trí cũ.");
-                    }
+                  // Kiểm tra nếu vị trí thay đổi 50m
+                    lastLocation = newLocation;
+                    handleLocationResult(newLocation);
+
                 }
             }
         }, Looper.getMainLooper());
@@ -332,7 +328,8 @@ public class AddressActivity extends AppCompatActivity {
                     // Tinh/Thanh pho
                     String state = address.getAdminArea();
 
-                    saveAddress(latitude,longitude,uAddress);
+                    this.lat = latitude;
+                    this.lng = longitude;
                     edtAddress.setText(uAddress);
                     selectedAddress = uAddress;
                     addressForm.setVisibility(View.VISIBLE);
@@ -361,58 +358,65 @@ public class AddressActivity extends AppCompatActivity {
     private void saveAddress(Double latitude,Double longitude,String addressDetails){
         tinyDB.putDouble("lat",latitude);
         tinyDB.putDouble("lng",longitude);
-        int userId = tinyDB.getInt("userId");
-        int is_primary = 1;
-        com.example.project.model.Address addressRequest = new com.example.project.model.Address(userId,latitude,longitude,addressDetails,is_primary);
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Saving your address...");
-        progressDialog.setCancelable(false);
+        tinyDB.putString("user_address",selectedAddress);
+        Log.d("TinyDB", "Địa chỉ đã lưu: " + tinyDB.getString("user_address"));
 
-        progressDialog.show();
 
-        String url = UrlUtil.ADDRESS + "addresses/save"; // Replace with your backend URL
+        if(tinyDB.getBoolean("is_logged_in")){
+            int userId = tinyDB.getInt("userId");
+            int is_primary = 1;
+            com.example.project.model.Address addressRequest = new com.example.project.model.Address(userId,latitude,longitude,addressDetails,is_primary);
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Loading");
+            progressDialog.setMessage("Saving your address...");
+            progressDialog.setCancelable(false);
 
-        // Create the JSONObject for the POST request body
-        JSONObject requestBody = null;
-        try {
-            requestBody = addressRequest.toJson();
-        } catch (JSONException e) {
-            e.printStackTrace();
+            progressDialog.show();
+
+            String url = UrlUtil.ADDRESS + "addresses/save"; // Replace with your backend URL
+
+            // Create the JSONObject for the POST request body
+            JSONObject requestBody = null;
+            try {
+                requestBody = addressRequest.toJson();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            // Create the JsonObjectRequest
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.POST,
+                    url,
+                    requestBody,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            // Handle response from the server
+                            progressDialog.dismiss(); // Dismiss loading dialog
+                            Toast.makeText(AddressActivity.this, "Address saved successfully!", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // Handle error
+                            progressDialog.dismiss(); // Dismiss loading dialog
+                            Toast.makeText(AddressActivity.this, "Failed to save address: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            );
+
+            // Set a retry policy if necessary
+            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    20 * 1000, // 20 seconds timeout
+                    2,          // Max retries
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            ));
+
+            // Add the request to the RequestQueue
+            requestQueue.add(jsonObjectRequest);
         }
 
-        // Create the JsonObjectRequest
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST,
-                url,
-                requestBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // Handle response from the server
-                        progressDialog.dismiss(); // Dismiss loading dialog
-                        Toast.makeText(AddressActivity.this, "Address saved successfully!", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle error
-                        progressDialog.dismiss(); // Dismiss loading dialog
-                        Toast.makeText(AddressActivity.this, "Failed to save address: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        // Set a retry policy if necessary
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                20 * 1000, // 20 seconds timeout
-                2,          // Max retries
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
-
-        // Add the request to the RequestQueue
-        requestQueue.add(jsonObjectRequest);
     }
 
 }

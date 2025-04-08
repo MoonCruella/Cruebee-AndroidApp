@@ -3,7 +3,9 @@ package com.example.project.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Address {
+import java.io.Serializable;
+
+public class Address implements Serializable {
     private int id;
     private int is_primary;
     private String  address_details;
