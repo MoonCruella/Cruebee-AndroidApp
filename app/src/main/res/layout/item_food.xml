@@ -1,64 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_margin="6dp"
+    app:cardCornerRadius="16dp"
     android:id="@+id/main_layout"
-    android:paddingBottom="16dp"
-    android:layout_height="wrap_content">
+    app:cardElevation="5dp"
+    android:foreground="?attr/selectableItemBackground">
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
+            app:cardElevation="10dp"
+            app:cardCornerRadius="16dp"
+            android:id="@+id/cardView"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp">
+            tools:ignore="MissingConstraints">
+        <ImageView
+            android:id="@+id/imageview"
+            android:layout_width="160dp"
+            android:layout_height="145dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/food_model"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/imageview"
-                android:layout_width="160dp"
-                android:layout_height="145dp"
-                android:layout_marginTop="8dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/combo_my_khoai_nuoc"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/fonts_com_merge_bold"
+            android:maxLines="2"
+            android:text="food-name"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/cardView"
+            app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="food-name"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/imageview"
-                app:layout_constraintTop_toBottomOf="@+id/imageview" />
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="price"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:fontFamily="@font/fonts_com_merge_bold"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name" />
 
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:text="price"
-                android:layout_marginTop="15dp"
-                android:textColor="@color/red"
-                android:textSize="20sp"
-                android:fontFamily="@font/fredoka_semibold"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/name"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/name" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

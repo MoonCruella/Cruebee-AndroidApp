@@ -24,19 +24,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.project.adapter.CartListAdapter;
 import com.example.project.adapter.FoodListPaymentAdapter;
 import com.example.project.helpers.ManagementCart;
 import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
+import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.example.project.interfaces.TotalFeeResponse;
 import com.example.project.model.Food;
 import com.example.project.model.PaymentProduct;
@@ -58,7 +57,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 public class PaymentActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -78,6 +76,11 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+
         spinnerDate = findViewById(R.id.spinnerDate);
         spinnerTime = findViewById(R.id.spinnerTime);
         managementCart = new ManagementCart(this);
@@ -265,7 +268,8 @@ public class PaymentActivity extends AppCompatActivity {
         themMonBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PaymentActivity.this, MenuFragment.class);
+                Intent intent=new Intent(PaymentActivity.this,BaseActivity.class);
+                intent.putExtra("opened_fragment", "MENU");
                 startActivity(intent);
             }
         });

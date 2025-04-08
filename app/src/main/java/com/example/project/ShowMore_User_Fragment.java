@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.project.helpers.TinyDB;
+import com.google.android.material.card.MaterialCardView;
 
 public class ShowMore_User_Fragment extends Fragment {
     ConstraintLayout supportBtn,verifyBtn,settingsBtn,couponBtn,specialBtn,addressBtn,orderBtn;
@@ -41,6 +42,7 @@ public class ShowMore_User_Fragment extends Fragment {
         orderBtn = (ConstraintLayout) view.findViewById(R.id.orderBtn);
         usernameTxt = view.findViewById(R.id.usernameTxt);
         editAccountBtn = view.findViewById(R.id.editAccountBtn);
+
 
         editAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override

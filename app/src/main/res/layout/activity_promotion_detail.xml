@@ -20,10 +20,32 @@
             android:layout_height="0dp"
             android:orientation="vertical">
 
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/backBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="#80000000"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0.01dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/back_icon"
+                    android:gravity="center" />
+            </com.google.android.material.card.MaterialCardView>
+
             <ImageView
                 android:id="@+id/detailImage"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="220dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="parent" />
 

@@ -1,16 +1,27 @@
 package com.example.project;
 
+import android.graphics.Outline;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.lifecycle.GenericLifecycleObserver;
 
 import com.bumptech.glide.Glide;
@@ -21,6 +32,9 @@ import com.example.project.utils.UrlUtil;
 import org.json.JSONException;
 
 import java.text.DecimalFormat;
+
+import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class ShowDetailActivity extends AppCompatActivity {
     private TextView addToCartBtn;
@@ -35,11 +49,15 @@ public class ShowDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_show_detail);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+        ConstraintLayout mainLayout = findViewById(R.id.main);
+
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
+            Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            v.setPadding(0, 0, 0, navBarInsets.bottom); // đẩy layout lên khỏi nav bar
             return insets;
         });
+
+
 
         managementCart = new ManagementCart(this);
         initView();
@@ -55,7 +73,32 @@ public class ShowDetailActivity extends AppCompatActivity {
         plusBtn = findViewById(R.id.plusImgView);
         minusBtn = findViewById(R.id.minusImgView);
         picFood = findViewById(R.id.foodImgView);
+        BlurView blurView = findViewById(R.id.blurView);
+        LinearLayout contentLayout = findViewById(R.id.content);
 
+        // Wait for the layout to be fully measured
+        contentLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                // Get the height of the LinearLayout
+                int contentHeight = contentLayout.getHeight();
+
+                // Set the BlurView's height to match the content's height
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) blurView.getLayoutParams();
+                params.height = contentHeight;
+                blurView.setLayoutParams(params);
+
+                // Optionally, you can setup the BlurView with other configurations
+                View decorView = getWindow().getDecorView();
+                ViewGroup rootView = (ViewGroup) decorView.findViewById(android.R.id.content);
+
+                Drawable windowBackground = decorView.getBackground();
+                blurView.setClipToOutline(true);
+                blurView.setupWith(rootView)
+                        .setFrameClearDrawable(windowBackground)
+                        .setBlurRadius(20f);  // Adjust blur radius as needed
+            }
+        });
 
 
     }

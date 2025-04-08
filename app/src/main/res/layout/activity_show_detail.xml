@@ -17,34 +17,66 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/titleTxt"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="60dp"
-                android:text="title"
-                android:textAlignment="center"
-                android:textColor="#373b54"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                app:cardElevation="10dp"
+                app:cardCornerRadius="20dp">
 
-            <TextView
-                android:id="@+id/priceTxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="$"
-                android:textAlignment="center"
-                android:textColor="#ff5e00"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/foodImgView"
-                android:layout_width="wrap_content"
-                android:layout_height="300dp"
-                android:layout_weight="1"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/comboga_nuoc" />
+                    <!-- ImageView with the background image -->
+                    <ImageView
+                        android:id="@+id/foodImgView"
+                        android:layout_width="match_parent"
+                        android:layout_height="450dp"
+                        android:layout_gravity="top|center_horizontal"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/comboga_nuoc" />
+
+                    <!-- BlurView over the image, to blur it -->
+                    <eightbitlab.com.blurview.BlurView
+                        android:id="@+id/blurView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="bottom|center_horizontal"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="20dp"
+                            android:layout_gravity="bottom|start"
+                            android:id="@+id/content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/titleTxt"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="title"
+                                android:fontFamily="@font/fonts_com_merge_bold"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                tools:ignore="RtlCompat" />
+
+                            <TextView
+                                android:id="@+id/priceTxt"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="$"
+                                android:fontFamily="@font/fonts_com_merge_bold"
+                                android:textAlignment="center"
+                                android:textColor="@color/red"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                tools:ignore="RtlCompat" />
+                        </LinearLayout>
+                </FrameLayout>
+            </androidx.cardview.widget.CardView>
 
 
             <LinearLayout
@@ -52,6 +84,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
+                android:layout_marginTop="20dp"
                 android:padding="16dp">
 
                 <ImageView
@@ -66,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:text="1"
                     android:textSize="20sp"
-                    android:textColor="#373b54"
+                    android:textColor="@color/red"
                     android:textStyle="bold"
                     android:paddingHorizontal="20dp"
                     android:textAlignment="center"/>

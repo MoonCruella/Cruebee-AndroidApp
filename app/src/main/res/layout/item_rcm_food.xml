@@ -1,78 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:card_view="http://schemas.android.com/tools">
+    android:layout_marginStart="20dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp"
+    app:cardCornerRadius="16dp"
+    android:id="@+id/main_layout"
+    android:backgroundTint="@color/gray"
+    app:cardElevation="5dp"
+    android:foreground="?attr/selectableItemBackground">
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="340dp"
         android:layout_height="160dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="2dp"
-        android:layout_margin="2dp"
-        app:cardUseCompatPadding="true"
         android:background="@color/white">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/foodImg"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.4"
-                app:srcCompat="@drawable/banner_discount_01" />
+        <ImageView
+            android:id="@+id/foodImg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.4"
+            app:srcCompat="@drawable/banner_discount_01" />
 
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="0dp"
-                android:padding="10dp"
-                android:gravity="center_vertical"
-                app:layout_constraintWidth_percent="0.6"
-                android:layout_height="match_parent"
-                app:layout_constraintStart_toEndOf="@+id/foodImg"
-                android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:padding="10dp"
+            android:gravity="center_vertical"
+            app:layout_constraintWidth_percent="0.6"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toEndOf="@+id/foodImg"
+            android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/foodName"
-                    android:layout_width="match_parent"
-                    android:layout_height="22dp"
-                    android:fontFamily="@font/fonts_com_merge_bold"
-                    android:maxWidth="200dp"
-                    android:textSize="16sp"
-                    android:text="Combo ăn một mình"
-                    android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/foodName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:fontFamily="@font/fonts_com_merge_bold"
+                android:maxWidth="200dp"
+                android:textSize="16sp"
+                android:text="Combo ăn một mình"
+                android:textColor="@color/black" />
 
-                <TextView
-                    android:id="@+id/foodPrice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="price"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:textColor="@color/red"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/fredoka_semibold" />
+            <TextView
+                android:id="@+id/foodPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="price"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/red"
+                android:textSize="16sp"
+                android:fontFamily="@font/fonts_com_merge_bold" />
 
-                <TextView
-                    android:id="@+id/btnBuy"
-                    android:background="@drawable/border"
-                    android:backgroundTint="@color/red"
-                    android:fontFamily="@font/fonts_com_merge_bold"
-                    android:paddingStart="30dp"
-                    android:paddingEnd="30dp"
-                    android:paddingTop="10dp"
-                    android:textColor="@color/white"
-                    android:paddingBottom="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Mua ngay" />
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/btnBuy"
+                android:background="@drawable/border"
+                android:backgroundTint="@color/red"
+                android:fontFamily="@font/fonts_com_merge_bold"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:paddingTop="10dp"
+                android:textColor="@color/white"
+                android:paddingBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mua ngay" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+
+</androidx.cardview.widget.CardView>

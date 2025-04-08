@@ -51,4 +51,5 @@ dependencies {
     implementation(libs.gravitysnaphelper)
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
+    implementation("com.github.Dimezis:BlurView:version-2.0.4")
 }

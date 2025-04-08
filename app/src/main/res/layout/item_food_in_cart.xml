@@ -1,87 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:layout_margin="5dp"
+    app:cardCornerRadius="16dp"
+    android:id="@+id/main_layout"
+    app:cardElevation="1dp"
+    android:foreground="?attr/selectableItemBackground">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:padding="10dp"
+        android:layout_height="wrap_content">
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        app:cardCornerRadius="16dp"
+        android:id="@+id/cardView"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="60dp"
+        android:scaleType="centerCrop"
         android:layout_height="60dp"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/combo_my_khoai_nuoc"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteY="0dp" />
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/plusImgView"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="61dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="60dp"
         android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/minusImgView"
         app:layout_constraintTop_toBottomOf="@+id/descriptionTxt"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/plus2"
-        tools:ignore="MissingConstraints" />
+        app:srcCompat="@drawable/plus2"/>
 
     <TextView
         android:id="@+id/titleTxt"
-        android:layout_width="180dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_max="130dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:maxLines="2"
+        android:fontFamily="@font/fonts_com_merge_bold"
+        android:ellipsize="end"
         android:text="Name"
         android:textColor="@color/black"
-        android:textSize="18dp"
+        android:textSize="14dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView" />
+        app:layout_constraintStart_toEndOf="@+id/cardView"
+        app:layout_constraintTop_toTopOf="@+id/cardView" />
 
-    <ImageView
-        android:id="@+id/minusImgView"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/descriptionTxt"
-        app:srcCompat="@drawable/minus2" />
+        <ImageView
+            android:id="@+id/minusImgView"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionTxt"
+            app:srcCompat="@drawable/minus2" />
 
-    <TextView
-        android:id="@+id/numTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/plusImgView"
-        app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toEndOf="@+id/minusImgView"
-        app:layout_constraintTop_toBottomOf="@+id/descriptionTxt"
-        app:layout_constraintVertical_bias="0.828"
-        tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/numTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/plusImgView"
+            app:layout_constraintEnd_toStartOf="@+id/plusImgView"
+            app:layout_constraintStart_toEndOf="@+id/minusImgView"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionTxt"
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
+        <TextView
         android:id="@+id/priceTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:text="0 đ"
         android:textColor="@color/red"
-        android:textSize="18sp"
+        android:textSize="14sp"
+        android:fontFamily="@font/fonts_com_merge_bold"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/titleTxt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/titleTxt"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/descriptionTxt"
-        android:layout_width="180dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_max="200dp"
+        android:maxLines="2"
+        android:fontFamily="@font/roboto"
+        android:ellipsize="end"
+        android:textSize="13sp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="TextView"
@@ -89,19 +113,9 @@
         app:layout_constraintTop_toBottomOf="@+id/titleTxt" />
 
     <ImageView
-        android:id="@+id/editBtn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="36dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/deleteBtn"
-        app:layout_constraintTop_toTopOf="@+id/deleteBtn"
-        app:srcCompat="@drawable/pen" />
-
-    <ImageView
         android:id="@+id/deleteBtn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
 
         android:layout_marginEnd="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -109,4 +123,5 @@
         app:layout_constraintTop_toBottomOf="@+id/priceTxt"
         app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/bin" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
