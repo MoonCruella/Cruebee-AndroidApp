@@ -1,6 +1,7 @@
 package com.example.project.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.project.BaseActivity;
 import com.example.project.R;
+import com.example.project.helpers.TinyDB;
 import com.example.project.model.AddressShop;
 import java.util.List;
 
@@ -45,8 +47,10 @@ public class AddressShopAdapter extends RecyclerView.Adapter<AddressShopAdapter.
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, BaseActivity.class);
-                //intent.putExtra("opened_fragment","HOME");
                 context.startActivity(intent);
+                TinyDB tinyDB = new TinyDB(context);
+                tinyDB.putObject("addressShop",addressShop);
+                ((Activity) context).finish();
             }
         });
 

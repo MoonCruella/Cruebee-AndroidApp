@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.DefaultRetryPolicy;
@@ -13,7 +12,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.Address;
@@ -24,9 +22,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AddressDetailsActivity extends AppCompatActivity {
+public class AddAddressActivity extends AppCompatActivity {
 
-    TextView usernameTxt,sdtTxt, addressTxt,noteTxt,saveBtn,removeBtn;
+    TextView usernameTxt,sdtTxt, addressTxt,noteTxt,saveBtn;
     TextInputLayout address_form;
     SwitchMaterial switch_is_primary;
     int is_primary,addressId;
@@ -37,7 +35,7 @@ public class AddressDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_address_details);
+        setContentView(R.layout.activity_add_address);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
         getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -54,7 +52,6 @@ public class AddressDetailsActivity extends AppCompatActivity {
         noteTxt = findViewById(R.id.noteTxt);
         address_form = findViewById(R.id.address_form);
         saveBtn =findViewById(R.id.saveTxt);
-        removeBtn = findViewById(R.id.removeBtn);
         switch_is_primary = findViewById(R.id.switch_is_primary);
         address = (Address) getIntent().getSerializableExtra("object");
 
@@ -70,7 +67,7 @@ public class AddressDetailsActivity extends AppCompatActivity {
         address_form.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AddressDetailsActivity.this, EnterAddressActivity.class);
+                Intent intent = new Intent(AddAddressActivity.this, EnterAddressActivity.class);
                 intent.putExtra("object",address);
                 startActivityForResult(intent,133);
             }
@@ -78,21 +75,12 @@ public class AddressDetailsActivity extends AppCompatActivity {
         addressTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AddressDetailsActivity.this, EnterAddressActivity.class);
+                Intent intent = new Intent(AddAddressActivity.this, EnterAddressActivity.class);
                 intent.putExtra("object",address);
                 startActivityForResult(intent,133);
             }
         });
-        removeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeAddress(address.getId());
-                Intent intent = new Intent(AddressDetailsActivity.this, DeliveryAddressActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-            }
-        });
+
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,13 +91,12 @@ public class AddressDetailsActivity extends AppCompatActivity {
                 else {
                     is_primary = 0;
                 }
-
                 Address addressUser = new Address(address.getId(),is_primary,address.getAddress_details(),address.getLatitude(),address.getLongitude(),address.getUserId(),usernameTxt.getText().toString(),noteTxt.getText().toString(),sdtTxt.getText().toString());
                 if(is_primary == 1){
                     tinyDB.putObject("address",addressUser);
                 }
                 updateAddress(addressUser);
-                Intent intent = new Intent(AddressDetailsActivity.this, DeliveryAddressActivity.class);
+                Intent intent = new Intent(AddAddressActivity.this, DeliveryAddressActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
@@ -117,89 +104,54 @@ public class AddressDetailsActivity extends AppCompatActivity {
         });
     }
 
-    public void removeAddress(int addressId){
+    public void updateAddress(Address address){
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Deleting your address...");
+        progressDialog.setMessage("Saving your address...");
         progressDialog.setCancelable(false);
 
         progressDialog.show();
 
-        String url = UrlUtil.ADDRESS + "addresses/delete?addressId=" + addressId;
+        String url = UrlUtil.ADDRESS + "addresses/add";
+        // Create the JSONObject for the POST request body
+        JSONObject requestBody = null;
+        try {
+            requestBody = address.toJson();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        StringRequest jsonObjectRequest = new StringRequest(
+        // Create the JsonObjectRequest
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,
                 url,
-                new Response.Listener<String>() {
+                requestBody,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                        progressDialog.hide();
+                    public void onResponse(JSONObject response) {
+                        // Handle response from the server
+                        progressDialog.dismiss(); // Dismiss loading dialog
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // Handle error
-                        progressDialog.hide();
+                        progressDialog.dismiss(); // Dismiss loading dialog
                     }
                 }
         );
 
+        // Set a retry policy if necessary
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                20 * 1000, // 20 seconds timeout
+                2,          // Max retries
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
 
+        // Add the request to the RequestQueue
         requestQueue.add(jsonObjectRequest);
-    }
-
-
-    public void updateAddress(Address address){
-
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Loading");
-            progressDialog.setMessage("Saving your address...");
-            progressDialog.setCancelable(false);
-
-            progressDialog.show();
-
-            String url = UrlUtil.ADDRESS + "addresses/update";
-            // Create the JSONObject for the POST request body
-            JSONObject requestBody = null;
-            try {
-                requestBody = address.toJson();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            // Create the JsonObjectRequest
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                    Request.Method.POST,
-                    url,
-                    requestBody,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            // Handle response from the server
-                            progressDialog.dismiss(); // Dismiss loading dialog
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // Handle error
-                            progressDialog.dismiss(); // Dismiss loading dialog
-                        }
-                    }
-            );
-
-            // Set a retry policy if necessary
-            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                    20 * 1000, // 20 seconds timeout
-                    2,          // Max retries
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            ));
-
-            // Add the request to the RequestQueue
-            requestQueue.add(jsonObjectRequest);
     }
 
     @Override

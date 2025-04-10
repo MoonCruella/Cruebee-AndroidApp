@@ -1,7 +1,9 @@
 package com.example.project;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,7 +68,13 @@ public class DeliveryAddressActivity extends AppCompatActivity {
         addAddressBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                String username = tinyDB.getString("username");
+                int userId = tinyDB.getInt("userId");
+                String sdt = tinyDB.getString("sdt");
+                Intent intent = new Intent(DeliveryAddressActivity.this, AddAddressActivity.class);
+                Address address = new Address(0,0,null,0,0,userId,username,null,sdt);
+                intent.putExtra("object",address);
+                startActivity(intent);
             }
         });
 
@@ -79,6 +87,7 @@ public class DeliveryAddressActivity extends AppCompatActivity {
         progressDialog.show();
 
         int userId = tinyDB.getInt("userId");
+        Log.d("USERID : ", String.valueOf(userId));
         String url = UrlUtil.ADDRESS + "addresses?userId=" + userId;
 
         StringRequest stringRequest = new StringRequest(
@@ -100,10 +109,14 @@ public class DeliveryAddressActivity extends AppCompatActivity {
                                 int id = address.getInt("id");
                                 int isPrimary = address.getInt("isPrimary");
                                 String addressDetails = address.getString("addressDetails");
-                                int latitude = address.getInt("latitude");
-                                int longitude = address.getInt("longitude");
-
-                                addresses.add(new Address(id,isPrimary,addressDetails,latitude,longitude,userId));
+                                double latitude = address.getDouble("latitude");
+                                double longitude = address.getDouble("longitude");
+                                String username = address.getString("username");
+                                String sdt = address.getString("sdt");
+                                String note = address.getString("note");
+                                Address address1 = new Address(id,isPrimary,addressDetails,latitude,longitude,userId,username,note,sdt);
+                                Log.d("ADDRESS",address1.toString());
+                                addresses.add(address1);
                             }
                             // Cập nhật adapter cho RecyclerView
                             adapter = new AddressUserAdapter(DeliveryAddressActivity.this,addresses);
