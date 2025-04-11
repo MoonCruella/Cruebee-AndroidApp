@@ -328,8 +328,13 @@ public class PaymentActivity extends AppCompatActivity {
         addressShopTxt = findViewById(R.id.txtShop);
         AddressShop addressShop = tinyDB.getObject("addressShop", AddressShop.class);
         addressShopTxt.setText(addressShop.getName());
-        Address addressUser = tinyDB.getObject("address", Address.class);
-        addressTxt.setText(addressUser.getAddress_details());
+        String addUser = tinyDB.getString("user_address");
+        if(tinyDB.getBoolean("is_logged_in"))
+        {
+            Address addressUser = tinyDB.getObject("address", Address.class);
+            addUser = addressUser.getAddress_details();
+        }
+        addressTxt.setText(addUser);
         btnShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
