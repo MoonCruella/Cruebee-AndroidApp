@@ -77,13 +77,11 @@ public class ManagementCart {
                 // Nếu người dùng đã đăng nhập, gọi API để cập nhật giỏ hàng trên server
                 if (is_logged_in) {
                     updateCartOnServer(food,food.getNumberInCart());
-                    // Hiển thị thông báo cho người dùng
-                    Toast.makeText(context,"UserID : " + userId,Toast.LENGTH_SHORT).show();
                     Toast.makeText(context, "Đã thêm vào giỏ API", Toast.LENGTH_SHORT).show();
                 } else {
+
                     // Nếu chưa đăng nhập, lưu vào TinyDB
                     tinyDB.putListObject("CartList", listFood);
-                    // Hiển thị thông báo cho người dùng
                     Toast.makeText(context, "Đã thêm vào giỏ ", Toast.LENGTH_SHORT).show();
                 }
 
@@ -200,8 +198,13 @@ public class ManagementCart {
             // Kiem tra neu nguoi dung da login => Xoa sp trong Database Cart
             if(is_logged_in){
                 deleteFromCart(food);
+                listFood.remove(position);
             }
-            listFood.remove(position);
+            else {
+                listFood.remove(position);
+                tinyDB.putListObject("CartList", listFood);
+            }
+
         }
         else {
             if(is_logged_in){

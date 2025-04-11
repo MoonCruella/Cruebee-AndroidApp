@@ -69,6 +69,7 @@ public class AddAddressActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(AddAddressActivity.this, EnterAddressActivity.class);
                 intent.putExtra("object",address);
+                intent.putExtra("is_add", true);
                 startActivityForResult(intent,133);
             }
         });
@@ -106,13 +107,6 @@ public class AddAddressActivity extends AppCompatActivity {
 
     public void updateAddress(Address address){
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Saving your address...");
-        progressDialog.setCancelable(false);
-
-        progressDialog.show();
-
         String url = UrlUtil.ADDRESS + "addresses/add";
         // Create the JSONObject for the POST request body
         JSONObject requestBody = null;
@@ -130,15 +124,13 @@ public class AddAddressActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Handle response from the server
-                        progressDialog.dismiss(); // Dismiss loading dialog
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Handle error
-                        progressDialog.dismiss(); // Dismiss loading dialog
+
                     }
                 }
         );

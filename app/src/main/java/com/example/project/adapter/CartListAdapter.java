@@ -108,7 +108,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
         return foods.size();
     }
 
-    public class CartListViewHolder extends RecyclerView.ViewHolder{
+    public static class CartListViewHolder extends RecyclerView.ViewHolder{
 
         TextView title,price,num,des;
         ImageView pic,plusItem,minusItem;

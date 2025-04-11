@@ -95,8 +95,10 @@ public class HomeFragment extends Fragment {
         rcmFoodList = new ArrayList<>();
         topTenFoodList = new ArrayList<>();
 
-        String fullAddress = tinyDB.getString("user_address");
-        addressTxt.setText(fullAddress);
+        if(tinyDB.getString("user_address") != null){
+            String fullAddress = tinyDB.getString("user_address");
+            addressTxt.setText(fullAddress);
+        }
         if(tinyDB.getBoolean("is_logged_in")){
             String username = tinyDB.getString("username");
             token = tinyDB.getString("token");
@@ -267,9 +269,13 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        String fullAddress = tinyDB.getString("user_address");
-        addressTxt.setText(fullAddress);
-        if (tinyDB.getBoolean("is_logged_in")) {
+        boolean hasAddress = tinyDB.getAll().containsKey("address");
+        boolean hasUAddress = tinyDB.getAll().containsKey("user_address");
+        if(hasUAddress){
+            String fullAddress = tinyDB.getString("user_address");
+            addressTxt.setText(fullAddress);
+        }
+        if (tinyDB.getBoolean("is_logged_in") && hasAddress) {
             addressTxt.setText(tinyDB.getObject("address", Address.class).getAddress_details());
         }
     }
