@@ -30,7 +30,6 @@ public class AddressDetailsActivity extends AppCompatActivity {
     TextInputLayout address_form;
     SwitchMaterial switch_is_primary;
     int is_primary,addressId;
-    private ProgressDialog progressDialog;
     TinyDB tinyDB;
     RequestQueue requestQueue;
     Address address;
@@ -72,6 +71,7 @@ public class AddressDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(AddressDetailsActivity.this, EnterAddressActivity.class);
                 intent.putExtra("object",address);
+                intent.putExtra("is_add", false);
                 startActivityForResult(intent,133);
             }
         });
@@ -118,12 +118,6 @@ public class AddressDetailsActivity extends AppCompatActivity {
     }
 
     public void removeAddress(int addressId){
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Deleting your address...");
-        progressDialog.setCancelable(false);
-
-        progressDialog.show();
 
         String url = UrlUtil.ADDRESS + "addresses/delete?addressId=" + addressId;
 
@@ -133,14 +127,14 @@ public class AddressDetailsActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.hide();
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // Handle error
-                        progressDialog.hide();
+
                     }
                 }
         );
@@ -153,13 +147,6 @@ public class AddressDetailsActivity extends AppCompatActivity {
 
 
     public void updateAddress(Address address){
-
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Loading");
-            progressDialog.setMessage("Saving your address...");
-            progressDialog.setCancelable(false);
-
-            progressDialog.show();
 
             String url = UrlUtil.ADDRESS + "addresses/update";
             // Create the JSONObject for the POST request body
@@ -179,14 +166,14 @@ public class AddressDetailsActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
                             // Handle response from the server
-                            progressDialog.dismiss(); // Dismiss loading dialog
+
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             // Handle error
-                            progressDialog.dismiss(); // Dismiss loading dialog
+
                         }
                     }
             );

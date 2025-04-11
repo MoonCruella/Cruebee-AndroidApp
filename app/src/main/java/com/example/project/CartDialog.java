@@ -150,4 +150,14 @@ public class CartDialog extends Dialog {
         });
 
     }
+    @Override
+    public void show() {
+        super.show();
+        try {
+            initList();          // Load lại danh sách giỏ hàng
+            updateTotalPrice();  // Cập nhật lại tổng giá tiền
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -47,6 +47,8 @@ public class DeliveryAddressActivity extends AppCompatActivity {
     List<Address> addresses;
     private RequestQueue requestQueue;
     private TextView addAddressBtn;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,11 +83,6 @@ public class DeliveryAddressActivity extends AppCompatActivity {
     }
 
     private void getAddressList() {
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Loading... Please wait...!!");
-        progressDialog.show();
-
         int userId = tinyDB.getInt("userId");
         Log.d("USERID : ", String.valueOf(userId));
         String url = UrlUtil.ADDRESS + "addresses?userId=" + userId;
@@ -96,8 +93,9 @@ public class DeliveryAddressActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.hide();
                         try {
+
+                            addresses.clear();
                             // Parse the response manually
                             JSONArray jsonArray = new JSONArray(response);
 
@@ -131,7 +129,6 @@ public class DeliveryAddressActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.hide();
                         Toast.makeText(DeliveryAddressActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -140,5 +137,9 @@ public class DeliveryAddressActivity extends AppCompatActivity {
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getAddressList();// Gọi lại hàm để lấy dữ liệu mới
+    }
 }

@@ -376,8 +376,12 @@ public class EnterAddressActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
 
         progressDialog.show();
-
-        String url = UrlUtil.ADDRESS + "addresses/update";
+        String url =  UrlUtil.ADDRESS + "addresses/update";
+        boolean myBoolean = getIntent().getBooleanExtra("is_add", false);
+        if(myBoolean)
+        {
+            url = UrlUtil.ADDRESS + "addresses/add";
+        }
 
         // Create the JSONObject for the POST request body
         JSONObject requestBody = null;
@@ -387,7 +391,6 @@ public class EnterAddressActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // Create the JsonObjectRequest
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,
                 url,
