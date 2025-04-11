@@ -3,6 +3,7 @@ package com.example.project;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.project.adapter.AddressShopAdapter;
 import com.example.project.adapter.PromotionAdapter;
 import com.example.project.helpers.TinyDB;
+import com.example.project.model.Address;
 import com.example.project.model.AddressShop;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
@@ -85,12 +87,13 @@ public class AddressShopActivity extends AppCompatActivity {
         tinyDB = new TinyDB(this);
         String userAddress = tinyDB.getString("user_address");
         addressTxt.setText(userAddress);
-
-
+        if( tinyDB.getBoolean("is_logged_in")){
+            Address addressDetails = tinyDB.getObject("address", Address.class);
+            addressTxt.setText(addressDetails.getAddress_details());
+        }
     }
 
     private void findShopIn10Km(double lat, double lng) {
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading");
         progressDialog.setMessage("Loading... Please wait...!!");
@@ -104,7 +107,7 @@ public class AddressShopActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         try {
                             // Parse the response manually
                             JSONArray jsonArray = new JSONArray(response);
@@ -139,7 +142,7 @@ public class AddressShopActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(AddressShopActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -169,6 +172,11 @@ public class AddressShopActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void finish() {
+        setResult(RESULT_OK); // Gửi kết quả thành công về
+        super.finish();
+    }
 
 
 }

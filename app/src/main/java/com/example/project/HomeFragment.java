@@ -1,7 +1,10 @@
 package com.example.project;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,15 +25,22 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.example.project.adapter.AddressUserAdapter;
 import com.example.project.adapter.FoodAdapter;
 import com.example.project.adapter.FoodTopTenAdapter;
 import com.example.project.adapter.RcmFoodAdapter;
 import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.OnFragmentSwitchListener;
+import com.example.project.model.Address;
 import com.example.project.model.Food;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
@@ -47,6 +59,7 @@ public class HomeFragment extends Fragment {
     private ImageView editAddress;
     private List<Food> rcmFoodList;
     private List<Food> topTenFoodList;
+    private ActivityResultLauncher<Intent> addressActivityResultLauncher;
     private RequestQueue requestQueue;
     private OnFragmentSwitchListener listener;
     private TinyDB tinyDB;
@@ -88,6 +101,8 @@ public class HomeFragment extends Fragment {
             String username = tinyDB.getString("username");
             token = tinyDB.getString("token");
             usernameTxt.setText(username);
+            int userId = tinyDB.getInt("userId");
+            loadAddress(userId);
         }
 
 
@@ -125,7 +140,13 @@ public class HomeFragment extends Fragment {
             viewFlipper.addView(imageView);
         }
 
-        editAddress.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddressShopActivity.class)));
+        editAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireContext(), AddressShopActivity.class);
+                startActivity(intent);
+            }
+        });
 
         viewAllBtn.setOnClickListener(v -> listener.onSwitchToFragment("MENU"));
 
@@ -198,5 +219,58 @@ public class HomeFragment extends Fragment {
 
         requestQueue.add(jsonObjectRequest);
     }
+    public void loadAddress(int userId){
 
+        String url = UrlUtil.ADDRESS + "addresses/primary?userId=" + userId;
+
+        StringRequest jsonObjectRequest = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+
+                            JSONObject address = new JSONObject(response);
+
+                            int id = address.getInt("id");
+                            int isPrimary = address.getInt("isPrimary");
+                            String addressDetails = address.getString("addressDetails");
+                            double latitude = address.getDouble("latitude");
+                            double longitude = address.getDouble("longitude");
+                            String username = address.getString("username");
+                            String sdt = address.getString("sdt");
+                            String note = address.getString("note");
+                            Address address1 = new Address(id,isPrimary,addressDetails,latitude,longitude,userId,username,note,sdt);
+                            tinyDB.putObject("address",address1);
+                            addressTxt.setText(addressDetails);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getContext(), "Error parsing response", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        requestQueue.add(jsonObjectRequest);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        String fullAddress = tinyDB.getString("user_address");
+        addressTxt.setText(fullAddress);
+        if (tinyDB.getBoolean("is_logged_in")) {
+            addressTxt.setText(tinyDB.getObject("address", Address.class).getAddress_details());
+        }
+    }
 }

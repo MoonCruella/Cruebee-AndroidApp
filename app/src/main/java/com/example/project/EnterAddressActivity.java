@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class AddressActivity extends AppCompatActivity {
+public class EnterAddressActivity extends AppCompatActivity {
 
     EditText edtAddress,edtHouseNumber, edtStreet, edtWard, edtDistrict, edtProvince;
     ListView listView;
@@ -68,10 +68,12 @@ public class AddressActivity extends AppCompatActivity {
     LinearLayout addressForm;
     TextView btnSave,txtAccessAddress;
 
+    com.example.project.model.Address address;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_address);
+        setContentView(R.layout.activity_enter_address);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
         getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -90,6 +92,8 @@ public class AddressActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
         tinyDB = new TinyDB(this);
 
+        address = (com.example.project.model.Address) getIntent().getSerializableExtra("object");
+        Log.d("ADDRESS",address.toString());
         addressAdapter = new AddressAdapter(this, addressList);
         listView.setAdapter(addressAdapter);
 
@@ -214,13 +218,15 @@ public class AddressActivity extends AppCompatActivity {
 
                 // Kiểm tra nếu form nhập đầy đủ
                 if (houseNumber.isEmpty() || ward.isEmpty() || district.isEmpty() || province.isEmpty()) {
-                    Toast.makeText(AddressActivity.this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EnterAddressActivity.this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
                 } else {
                     saveAddress(lat,lng,selectedAddress);
-                    Toast.makeText(AddressActivity.this, "Đã lưu địa chỉ!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddressActivity.this, AddressShopActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear tất cả các activity trước đó
-                    startActivity(intent);
+                    Toast.makeText(EnterAddressActivity.this, "Đã lưu địa chỉ!", Toast.LENGTH_SHORT).show();
+                    // Tạo Intent để trả lại dữ liệu đã thay đổi
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("updated_address", address);  // Truyền đối tượng address đã cập nhật
+                    Log.d("ADDRESS ALTJD",address.toString());
+                    setResult(RESULT_OK, resultIntent);  // Trả lại kết quả cho Activity gọi (AddressDetailsActivity)
                     finish();
 
                 }
@@ -283,7 +289,7 @@ public class AddressActivity extends AppCompatActivity {
                     Location newLocation = locationResult.getLastLocation();
                     progressBar.setVisibility(View.GONE);
 
-                  // Kiểm tra nếu vị trí thay đổi 50m
+                    // Kiểm tra nếu vị trí thay đổi 50m
                     lastLocation = newLocation;
                     handleLocationResult(newLocation);
 
@@ -360,68 +366,59 @@ public class AddressActivity extends AppCompatActivity {
         tinyDB.putDouble("lat",latitude);
         tinyDB.putDouble("lng",longitude);
         tinyDB.putString("user_address",selectedAddress);
-        Log.d("TinyDB", "Địa chỉ đã lưu: " + tinyDB.getString("user_address"));
+        address.setAddress_details(selectedAddress);
+        address.setLatitude(latitude);
+        address.setLongitude(longitude);
+        com.example.project.model.Address addressRequest = address;
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Saving your address...");
+        progressDialog.setCancelable(false);
 
+        progressDialog.show();
 
-        if(tinyDB.getBoolean("is_logged_in")){
-            int userId = tinyDB.getInt("userId");
-            String username = tinyDB.getString("username");
-            String sdt = tinyDB.getString("sdt");
-            int is_primary = 1;
-            com.example.project.model.Address addressRequest = new com.example.project.model.Address(userId,latitude,longitude,addressDetails,is_primary,username,"",sdt);
-            tinyDB.putObject("address",addressRequest);
-            tinyDB.putBoolean("should_refresh_home", true);
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Loading");
-            progressDialog.setMessage("Saving your address...");
-            progressDialog.setCancelable(false);
+        String url = UrlUtil.ADDRESS + "addresses/update";
 
-            progressDialog.show();
-
-            String url = UrlUtil.ADDRESS + "addresses/save";
-
-            // Create the JSONObject for the POST request body
-            JSONObject requestBody = null;
-            try {
-                requestBody = addressRequest.toJson();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            // Create the JsonObjectRequest
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                    Request.Method.POST,
-                    url,
-                    requestBody,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            // Handle response from the server
-                            progressDialog.dismiss(); // Dismiss loading dialog
-                            Toast.makeText(AddressActivity.this, "Address saved successfully!", Toast.LENGTH_SHORT).show();
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // Handle error
-                            progressDialog.dismiss(); // Dismiss loading dialog
-                            Toast.makeText(AddressActivity.this, "Failed to save address: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-            );
-
-            // Set a retry policy if necessary
-            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                    20 * 1000, // 20 seconds timeout
-                    2,          // Max retries
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            ));
-
-            // Add the request to the RequestQueue
-            requestQueue.add(jsonObjectRequest);
+        // Create the JSONObject for the POST request body
+        JSONObject requestBody = null;
+        try {
+            requestBody = addressRequest.toJson();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
+        // Create the JsonObjectRequest
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // Handle response from the server
+                        progressDialog.dismiss(); // Dismiss loading dialog
+                        Toast.makeText(EnterAddressActivity.this, "Address saved successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle error
+                        progressDialog.dismiss(); // Dismiss loading dialog
+                        Toast.makeText(EnterAddressActivity.this, "Failed to save address: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Set a retry policy if necessary
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                20 * 1000, // 20 seconds timeout
+                2,          // Max retries
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
+        // Add the request to the RequestQueue
+        requestQueue.add(jsonObjectRequest);
     }
 
 }

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,8 +29,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
+import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
+import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -199,16 +202,24 @@ public class LoginActivity extends AppCompatActivity {
 
                                 token = jsonResponse.getString("token");
                                 String refresh_token = jsonResponse.getString("refresh_token");
-                                username = jsonResponse.getString("username");
-                                int userId = jsonResponse.getInt("userId");
-
+                                JSONObject user = jsonResponse.getJSONObject("user");
+                                Log.d("USER: " , user.toString());
                                 // Store the token in SharedPreferences for future use
                                 tinyDB.putString("token",token);
                                 tinyDB.putString("refresh_token",refresh_token);
+                                username = user.getString("username");
+                                int userId = user.getInt("id");
+                                String sdt = user.getString("sdt");
+                                String email = user.getString("email");
+                                String password = user.getString("password");
+                                tinyDB.putString("password",password);
                                 tinyDB.putString("username",username);
                                 tinyDB.putInt("userId",userId);
+                                tinyDB.putString("sdt",sdt);
+                                tinyDB.putString("email",email);
                                 tinyDB.putBoolean("is_logged_in",true);
-
+                                Log.d("USERID : ", String.valueOf(userId));
+                                Log.d("SDT : ", String.valueOf(sdt));
                                 Intent intent = new Intent(LoginActivity.this, BaseActivity.class);
                                 startActivity(intent);
                             } else {

@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.project.adapter.ViewPager2Adapter;
@@ -175,7 +178,14 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                if (tab.getPosition() == 0 ) {
+                    Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+                    if (currentFragment instanceof HomeFragment) {
+                        HomeFragment homeFragment = (HomeFragment) currentFragment;
+                        NestedScrollView nestedScrollView = homeFragment.getView().findViewById(R.id.scrollview);
+                        nestedScrollView.smoothScrollTo(0, 0);
+                    }
+                }
             }
         });
 
@@ -200,6 +210,18 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
     public void onSwitchToFragment(String fragmentTag) {
         if (fragmentTag.equals("MENU")) {
             viewPager.setCurrentItem(1, true); // Chuyển đến tab "Thực Đơn"
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Check if you're on a specific fragment
+        int currentItem = viewPager.getCurrentItem();  // Get the current item of the ViewPager2
+
+        if (currentItem != 0) {
+            viewPager.setCurrentItem(0, true);  // Switch to HomeFragment
+        } else {
+            super.onBackPressed();  // Default back press behavior
         }
     }
 
