@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -40,6 +41,8 @@ import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.example.project.interfaces.TotalFeeResponse;
+import com.example.project.model.Address;
+import com.example.project.model.AddressShop;
 import com.example.project.model.CreateOrder;
 import com.example.project.model.Food;
 import com.example.project.model.PaymentProduct;
@@ -70,6 +73,7 @@ import vn.zalopay.sdk.listeners.PayOrderListener;
 
 public class PaymentActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
+    private ImageView btnShop;
     private ManagementCart managementCart;
     private TinyDB tinyDB;
     private FoodListPaymentAdapter adapter;
@@ -151,9 +155,6 @@ public class PaymentActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
         ZaloPaySDK.init(2553, Environment.SANDBOX);
 
-        //Momo
-        AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT);
-
         btnDatHang = findViewById(R.id.btnDatHang);
         btnDatHang.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,44 +162,6 @@ public class PaymentActivity extends AppCompatActivity {
                 thanhToanZalopay();
             }
         });
-    }
-    private void thanhToanMomo()
-    {
-        AppMoMoLib.getInstance().setAction(AppMoMoLib.ACTION.PAYMENT);
-        AppMoMoLib.getInstance().setActionType(AppMoMoLib.ACTION_TYPE.GET_TOKEN);
-
-        Map<String, Object> eventValue = new HashMap<>();
-        //client Required
-        eventValue.put("merchantname", merchantName); //Tên đối tác. được đăng ký tại https://business.momo.vn. VD: Google, Apple, Tiki , CGV Cinemas
-        eventValue.put("merchantcode", merchantCode); //Mã đối tác, được cung cấp bởi MoMo tại https://business.momo.vn
-        eventValue.put("amount", price); //Kiểu integer
-        eventValue.put("orderId", "orderId123456789"); //uniqueue id cho Bill order, giá trị duy nhất cho mỗi đơn hàng
-        eventValue.put("orderLabel", "Mã đơn hàng"); //gán nhãn
-
-        //client Optional - bill info
-        eventValue.put("merchantnamelabel", "Dịch vụ");//gán nhãn
-        eventValue.put("fee", 0); //Kiểu integer
-        eventValue.put("description", description); //mô tả đơn hàng - short description
-
-        //client extra data
-        eventValue.put("requestId",  merchantCode+"merchant_billId_"+System.currentTimeMillis());
-        eventValue.put("partnerCode", merchantCode);
-        //Example extra data
-        JSONObject objExtraData = new JSONObject();
-        try {
-            objExtraData.put("site_code", "008");
-            objExtraData.put("site_name", "CGV Cresent Mall");
-            objExtraData.put("screen_code", 0);
-            objExtraData.put("screen_name", "Special");
-            objExtraData.put("movie_name", "Kẻ Trộm Mặt Trăng 3");
-            objExtraData.put("movie_format", "2D");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        eventValue.put("extraData", objExtraData.toString());
-
-        eventValue.put("extra", "");
-        AppMoMoLib.getInstance().requestMoMoCallBack(this, eventValue);
     }
     private void thanhToanZalopay()
     {
@@ -356,13 +319,24 @@ public class PaymentActivity extends AppCompatActivity {
     }
     private void initView(){
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        btnShop = findViewById(R.id.imageViewAddress);
         giaTxt = (TextView) findViewById(R.id.txtTotalCost);
         themMonBtn = (TextView) findViewById(R.id.btnAddFood);
         giaDKTxt = (TextView) findViewById(R.id.txtCost);
         addressTxt = findViewById(R.id.txtAddress);
         tinyDB = new TinyDB(this);
-        String fullAddress = tinyDB.getString("UserAddress");
-        addressTxt.setText(fullAddress);
+        addressShopTxt = findViewById(R.id.txtShop);
+        AddressShop addressShop = tinyDB.getObject("addressShop", AddressShop.class);
+        addressShopTxt.setText(addressShop.getName());
+        Address addressUser = tinyDB.getObject("address", Address.class);
+        addressTxt.setText(addressUser.getAddress_details());
+        btnShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PaymentActivity.this, AddressShopActivity.class);
+                startActivity(intent);
+            }
+        });
         themMonBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

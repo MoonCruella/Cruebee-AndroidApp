@@ -47,10 +47,10 @@ public class AddressShopAdapter extends RecyclerView.Adapter<AddressShopAdapter.
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, BaseActivity.class);
-                context.startActivity(intent);
                 TinyDB tinyDB = new TinyDB(context);
                 tinyDB.putObject("addressShop",addressShop);
-                ((Activity) context).finish();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(intent);
             }
         });
 
