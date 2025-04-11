@@ -1,5 +1,7 @@
 package com.example.project;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Outline;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -37,7 +39,7 @@ import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class ShowDetailActivity extends AppCompatActivity {
-    private TextView addToCartBtn;
+    private TextView addToCartBtn,thanhtoanBtn;
     private TextView titleTxt,feeTxt,desTxt,countTxt;
     private ImageView plusBtn,minusBtn,picFood;
     private ManagementCart managementCart;
@@ -66,6 +68,7 @@ public class ShowDetailActivity extends AppCompatActivity {
 
     private void initView(){
         addToCartBtn = findViewById(R.id.addToCartBtt);
+        thanhtoanBtn = findViewById(R.id.checkoutBtt);
         titleTxt = findViewById(R.id.titleTxt);
         feeTxt = findViewById(R.id.priceTxt);
         desTxt = findViewById(R.id.descriptionTxt);
@@ -142,6 +145,15 @@ public class ShowDetailActivity extends AppCompatActivity {
 
                 //Quay tro lai man hinh chon menu
                 finish();
+            }
+        });
+
+        thanhtoanBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, PaymentActivity.class);
+                context.startActivity(intent);
             }
         });
     }

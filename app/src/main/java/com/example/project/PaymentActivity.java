@@ -2,10 +2,13 @@ package com.example.project;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,6 +40,7 @@ import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.example.project.interfaces.TotalFeeResponse;
+import com.example.project.model.CreateOrder;
 import com.example.project.model.Food;
 import com.example.project.model.PaymentProduct;
 import com.example.project.utils.UrlUtil;
@@ -58,6 +62,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import vn.momo.momo_partner.AppMoMoLib;
+import vn.zalopay.sdk.Environment;
+import vn.zalopay.sdk.ZaloPayError;
+import vn.zalopay.sdk.ZaloPaySDK;
+import vn.zalopay.sdk.listeners.PayOrderListener;
+
 public class PaymentActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ManagementCart managementCart;
@@ -69,7 +79,16 @@ public class PaymentActivity extends AppCompatActivity {
     private EditText firstName,lastName,sdt,note;
     private Spinner spinnerDate,spinnerTime;
     private Switch utensils;
+    String price;
     private Button btnDatHang;
+    //Momo
+    private String amount = "10000";
+    private String fee = "0";
+    int environment = 0;//developer default
+    private String merchantName = "Thanh toán đơn hàng";
+    private String merchantCode = "CB01";
+    private String merchantNameLabel = "CrueBee";
+    private String description = "Thanh toán hóa đơn CrueBee";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -128,16 +147,94 @@ public class PaymentActivity extends AppCompatActivity {
         addressShopTxt = findViewById(R.id.txtShop);
         utensils = findViewById(R.id.switch1);
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        ZaloPaySDK.init(2553, Environment.SANDBOX);
+
+        //Momo
+        AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT);
+
         btnDatHang = findViewById(R.id.btnDatHang);
         btnDatHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                payment(v);
+                thanhToanZalopay();
             }
         });
     }
+    private void thanhToanMomo()
+    {
+        AppMoMoLib.getInstance().setAction(AppMoMoLib.ACTION.PAYMENT);
+        AppMoMoLib.getInstance().setActionType(AppMoMoLib.ACTION_TYPE.GET_TOKEN);
+
+        Map<String, Object> eventValue = new HashMap<>();
+        //client Required
+        eventValue.put("merchantname", merchantName); //Tên đối tác. được đăng ký tại https://business.momo.vn. VD: Google, Apple, Tiki , CGV Cinemas
+        eventValue.put("merchantcode", merchantCode); //Mã đối tác, được cung cấp bởi MoMo tại https://business.momo.vn
+        eventValue.put("amount", price); //Kiểu integer
+        eventValue.put("orderId", "orderId123456789"); //uniqueue id cho Bill order, giá trị duy nhất cho mỗi đơn hàng
+        eventValue.put("orderLabel", "Mã đơn hàng"); //gán nhãn
+
+        //client Optional - bill info
+        eventValue.put("merchantnamelabel", "Dịch vụ");//gán nhãn
+        eventValue.put("fee", 0); //Kiểu integer
+        eventValue.put("description", description); //mô tả đơn hàng - short description
+
+        //client extra data
+        eventValue.put("requestId",  merchantCode+"merchant_billId_"+System.currentTimeMillis());
+        eventValue.put("partnerCode", merchantCode);
+        //Example extra data
+        JSONObject objExtraData = new JSONObject();
+        try {
+            objExtraData.put("site_code", "008");
+            objExtraData.put("site_name", "CGV Cresent Mall");
+            objExtraData.put("screen_code", 0);
+            objExtraData.put("screen_name", "Special");
+            objExtraData.put("movie_name", "Kẻ Trộm Mặt Trăng 3");
+            objExtraData.put("movie_format", "2D");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        eventValue.put("extraData", objExtraData.toString());
+
+        eventValue.put("extra", "");
+        AppMoMoLib.getInstance().requestMoMoCallBack(this, eventValue);
+    }
+    private void thanhToanZalopay()
+    {
+        CreateOrder orderApi = new CreateOrder();
+        try {
+            JSONObject data = orderApi.createOrder(price);
+            String code = data.getString("return_code");
+
+            if (code.equals("1")) {
+                String token = data.getString("zp_trans_token");
+                ZaloPaySDK.getInstance().payOrder(PaymentActivity.this, token, "demozpdk://app", new PayOrderListener() {
+                    @Override
+                    public void onPaymentSucceeded(final String transactionId, final String transToken, final String appTransID) {
+                        Log.d("Zalopay","thanh toan thanh cong");
+                        payment();
+                    }
+
+                    @Override
+                    public void onPaymentCanceled(String zpTransToken, String appTransID) {
+                        Log.d("Zalopay","thanh toan da huy");
+                    }
+
+                    @Override
+                    public void onPaymentError(ZaloPayError zaloPayError, String zpTransToken, String appTransID) {
+                        Log.e("ZaloPay", "Payment Error: " + zaloPayError.toString());
+                    }
+                });
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void payment(View view){
+    private void payment(){
         if (!checkEditText())
         {
             return;
@@ -218,6 +315,7 @@ public class PaymentActivity extends AppCompatActivity {
                     managementCart.getTotalFee(new TotalFeeResponse() {
                         @Override
                         public void onSuccess(int totalFee) throws JSONException {
+                            price = String.valueOf(totalFee);
                             jsonBody.put("totalPrice", totalFee);
                         }
 
@@ -354,6 +452,7 @@ public class PaymentActivity extends AppCompatActivity {
         managementCart.getTotalFee(new TotalFeeResponse() {
             @Override
             public void onSuccess(int totalFee) {
+                price = String.valueOf(totalFee);
                 DecimalFormat decimalFormat = new DecimalFormat("#,###");
                 String formattedPrice = decimalFormat.format(totalFee) + " đ";
                 giaTxt.setText(formattedPrice);
@@ -365,5 +464,10 @@ public class PaymentActivity extends AppCompatActivity {
                 Log.e(TAG, "Lỗi khi tính tổng tiền: " + errorMessage);
             }
         });
+    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ZaloPaySDK.getInstance().onResult(intent);
     }
 }

@@ -75,7 +75,6 @@
             categoryList = new ArrayList<>();
             categoryList1 = new ArrayList<>();
             fetchCategoryList();
-
             return view;
         }
 

@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.litert.support.api)
+    implementation(files("C:\\Users\\Patrick\\Downloads\\zalopay\\zpdk-release-v3.1.aar"))
     testImplementation(libs.junit)
     implementation(libs.material.v180)
     androidTestImplementation(libs.ext.junit)
@@ -52,4 +53,9 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
     implementation("com.github.Dimezis:BlurView:version-2.0.4")
+    //zalo
+    implementation("com.squareup.okhttp3:okhttp:4.6.0")
+    implementation("commons-codec:commons-codec:1.14")
+
+    implementation("com.github.momo-wallet:mobile-sdk:1.0.7")
 }
