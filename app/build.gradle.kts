@@ -38,7 +38,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.litert.support.api)
-    implementation(files("C:\\Users\\Patrick\\Downloads\\zalopay\\zpdk-release-v3.1.aar"))
+    implementation(files("libs/zpdk-release-v3.1.aar"))
     testImplementation(libs.junit)
     implementation(libs.material.v180)
     androidTestImplementation(libs.ext.junit)
