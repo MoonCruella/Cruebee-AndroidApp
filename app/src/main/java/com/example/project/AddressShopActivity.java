@@ -55,6 +55,7 @@ public class AddressShopActivity extends AppCompatActivity {
     TinyDB tinyDB;
     private RecyclerView recyclerView;
     private AddressShopAdapter adapter;
+    double lat,lng;
 
     List<AddressShop> addressShops;
     private RequestQueue requestQueue;
@@ -70,29 +71,53 @@ public class AddressShopActivity extends AppCompatActivity {
 
         init();
 
-        double lat = tinyDB.getDouble("lat");
-        double lng = tinyDB.getDouble("lng");
+        lat = tinyDB.getDouble("lat");
+        lng = tinyDB.getDouble("lng");
         findShopIn10Km(lat,lng);
 
 
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        boolean hasAddress = tinyDB.getAll().containsKey("address");
+        boolean hasUAddress = tinyDB.getAll().containsKey("addr_no_log");
+        if(hasUAddress){
+            String fullAddress = tinyDB.getString("addr_no_log");
+            addressTxt.setText(fullAddress);
+        }
+        if (tinyDB.getBoolean("is_logged_in") && hasAddress) {
+            addressTxt.setText(tinyDB.getObject("address", Address.class).getAddress_details());
+            lat = tinyDB.getObject("address",Address.class).getLatitude();
+            lng = tinyDB.getObject("address",Address.class).getLongitude();
+            tinyDB.putDouble("lat",lat);
+            tinyDB.putDouble("lng",lng);
+        }
     }
 
     private void init(){
         editAddress = findViewById(R.id.editAddress);
         addressTxt = findViewById(R.id.addressTxt);
         addressShops = new ArrayList<>();
+        adapter = new AddressShopAdapter(this, addressShops);
         requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
         recyclerView = findViewById(R.id.listView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
+        recyclerView.setAdapter(adapter);
         editAddress.setOnClickListener(v -> startActivity(new Intent(AddressShopActivity.this,AddressActivity.class)));
         tinyDB = new TinyDB(this);
-        String userAddress = tinyDB.getString("user_address");
-        addressTxt.setText(userAddress);
-        if( tinyDB.getBoolean("is_logged_in")){
-            Address addressDetails = tinyDB.getObject("address", Address.class);
-            addressTxt.setText(addressDetails.getAddress_details());
+        boolean hasAddress = tinyDB.getAll().containsKey("address");
+        boolean hasUAddress = tinyDB.getAll().containsKey("addr_no_log");
+        if(hasUAddress){
+            String fullAddress = tinyDB.getString("addr_no_log");
+            addressTxt.setText(fullAddress);
+        }
+        if (tinyDB.getBoolean("is_logged_in") && hasAddress) {
+            addressTxt.setText(tinyDB.getObject("address", Address.class).getAddress_details());
+            lat = tinyDB.getObject("address",Address.class).getLatitude();
+            lng = tinyDB.getObject("address",Address.class).getLongitude();
+            tinyDB.putDouble("lat",lat);
+            tinyDB.putDouble("lng",lng);
         }
     }
 

@@ -38,7 +38,7 @@ public class CartDialog extends Dialog {
 
     private CartListAdapter adapter;
     private TextView giaTxt, themMonBtn, thanhToanBtn, emptyTxt;
-
+    private ArrayList<Food> cartList;
     private OnFragmentSwitchListener listener;
 
     public CartDialog(@NonNull Context context, OnFragmentSwitchListener listener) {
@@ -80,6 +80,9 @@ public class CartDialog extends Dialog {
         themMonBtn = findViewById(R.id.themMonBtn);
         thanhToanBtn = findViewById(R.id.thanhToanBtn);
         emptyTxt = findViewById(R.id.emptyTxt);
+        cartList = new ArrayList<>();
+        adapter = new CartListAdapter(cartList, getContext(), CartDialog.this::updateTotalPrice);
+        recyclerView.setAdapter(adapter);
 
         // Chuyển sang MenuFragment khi bấm nút
         themMonBtn.setOnClickListener(v -> {

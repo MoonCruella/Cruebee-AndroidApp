@@ -63,11 +63,13 @@ public class HomeFragment extends Fragment {
     private ImageView editAddress;
     private List<Food> rcmFoodList;
     private List<Food> topTenFoodList;
-    private ActivityResultLauncher<Intent> addressActivityResultLauncher;
+    private FoodTopTenAdapter adapterTop;
+    private RcmFoodAdapter adapter;
     private RequestQueue requestQueue;
     private OnFragmentSwitchListener listener;
     private TinyDB tinyDB;
     private ViewFlipper viewFlipper;
+    int userId;
     String token;
     private ArrayList<Integer> discountList = new ArrayList<>();
 
@@ -98,16 +100,20 @@ public class HomeFragment extends Fragment {
         requestQueue = VolleySingleton.getmInstance(requireContext()).getRequestQueue();
         rcmFoodList = new ArrayList<>();
         topTenFoodList = new ArrayList<>();
+        adapterTop = new FoodTopTenAdapter(getContext(),topTenFoodList);
+        adapter = new RcmFoodAdapter(getContext(),rcmFoodList);
+        mustTryRcView.setAdapter(adapter);
+        topTenRcView.setAdapter(adapterTop);
 
-        if(tinyDB.getString("user_address") != null){
-            String fullAddress = tinyDB.getString("user_address");
+        if(tinyDB.getString("addr_no_log") != null){
+            String fullAddress = tinyDB.getString("addr_no_log");
             addressTxt.setText(fullAddress);
         }
         if(tinyDB.getBoolean("is_logged_in")){
             String username = tinyDB.getString("username");
             token = tinyDB.getString("token");
             usernameTxt.setText(username);
-            int userId = tinyDB.getInt("userId");
+            userId = tinyDB.getInt("userId");
             loadAddress(userId);
         }
 
@@ -180,7 +186,7 @@ public class HomeFragment extends Fragment {
                             throw new RuntimeException(e);
                         }
                     }
-                    RcmFoodAdapter adapter = new RcmFoodAdapter(requireContext(), rcmFoodList);
+                    adapter = new RcmFoodAdapter(requireContext(), rcmFoodList);
                     mustTryRcView.setAdapter(adapter);
                 },
                 error -> Toast.makeText(requireContext(), "Lỗi: " + error.getMessage(), Toast.LENGTH_SHORT).show()
@@ -212,8 +218,8 @@ public class HomeFragment extends Fragment {
                             topTenFoodList.add(new Food(id, name, price, image,soldCount, des));
                         }
 
-                        FoodTopTenAdapter adapter = new FoodTopTenAdapter(requireContext(), topTenFoodList);
-                        topTenRcView.setAdapter(adapter);
+                        adapterTop = new FoodTopTenAdapter(requireContext(), topTenFoodList);
+                        topTenRcView.setAdapter(adapterTop);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -235,25 +241,38 @@ public class HomeFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        try {
+                        if (response != null && !response.isEmpty()) {
+                            try {
+                                JSONObject address = new JSONObject(response);
 
-                            JSONObject address = new JSONObject(response);
+                                // Lấy thông tin từ JSONObject
+                                int id = address.getInt("id");
+                                int isPrimary = address.getInt("isPrimary");
+                                String addressDetails = address.getString("addressDetails");
+                                double latitude = address.getDouble("latitude");
+                                double longitude = address.getDouble("longitude");
+                                String username = address.getString("username");
+                                String sdt = address.getString("sdt");
+                                String note = address.getString("note");
 
-                            int id = address.getInt("id");
-                            int isPrimary = address.getInt("isPrimary");
-                            String addressDetails = address.getString("addressDetails");
-                            double latitude = address.getDouble("latitude");
-                            double longitude = address.getDouble("longitude");
-                            String username = address.getString("username");
-                            String sdt = address.getString("sdt");
-                            String note = address.getString("note");
-                            Address address1 = new Address(id,isPrimary,addressDetails,latitude,longitude,userId,username,note,sdt);
-                            tinyDB.putObject("address",address1);
-                            addressTxt.setText(addressDetails);
+                                // Tạo đối tượng Address
+                                Address address1 = new Address(id, isPrimary, addressDetails, latitude, longitude, userId, username, note, sdt);
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getContext(), "Error parsing response", Toast.LENGTH_SHORT).show();
+                                // Lưu đối tượng vào TinyDB
+                                tinyDB.putObject("address", address1);
+
+                                // Cập nhật giao diện với địa chỉ mới
+                                addressTxt.setText(addressDetails);
+
+                            } catch (JSONException e) {
+
+                                // Xử lý lỗi nếu có vấn đề với JSON
+                                e.printStackTrace();
+                            }
+                        } else {
+                            // Xử lý khi phản hồi là rỗng
+                            tinyDB.remove("address");
+                            addressTxt.setText("Thêm địa chỉ/cửa hàng");
                         }
                     }
                 },
@@ -284,13 +303,13 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         boolean hasAddress = tinyDB.getAll().containsKey("address");
-        boolean hasUAddress = tinyDB.getAll().containsKey("user_address");
+        boolean hasUAddress = tinyDB.getAll().containsKey("addr_no_log");
         if(hasUAddress){
-            String fullAddress = tinyDB.getString("user_address");
+            String fullAddress = tinyDB.getString("addr_no_log");
             addressTxt.setText(fullAddress);
         }
-        if (tinyDB.getBoolean("is_logged_in") && hasAddress) {
-            addressTxt.setText(tinyDB.getObject("address", Address.class).getAddress_details());
+        if (tinyDB.getBoolean("is_logged_in")) {
+            loadAddress(userId);
         }
     }
 }

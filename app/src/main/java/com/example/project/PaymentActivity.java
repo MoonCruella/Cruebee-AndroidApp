@@ -328,7 +328,7 @@ public class PaymentActivity extends AppCompatActivity {
         addressShopTxt = findViewById(R.id.txtShop);
         AddressShop addressShop = tinyDB.getObject("addressShop", AddressShop.class);
         addressShopTxt.setText(addressShop.getName());
-        String addUser = tinyDB.getString("user_address");
+        String addUser = tinyDB.getString("addr_no_log");
         if(tinyDB.getBoolean("is_logged_in"))
         {
             Address addressUser = tinyDB.getObject("address", Address.class);

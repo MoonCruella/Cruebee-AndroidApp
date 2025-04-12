@@ -1,5 +1,7 @@
 package com.example.project;
 
+import static android.widget.Toast.LENGTH_LONG;
+
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -359,18 +361,18 @@ public class AddressActivity extends AppCompatActivity {
     private void saveAddress(Double latitude,Double longitude,String addressDetails){
         tinyDB.putDouble("lat",latitude);
         tinyDB.putDouble("lng",longitude);
-        tinyDB.putString("user_address",selectedAddress);
-        Log.d("TinyDB", "Địa chỉ đã lưu: " + tinyDB.getString("user_address"));
+        tinyDB.putString("addr_no_log",selectedAddress);
+        Log.d("TinyDB", "Địa chỉ đã lưu: " + tinyDB.getString("addr_no_log"));
 
 
         if(tinyDB.getBoolean("is_logged_in")){
             int userId = tinyDB.getInt("userId");
+            Toast.makeText(this,"USER ID : " + userId,LENGTH_LONG).show();
             String username = tinyDB.getString("username");
             String sdt = tinyDB.getString("sdt");
             int is_primary = 1;
             com.example.project.model.Address addressRequest = new com.example.project.model.Address(userId,latitude,longitude,addressDetails,is_primary,username,"",sdt);
             tinyDB.putObject("address",addressRequest);
-            tinyDB.putBoolean("should_refresh_home", true);
             progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Loading");
             progressDialog.setMessage("Saving your address...");
@@ -406,7 +408,7 @@ public class AddressActivity extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             // Handle error
                             progressDialog.dismiss(); // Dismiss loading dialog
-                            Toast.makeText(AddressActivity.this, "Failed to save address: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(AddressActivity.this, "Failed to save address: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
             );
@@ -423,5 +425,6 @@ public class AddressActivity extends AppCompatActivity {
         }
 
     }
+
 
 }

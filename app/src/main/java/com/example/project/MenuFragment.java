@@ -41,9 +41,9 @@
 
     public class MenuFragment extends Fragment {
         private RecyclerView recyclerViewCategory;
-        private OnCategoryScrollListener onCategoryScrollListener;
         private RecyclerView recyclerView;
         private RequestQueue requestQueue;
+        CategoryListAdapter itemAdapter;
         private List<Food> foodList;
         private List<Category> categoryList1;
         private OnFragmentSwitchListener listener;
@@ -74,6 +74,10 @@
             requestQueue = VolleySingleton.getmInstance(getContext()).getRequestQueue();
             categoryList = new ArrayList<>();
             categoryList1 = new ArrayList<>();
+            itemAdapter = new CategoryListAdapter(getContext(),categoryList,null);
+            adapter = new CategoryAdapter(getContext(),categoryList1,null);
+            recyclerView.setAdapter(itemAdapter);
+            recyclerViewCategory.setAdapter(adapter);
             fetchCategoryList();
             return view;
         }
@@ -194,7 +198,7 @@
             if (loadedCategories == totalCategories) { // Khi t?t c? danh m?c ?� t?i xong
                 List<Category> orderedCategoryList = new ArrayList<>(categoryMap.values());
 
-                CategoryListAdapter itemAdapter = new CategoryListAdapter(getContext(), orderedCategoryList, new OnCategoryScrollListener() {
+                itemAdapter = new CategoryListAdapter(getContext(), orderedCategoryList, new OnCategoryScrollListener() {
                     @Override
                     public void onCategoryScrolled(int position) {
                         // C?p nh?t RecyclerView Category khi cu?n danh s�ch m�n ?n

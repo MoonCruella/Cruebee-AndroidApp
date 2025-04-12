@@ -40,9 +40,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         Category category = categoryList.get(position);
         holder.categoryNameTextView.setText(category.getName());
 
-        // Set the food items in the nested RecyclerView
-        FoodAdapter foodAdapter = new FoodAdapter(context, category.getFoods(),R.layout.item_food);
-        holder.foodRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));  // 2 columns for food items
+        FoodAdapter foodAdapter = new FoodAdapter(context, category.getFoods(), R.layout.item_food);
         holder.foodRecyclerView.setAdapter(foodAdapter);
     }
 
@@ -59,8 +57,12 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
             super(itemView);
             categoryNameTextView = itemView.findViewById(R.id.category_name);
             foodRecyclerView = itemView.findViewById(R.id.food_gridview);
+
+            foodRecyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), 2));
+            foodRecyclerView.setNestedScrollingEnabled(false);
         }
     }
+
     // Gắn sự kiện cuộn vào RecyclerView danh sách món ăn
     public void attachScrollListenerToRecyclerView(RecyclerView recyclerView) {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

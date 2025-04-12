@@ -96,7 +96,7 @@ public class AddAddressActivity extends AppCompatActivity {
                 if(is_primary == 1){
                     tinyDB.putObject("address",addressUser);
                 }
-                updateAddress(addressUser);
+                addAddress(addressUser);
                 Intent intent = new Intent(AddAddressActivity.this, DeliveryAddressActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -105,7 +105,7 @@ public class AddAddressActivity extends AppCompatActivity {
         });
     }
 
-    public void updateAddress(Address address){
+    public void addAddress(Address address){
 
         String url = UrlUtil.ADDRESS + "addresses/add";
         // Create the JSONObject for the POST request body

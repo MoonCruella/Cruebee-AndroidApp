@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.material.v180)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.0")
     implementation(libs.volley)
     implementation(libs.cardview)
     implementation(libs.glide)

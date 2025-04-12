@@ -66,6 +66,8 @@ public class DeliveryAddressActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.addressList);
         addAddressBtn = findViewById(R.id.addAddressBtn);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new AddressUserAdapter(DeliveryAddressActivity.this,addresses);
+        recyclerView.setAdapter(adapter);
         tinyDB = new TinyDB(this);
 
         getAddressList();

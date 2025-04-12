@@ -44,8 +44,9 @@ public class DiscountFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         requestQueue = VolleySingleton.getmInstance(requireContext()).getRequestQueue();
-
         promotionList = new ArrayList<>();
+        adapter = new PromotionAdapter(promotionList, requireContext());
+        recyclerView.setAdapter(adapter);
 
         getListPromotion();
         return view;
