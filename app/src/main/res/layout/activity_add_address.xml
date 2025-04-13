@@ -187,6 +187,7 @@
             android:fontFamily="@font/fonts_com_merge_bold"
             android:gravity="center"
             android:padding="15dp"
+            android:foreground="?attr/selectableItemBackground"
             android:layout_margin="20dp"
             android:text="LƯU THAY ĐỔI"
             android:textColor="@android:color/white"

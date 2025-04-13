@@ -79,19 +79,15 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
             @Override
             public boolean onTouch(View view, MotionEvent event) {
 
-                // Lấy kích thước FAB
                 int fabWidth = view.getWidth();
                 int fabHeight = view.getHeight();
-                int tabLayoutHeight = fab.getHeight();
-                // Lấy chiều cao của Toolbar
+                int tabHeight = tabLayout.getHeight();
+                int screenWidth = getResources().getDisplayMetrics().widthPixels;
+                int screenHeight = getResources().getDisplayMetrics().heightPixels;
                 int toolbarHeight = (int) TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, 80, getResources().getDisplayMetrics()
                 );
                 int margin = (int) (20 * getResources().getDisplayMetrics().density);
-                // Lấy kích thước màn hình
-                int screenWidth = getResources().getDisplayMetrics().widthPixels;
-                int screenHeight = getResources().getDisplayMetrics().heightPixels;
-
 
                 switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
@@ -104,15 +100,11 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
                         float newX = event.getRawX() + dX;
                         float newY = event.getRawY() + dY;
 
-
-                        // **Giới hạn với margin 20dp**
-                        if (newX < margin) newX = margin;  // Không vượt qua mép trái
-                        if (newX > screenWidth - fabWidth - margin) newX = screenWidth - fabWidth - margin; // Không vượt qua mép phải
-                        if (newY < toolbarHeight + margin) newY = toolbarHeight;  // Không kéo lên trên Toolbar
-                        if (newY > screenHeight - tabLayoutHeight - fabHeight - margin ) {
-                            newY = screenHeight - tabLayoutHeight - fabHeight - margin;
-                        }
-
+                        // Giới hạn trong màn hình
+                        if (newX < margin) newX = margin;
+                        if (newX > screenWidth - fabWidth - margin) newX = screenWidth - fabWidth - margin;
+                        if (newY < toolbarHeight + margin) newY = toolbarHeight + margin;
+                        if (newY > screenHeight - tabHeight - fabHeight - margin) newY = screenHeight - tabHeight - fabHeight - margin;
 
                         view.setX(newX);
                         view.setY(newY);
@@ -120,9 +112,25 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
                         return true;
 
                     case MotionEvent.ACTION_UP:
-                        // Nếu là kéo thả, không kích hoạt sự kiện click
                         if (lastAction == MotionEvent.ACTION_DOWN) {
                             view.performClick();
+                        } else {
+                            // Tính toán vị trí hiện tại để snap về lề trái hoặc phải
+                            float currentX = view.getX();
+                            float centerScreen = screenWidth / 2f;
+                            float targetX;
+
+                            if (currentX + fabWidth / 2 <= centerScreen) {
+                                targetX = margin; // Snap về trái
+                            } else {
+                                targetX = screenWidth - fabWidth - margin; // Snap về phải
+                            }
+
+                            // Animate tới vị trí snap
+                            view.animate()
+                                    .x(targetX)
+                                    .setDuration(200)
+                                    .start();
                         }
                         return true;
 
@@ -131,6 +139,7 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
                 }
             }
         });
+
 
         viewPager.setAdapter(new ViewPager2Adapter(getSupportFragmentManager(),getLifecycle(),this));
 

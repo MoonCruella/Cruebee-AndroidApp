@@ -76,6 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:id="@+id/changeLanguBtn"
+            android:foreground="?attr/selectableItemBackground"
             android:background="@color/white"
             tools:ignore="MissingConstraints">
 
@@ -130,6 +131,7 @@
         android:padding="16dp"
         android:id="@+id/btn_login"
         android:text="Đăng Nhập"
+        android:foreground="?attr/selectableItemBackground"
         android:textAlignment="center"
         android:textColor="@color/red"
         android:textSize="20sp"

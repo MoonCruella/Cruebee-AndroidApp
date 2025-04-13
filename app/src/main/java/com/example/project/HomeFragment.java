@@ -80,6 +80,9 @@ public class HomeFragment extends Fragment {
         this.listener = listener;
     }
 
+    public HomeFragment() {
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

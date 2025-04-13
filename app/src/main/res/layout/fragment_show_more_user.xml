@@ -93,6 +93,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:id="@+id/specialBtn"
+                        android:foreground="?attr/selectableItemBackground"
                         android:layout_height="70dp"
                         android:background="@color/white"
                         tools:ignore="MissingConstraints">
@@ -144,6 +145,7 @@
                         android:layout_width="match_parent"
                         android:id="@+id/couponBtn"
                         android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
                         android:background="@color/white"
                         tools:ignore="MissingConstraints">
 
@@ -194,6 +196,7 @@
                         android:layout_width="match_parent"
                         android:id="@+id/orderBtn"
                         android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
                         android:background="@color/white"
                         tools:ignore="MissingConstraints">
 
@@ -245,6 +248,7 @@
                         android:id="@+id/addressBtn"
                         android:layout_height="70dp"
                         android:background="@color/white"
+                        android:foreground="?attr/selectableItemBackground"
                         tools:ignore="MissingConstraints">
 
                         <androidx.cardview.widget.CardView
@@ -295,6 +299,7 @@
                         android:id="@+id/supportBtn"
                         android:layout_height="70dp"
                         android:background="@color/white"
+                        android:foreground="?attr/selectableItemBackground"
                         tools:ignore="MissingConstraints">
 
                         <androidx.cardview.widget.CardView
@@ -344,6 +349,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:background="@color/white"
+                        android:foreground="?attr/selectableItemBackground"
                         android:id="@+id/verifyBtn"
                         tools:ignore="MissingConstraints">
 
@@ -393,6 +399,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
                         android:id="@+id/settingsBtn"
                         android:background="@color/white"
                         tools:ignore="MissingConstraints">

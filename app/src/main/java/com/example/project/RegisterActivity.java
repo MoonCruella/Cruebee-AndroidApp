@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -47,7 +49,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText email,username, password, re_password,sdt;
     TextView register_btn;
     String itemGender;
-
+    private LottieAnimationView loadingBar;
+    private FrameLayout loadingOverlay;
     AutoCompleteTextView gender;
 
     @Override
@@ -61,6 +64,8 @@ public class RegisterActivity extends AppCompatActivity {
             return insets;
         });
 
+        loadingBar = findViewById(R.id.loadingBar);
+        loadingOverlay = findViewById(R.id.loadingOverlay);
         email= (EditText) findViewById(R.id.email);
         username = (EditText) findViewById(R.id.username);
         password= (EditText) findViewById(R.id.password);
@@ -104,12 +109,10 @@ public class RegisterActivity extends AppCompatActivity {
         String password1 = password.getText().toString();
         String uSdt = sdt.getText().toString();
 
-
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Loading... Please wait...!!");
-        progressDialog.show();
-
+        loadingOverlay.setVisibility(View.VISIBLE);
+        loadingBar.setMinAndMaxFrame(0, 60);        // Thiết lập khung hình
+        loadingBar.setSpeed(1.5f);                  // Tùy chỉnh tốc độ
+        loadingBar.playAnimation();
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST, UrlUtil.ADDRESS +
@@ -117,7 +120,8 @@ public class RegisterActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.hide();
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
                         Toast.makeText(RegisterActivity.this,"" + response,Toast.LENGTH_SHORT).show();
                         register_btn.setEnabled(true);
                         if(response.equals("User registration successful")){
@@ -131,7 +135,8 @@ public class RegisterActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.hide();
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
                         Toast.makeText(RegisterActivity.this,"" + error,Toast.LENGTH_SHORT).show();
                         register_btn.setEnabled(true);
                     }

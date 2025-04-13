@@ -132,6 +132,7 @@
         android:fontFamily="@font/fonts_com_merge_bold"
         android:gravity="center"
         android:padding="15dp"
+        android:foreground="?attr/selectableItemBackground"
         android:text="Cập nhật"
         android:textColor="@android:color/black"
         android:textSize="16sp"

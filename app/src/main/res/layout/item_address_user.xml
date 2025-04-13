@@ -6,6 +6,7 @@
     android:padding="10dp"
     android:layout_marginBottom="5dp"
     android:id="@+id/main_layout"
+    android:foreground="?attr/selectableItemBackground"
     android:background="@color/yellow"
     xmlns:tools="http://schemas.android.com/tools">
 

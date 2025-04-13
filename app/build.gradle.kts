@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
     implementation("com.github.Dimezis:BlurView:version-2.0.4")
+    implementation("com.airbnb.android:lottie:3.4.0")
     //zalo
     implementation("com.squareup.okhttp3:okhttp:4.6.0")
     implementation("commons-codec:commons-codec:1.14")

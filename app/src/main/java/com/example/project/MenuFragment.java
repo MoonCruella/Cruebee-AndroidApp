@@ -54,6 +54,9 @@
         private int totalCategories = 0; // ??m t?ng s? danh m?c c?n t?i
         private int loadedCategories = 0; // ??m s? danh m?c ?� t?i xong m�n ?n
 
+        public MenuFragment() {
+        }
+
         public MenuFragment(OnFragmentSwitchListener listener) {
             this.listener = listener;
         }

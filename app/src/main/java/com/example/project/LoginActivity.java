@@ -1,5 +1,8 @@
 package com.example.project;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,6 +13,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +23,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -48,7 +53,8 @@ public class LoginActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private TinyDB tinyDB;
     private String token;
-    private String id;
+    private LottieAnimationView loadingBar;
+    private FrameLayout loadingOverlay;
     private String username;
     @SuppressLint("MissingInflatedId")
     @Override
@@ -67,6 +73,8 @@ public class LoginActivity extends AppCompatActivity {
         tvError2 = findViewById(R.id.tvError2);
         notLogin =findViewById(R.id.notLogin);
         registerBtn = findViewById(R.id.registerBtn);
+        loadingBar = findViewById(R.id.loadingBar);
+        loadingOverlay = findViewById(R.id.loadingOverlay);
 
         tinyDB = new TinyDB(this);
         requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
@@ -95,9 +103,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (pass.isEmpty()) {
                     tvError2.setText("* Không được để trống");
-                    tvError2.setVisibility(View.VISIBLE);
+                    tvError2.setVisibility(VISIBLE);
                 } else {
-                    tvError2.setVisibility(View.GONE);
+                    tvError2.setVisibility(GONE);
                 }
             }
         });
@@ -109,9 +117,9 @@ public class LoginActivity extends AppCompatActivity {
                     String input = password.getText().toString().trim();
                     if (input.isEmpty()) {
                         tvError2.setText("Không được để trống");
-                        tvError2.setVisibility(View.VISIBLE);
+                        tvError2.setVisibility(VISIBLE);
                     } else {
-                        tvError2.setVisibility(View.GONE);
+                        tvError2.setVisibility(GONE);
                     }
                 }
             }
@@ -134,14 +142,14 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (ema.isEmpty()) {
                     tvError1.setText("* Không được để trống");
-                    tvError1.setVisibility(View.VISIBLE);
+                    tvError1.setVisibility(VISIBLE);
                 }
                 else if(!StringHelper.isEmailValid(ema)){
                     tvError1.setText("* Email không hợp lệ");
-                    tvError1.setVisibility(View.VISIBLE);
+                    tvError1.setVisibility(VISIBLE);
                 }
                 else {
-                    tvError1.setVisibility(View.GONE);
+                    tvError1.setVisibility(GONE);
                 }
             }
         });
@@ -153,9 +161,9 @@ public class LoginActivity extends AppCompatActivity {
                     String input = email.getText().toString().trim();
                     if (input.isEmpty()) {
                         tvError1.setText("Không được để trống");
-                        tvError1.setVisibility(View.VISIBLE);
+                        tvError1.setVisibility(VISIBLE);
                     } else {
-                        tvError1.setVisibility(View.GONE);
+                        tvError1.setVisibility(GONE);
                     }
                 }
             }
@@ -174,12 +182,10 @@ public class LoginActivity extends AppCompatActivity {
 
         String email1 = email.getText().toString();
         String password1 = password.getText().toString();
-
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Loading... Please wait...!!");
-        progressDialog.show();
-
+        loadingOverlay.setVisibility(View.VISIBLE);
+        loadingBar.setMinAndMaxFrame(0, 60);
+        loadingBar.setSpeed(1.5f);
+        loadingBar.playAnimation();
         String url = UrlUtil.ADDRESS + "loginn";
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
@@ -187,7 +193,8 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.hide();
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             if(jsonResponse.has("message"))
@@ -228,7 +235,8 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.hide();
+                        loadingOverlay.setVisibility(GONE);
+                        loadingBar.cancelAnimation();
                         Toast.makeText(LoginActivity.this,"" + error,Toast.LENGTH_SHORT).show();
                     }
                 }

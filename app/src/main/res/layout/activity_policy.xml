@@ -52,6 +52,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:id="@+id/supportBtn"
+            android:foreground="?attr/selectableItemBackground"
             android:layout_height="70dp"
             android:background="@color/white"
             tools:ignore="MissingConstraints">
@@ -97,6 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:background="@color/white"
+            android:foreground="?attr/selectableItemBackground"
             android:id="@+id/verifyBtn"
             tools:ignore="MissingConstraints">
 
@@ -140,6 +142,7 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:id="@+id/newsBtn"
+            android:foreground="?attr/selectableItemBackground"
             android:background="@color/white"
             tools:ignore="MissingConstraints">
 
@@ -183,6 +186,7 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:id="@+id/settingsBtn"
+            android:foreground="?attr/selectableItemBackground"
             android:background="@color/white"
             tools:ignore="MissingConstraints">
 

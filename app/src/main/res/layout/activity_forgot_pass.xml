@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ForgotPassActivity"
-    android:padding="20dp"
     android:background="@color/red"
     android:gravity="center"
     android:orientation="vertical">
-
+    <LinearLayout
+        android:id="@+id/loginMainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,9 +79,27 @@
         android:textStyle="bold"
         android:textColor="@color/white"
         android:layout_marginTop="50dp"
+        android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
         android:padding="12dp"
         android:onClick="openForgotPassOTPActivity"/>
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loadingBar"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/loader3" />
+    </FrameLayout>
 
-</LinearLayout>
+</FrameLayout>

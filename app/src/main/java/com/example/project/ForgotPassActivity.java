@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -27,6 +29,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.StringHelper;
 import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleySingleton;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +38,9 @@ public class ForgotPassActivity extends AppCompatActivity {
 
     private EditText email;
     private TextView tvError1;
+    private LottieAnimationView loadingBar;
+    private FrameLayout loadingOverlay;
+    private RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +51,9 @@ public class ForgotPassActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
+        loadingBar = findViewById(R.id.loadingBar);
+        loadingOverlay = findViewById(R.id.loadingOverlay);
         tvError1 = findViewById(R.id.tvError1);
         email = (EditText) findViewById(R.id.email);
         email.addTextChangedListener(new TextWatcher() {
@@ -95,21 +103,21 @@ public class ForgotPassActivity extends AppCompatActivity {
 
     public void openForgotPassOTPActivity(View view){
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Loading... Please wait...!!");
-        progressDialog.show();
-
+        loadingOverlay.setVisibility(View.VISIBLE);
+        loadingBar.setVisibility(View.VISIBLE);
+        loadingBar.setMinAndMaxFrame(0, 60);
+        loadingBar.setSpeed(1.5f);
+        loadingBar.playAnimation();
         StringRequest stringRequest = new StringRequest(
         Request.Method.PUT,
                   UrlUtil.ADDRESS + "forget-password",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.hide();
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
                         Toast.makeText(ForgotPassActivity.this, "" + response, Toast.LENGTH_SHORT).show();
-                        if (response.equals("Email sent ... please verify account within 1 minute")) {
+                        if (response.equals("Email sent ... please verify account within 3 minute")) {
                             Intent intent = new Intent(ForgotPassActivity.this, ForgotPassOTPActivity.class);
                             intent.putExtra("USER_EMAIL",email.getText().toString());
                             startActivity(intent);
@@ -119,7 +127,8 @@ public class ForgotPassActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.hide();
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
                         Toast.makeText(ForgotPassActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                     }
                 }

@@ -71,6 +71,7 @@
         android:background="@drawable/red_button"
         android:text="Tiếp tục"
         android:textSize="20sp"
+        android:foreground="?attr/selectableItemBackground"
         android:textStyle="bold"
         android:textColor="@color/white"
         android:layout_marginTop="50dp"

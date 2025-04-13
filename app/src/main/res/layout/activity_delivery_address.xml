@@ -81,6 +81,7 @@
         android:layout_margin="20dp"
         android:text="Thêm địa chỉ mới"
         android:textColor="@android:color/white"
+        android:foreground="?attr/selectableItemBackground"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

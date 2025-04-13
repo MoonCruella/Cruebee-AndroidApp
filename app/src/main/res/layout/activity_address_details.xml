@@ -173,6 +173,7 @@
       android:backgroundTint="@color/orange"
       android:fontFamily="@font/fonts_com_merge_bold"
       android:gravity="center"
+      android:foreground="?attr/selectableItemBackground"
       android:padding="15dp"
       android:text="XÓA ĐỊA CHỈ"
       android:textColor="@android:color/white"

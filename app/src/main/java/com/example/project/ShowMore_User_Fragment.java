@@ -25,6 +25,9 @@ public class ShowMore_User_Fragment extends Fragment {
     TinyDB tinyDB;
     LinearLayout editAccountBtn;
 
+    public ShowMore_User_Fragment() {
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
