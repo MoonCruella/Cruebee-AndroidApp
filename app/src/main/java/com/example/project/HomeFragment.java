@@ -20,6 +20,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,6 +46,7 @@ import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.example.project.model.Address;
 import com.example.project.model.Food;
+import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
 
@@ -69,6 +71,7 @@ public class HomeFragment extends Fragment {
     private OnFragmentSwitchListener listener;
     private TinyDB tinyDB;
     private ViewFlipper viewFlipper;
+    private CardView avtUser;
     int userId;
     String token;
     private ArrayList<Integer> discountList = new ArrayList<>();
@@ -96,6 +99,7 @@ public class HomeFragment extends Fragment {
         topTenRcView = view.findViewById(R.id.topTenList);
         usernameTxt = view.findViewById(R.id.usernameTxt);
         viewAllBtn = view.findViewById(R.id.viewAllBtn);
+        avtUser = view.findViewById(R.id.avtUser);
         tinyDB = new TinyDB(requireContext());
         requestQueue = VolleySingleton.getmInstance(requireContext()).getRequestQueue();
         rcmFoodList = new ArrayList<>();
@@ -104,18 +108,25 @@ public class HomeFragment extends Fragment {
         adapter = new RcmFoodAdapter(getContext(),rcmFoodList);
         mustTryRcView.setAdapter(adapter);
         topTenRcView.setAdapter(adapterTop);
-
-        if(tinyDB.getString("addr_no_log") != null){
-            String fullAddress = tinyDB.getString("addr_no_log");
-            addressTxt.setText(fullAddress);
-        }
+        boolean hasUAddress = tinyDB.getAll().containsKey("addr_no_log");
         if(tinyDB.getBoolean("is_logged_in")){
-            String username = tinyDB.getString("username");
+            User user = tinyDB.getObject("savedUser", User.class);
+            String username = user.getUsername();
             token = tinyDB.getString("token");
+            userId = user.getId();
             usernameTxt.setText(username);
-            userId = tinyDB.getInt("userId");
             loadAddress(userId);
         }
+        else{
+            if(hasUAddress){
+                String fullAddress = tinyDB.getString("addr_no_log");
+                addressTxt.setText(fullAddress);
+            }
+            else{
+                addressTxt.setText("Thêm địa chỉ/cửa hàng");
+            }
+        }
+
 
 
         Animation inAnimation = AnimationUtils.loadAnimation(requireContext(), android.R.anim.slide_in_left);
@@ -163,6 +174,10 @@ public class HomeFragment extends Fragment {
         viewAllBtn.setOnClickListener(v -> listener.onSwitchToFragment("MENU"));
 
         viewFlipper.setOnClickListener(v -> listener.onSwitchToFragment("MENU"));
+
+        usernameTxt.setOnClickListener(v -> listener.onSwitchToFragment("SHOW_MORE"));
+
+        avtUser.setOnClickListener(v -> listener.onSwitchToFragment("SHOW_MORE"));
     }
 
     public void getListRcmFood(String token) {

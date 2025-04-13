@@ -46,6 +46,7 @@ import com.example.project.model.AddressShop;
 import com.example.project.model.CreateOrder;
 import com.example.project.model.Food;
 import com.example.project.model.PaymentProduct;
+import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 
 import org.json.JSONArray;
@@ -287,8 +288,8 @@ public class PaymentActivity extends AppCompatActivity {
                             Log.e(TAG, "Lỗi khi tính tổng tiền: " + errorMessage);
                         }
                     });
-                    Log.d("ID", "" + tinyDB.getInt("userId"));
-                    userObject.put("id", tinyDB.getInt("userId"));
+                    User user = tinyDB.getObject("savedUser", com.example.project.model.User.class);
+                    userObject.put("id", user.getId());
                     jsonBody.put("user", userObject);
                     jsonBody.put("addressUser", addUser);
                     jsonBody.put("addressShop", addShop);

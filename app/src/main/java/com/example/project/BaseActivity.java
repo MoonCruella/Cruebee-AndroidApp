@@ -201,6 +201,9 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
 
         if ("MENU".equals(name)) {
             viewPager.setCurrentItem(1, true);
+        }
+        else if("SHOW_MORE".equals(name)){
+            viewPager.setCurrentItem(3,false);
         } else {
             viewPager.setCurrentItem(0, true);
         }
@@ -210,6 +213,9 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
     public void onSwitchToFragment(String fragmentTag) {
         if (fragmentTag.equals("MENU")) {
             viewPager.setCurrentItem(1, true); // Chuyển đến tab "Thực Đơn"
+        }
+        else if (fragmentTag.equals("SHOW_MORE")) {
+            viewPager.setCurrentItem(3, true); // Chuyển đến tab "Thêm"
         }
     }
 

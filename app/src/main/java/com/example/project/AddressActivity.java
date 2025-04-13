@@ -36,6 +36,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.project.adapter.AddressAdapter;
 import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
+import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -54,21 +55,21 @@ import java.util.Locale;
 
 public class AddressActivity extends AppCompatActivity {
 
-    EditText edtAddress,edtHouseNumber, edtStreet, edtWard, edtDistrict, edtProvince;
-    ListView listView;
-    String selectedAddress;
-    Double lng,lat;
-
-    ProgressBar progressBar;
+    private EditText edtAddress,edtHouseNumber, edtStreet, edtWard, edtDistrict, edtProvince;
+    private ListView listView;
+    private String selectedAddress;
+    private Double lng,lat;
+    private User user;
+    private ProgressBar progressBar;
     private ProgressDialog progressDialog;
-    TinyDB tinyDB;
+    private TinyDB tinyDB;
     private FusedLocationProviderClient fusedLocationClient;
-    AddressAdapter addressAdapter;
-    List<String> addressList = new ArrayList<>();
-    RequestQueue requestQueue;
-    List<JSONObject> addressJsonList = new ArrayList<>();
-    LinearLayout addressForm;
-    TextView btnSave,txtAccessAddress;
+    private AddressAdapter addressAdapter;
+    private List<String> addressList = new ArrayList<>();
+    private RequestQueue requestQueue;
+    private List<JSONObject> addressJsonList = new ArrayList<>();
+    private LinearLayout addressForm;
+    private TextView btnSave,txtAccessAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -361,15 +362,14 @@ public class AddressActivity extends AppCompatActivity {
     private void saveAddress(Double latitude,Double longitude,String addressDetails){
         tinyDB.putDouble("lat",latitude);
         tinyDB.putDouble("lng",longitude);
-        tinyDB.putString("addr_no_log",selectedAddress);
-        Log.d("TinyDB", "Địa chỉ đã lưu: " + tinyDB.getString("addr_no_log"));
-
-
-        if(tinyDB.getBoolean("is_logged_in")){
-            int userId = tinyDB.getInt("userId");
-            Toast.makeText(this,"USER ID : " + userId,LENGTH_LONG).show();
-            String username = tinyDB.getString("username");
-            String sdt = tinyDB.getString("sdt");
+        if(!tinyDB.getBoolean("is_logged_in")){
+            tinyDB.putString("addr_no_log",selectedAddress);
+        }
+        else{
+            user = tinyDB.getObject("savedUser",User.class);
+            int userId = user.getId();
+            String username = user.getUsername();
+            String sdt = user.getSdt();
             int is_primary = 1;
             com.example.project.model.Address addressRequest = new com.example.project.model.Address(userId,latitude,longitude,addressDetails,is_primary,username,"",sdt);
             tinyDB.putObject("address",addressRequest);

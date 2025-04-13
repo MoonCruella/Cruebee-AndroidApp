@@ -30,6 +30,7 @@ import com.example.project.adapter.AddressUserAdapter;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.Address;
 import com.example.project.model.AddressShop;
+import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
 
@@ -50,6 +51,7 @@ public class DeliveryAddressActivity extends AppCompatActivity {
     List<Address> addresses;
     private RequestQueue requestQueue;
     private TextView addAddressBtn;
+    private User user;
 
 
     @Override
@@ -61,6 +63,7 @@ public class DeliveryAddressActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
 
+
         addresses = new ArrayList<>();
         requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
         recyclerView = findViewById(R.id.addressList);
@@ -69,15 +72,16 @@ public class DeliveryAddressActivity extends AppCompatActivity {
         adapter = new AddressUserAdapter(DeliveryAddressActivity.this,addresses);
         recyclerView.setAdapter(adapter);
         tinyDB = new TinyDB(this);
+        user = tinyDB.getObject("savedUser",User.class);
 
         getAddressList();
 
         addAddressBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = tinyDB.getString("username");
-                int userId = tinyDB.getInt("userId");
-                String sdt = tinyDB.getString("sdt");
+                String username = user.getUsername();
+                int userId = user.getId();
+                String sdt = user.getSdt();
                 Intent intent = new Intent(DeliveryAddressActivity.this, AddAddressActivity.class);
                 Address address = new Address(0,0,null,0,0,userId,username,null,sdt);
                 intent.putExtra("object",address);
@@ -88,7 +92,7 @@ public class DeliveryAddressActivity extends AppCompatActivity {
     }
 
     private void getAddressList() {
-        int userId = tinyDB.getInt("userId");
+        int userId = user.getId();
         Log.d("USERID : ", String.valueOf(userId));
         String url = UrlUtil.ADDRESS + "addresses?userId=" + userId;
 

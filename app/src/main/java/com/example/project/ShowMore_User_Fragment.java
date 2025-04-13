@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.project.helpers.TinyDB;
+import com.example.project.model.User;
 import com.google.android.material.card.MaterialCardView;
 
 public class ShowMore_User_Fragment extends Fragment {
@@ -47,12 +48,13 @@ public class ShowMore_User_Fragment extends Fragment {
         editAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getActivity(),EditAccountActivity.class));
             }
         });
 
         tinyDB = new TinyDB(getContext());
-        String uname = tinyDB.getString("username");
+        User user = tinyDB.getObject("savedUser", User.class);
+        String uname = user.getUsername();
         usernameTxt.setText(uname);
 
         verifyBtn.setOnClickListener(new View.OnClickListener() {

@@ -78,6 +78,10 @@
             adapter = new CategoryAdapter(getContext(),categoryList1,null);
             recyclerView.setAdapter(itemAdapter);
             recyclerViewCategory.setAdapter(adapter);
+            recyclerView.setNestedScrollingEnabled(false);
+            recyclerView.setHasFixedSize(true);
+            recyclerViewCategory.setHasFixedSize(true);
+            recyclerViewCategory.setNestedScrollingEnabled(false);
             fetchCategoryList();
             return view;
         }

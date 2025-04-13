@@ -22,6 +22,7 @@ import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.interfaces.TotalFeeResponse;
 import com.example.project.interfaces.UpdateCartCallback;
 import com.example.project.model.Food;
+import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
 import com.google.gson.JsonObject;
@@ -30,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,13 +44,15 @@ public class ManagementCart {
     private int userId;
     private RequestQueue requestQueue;
     String token;
+    User user;
 
     public ManagementCart(Context context) {
         this.context = context;
         this.tinyDB = new TinyDB(context);
+        user = tinyDB.getObject("savedUser",User.class);
         this.is_logged_in = tinyDB.getBoolean("is_logged_in");
         requestQueue = VolleySingleton.getmInstance(context).getRequestQueue();
-        this.userId = tinyDB.getInt("userId");
+        this.userId = user.getId();
         this.token = tinyDB.getString("token");
     }
 
@@ -108,47 +112,51 @@ public class ManagementCart {
     }
 
     // Hàm gọi API để cập nhật giỏ hàng khi người dùng đã đăng nhập
-    private void updateCartOnServer(Food food,int count, UpdateCartCallback callback) {
-        String url = UrlUtil.ADDRESS + "cart/add"; // Địa chỉ API
+    private void updateCartOnServer(Food food, int count, UpdateCartCallback callback) {
+        String url = UrlUtil.ADDRESS + "cart/add";
 
-        // Tạo JSONObject để gửi lên server
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("userId", userId); // ID người dùng
-            jsonBody.put("productId", food.getId()); // ID sản phẩm
-            jsonBody.put("quantity", count); // Số lượng
+            jsonBody.put("userId", userId);
+            jsonBody.put("productId", food.getId());
+            jsonBody.put("quantity", count);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        // Tạo JsonObjectRequest để gửi dữ liệu lên server
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST, url, jsonBody,
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                url,
                 response -> {
-                    Log.d(TAG, "API Response: " + response.toString());
+                    Log.d(TAG, "API Response: " + response);
                     callback.onSuccess();
                 },
                 error -> {
                     String message = "API Error: " + error.toString();
                     Log.e(TAG, message);
                     callback.onError(message);
-                }) {
+                }
+        ) {
+            @Override
+            public byte[] getBody() {
+                return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
+            }
+
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token); // Thêm token nếu cần
+                headers.put("Authorization", "Bearer " + token);
+                headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
         };
 
-        // Thêm request vào hàng đợi của Volley
-        requestQueue.add(jsonObjectRequest);
+        requestQueue.add(stringRequest);
     }
-
 
     public void getListCart(CartResponse callback) throws JSONException {
         if (is_logged_in) {
-            String url = UrlUtil.ADDRESS + "cart/" + tinyDB.getInt("userId");
+            String url = UrlUtil.ADDRESS + "cart/" + userId;
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                     Request.Method.GET, url, null,
                     response -> {
@@ -193,9 +201,9 @@ public class ManagementCart {
 
     public void plusNumberFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) throws JSONException {
 
+        Food food = listFood.get(position);
+        food.setNumberInCart(food.getNumberInCart() + 1);
         if (is_logged_in) {
-            Food food = listFood.get(position);
-            food.setNumberInCart(food.getNumberInCart() + 1);
             updateCartOnServer(food, 1, new UpdateCartCallback() {
                 @Override
                 public void onSuccess() {
@@ -224,7 +232,21 @@ public class ManagementCart {
 
             // Kiem tra neu nguoi dung da login => Xoa sp trong Database Cart
             if(is_logged_in){
-                deleteFromCart(food);
+                deleteFromCart(food, new UpdateCartCallback(){
+                    @Override
+                    public void onSuccess() {
+                        try {
+                            changeNumberItemsListener.change(); // ✅ chỉ gọi khi server OK
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e(TAG, "Lỗi khi update: " + error);
+                    }
+                });
                 listFood.remove(position);
             }
             else {
@@ -264,7 +286,20 @@ public class ManagementCart {
     public void deleteFood(ArrayList<Food> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) throws JSONException {
         Food food = listFood.get(position);
         if(is_logged_in){
-            deleteFromCart(food);
+            deleteFromCart(food, new UpdateCartCallback() {
+                @Override
+                public void onSuccess() {
+                    try {
+                        changeNumberItemsListener.change(); // ✅ chỉ gọi khi server OK
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                @Override
+                public void onError(String error) {
+
+                }
+            });
         }
         listFood.remove(position);
         tinyDB.putListObject("CartList", listFood);
@@ -295,39 +330,53 @@ public class ManagementCart {
     }
 
     // Hàm gọi API để cập nhật giỏ hàng khi người dùng đã đăng nhập
-    private void deleteFromCart(Food food) {
-        String url = UrlUtil.ADDRESS + "cart/delete"; // Địa chỉ API
+    private void deleteFromCart(Food food, UpdateCartCallback callback) {
+        String url = UrlUtil.ADDRESS + "cart/delete";
 
-        // Tạo JSONObject để gửi lên server
+        // Tạo JSONObject để làm body
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("userId", userId); // ID người dùng
-            jsonBody.put("productId", food.getId()); // ID sản phẩm
-            jsonBody.put("quantity", food.getNumberInCart()); // Số lượng
+            jsonBody.put("userId", userId);
+            jsonBody.put("productId", food.getId());
+            jsonBody.put("quantity", food.getNumberInCart());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        // Tạo JsonObjectRequest để gửi dữ liệu lên server
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST, url, jsonBody,
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                url,
                 response -> {
-                    Log.d(TAG, "API Response: " + response.toString());
+                    Log.d(TAG, "Delete Response: " + response);
+                    callback.onSuccess();
                 },
                 error -> {
-                    Log.e(TAG, "API Error: " + error.toString());
-                }) {
+                    Log.e(TAG, "Delete Error: " + error.toString());
+                    callback.onError(error.getMessage());
+
+                }
+        ) {
+            @Override
+            public byte[] getBody() {
+                return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token); // Thêm token nếu cần
+                headers.put("Authorization", "Bearer " + token);
                 return headers;
             }
         };
 
-        // Thêm request vào hàng đợi của Volley
-        requestQueue.add(jsonObjectRequest);
+        requestQueue.add(stringRequest);
     }
+
 
 }
 

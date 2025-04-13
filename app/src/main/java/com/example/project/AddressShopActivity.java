@@ -108,16 +108,21 @@ public class AddressShopActivity extends AppCompatActivity {
         tinyDB = new TinyDB(this);
         boolean hasAddress = tinyDB.getAll().containsKey("address");
         boolean hasUAddress = tinyDB.getAll().containsKey("addr_no_log");
-        if(hasUAddress){
-            String fullAddress = tinyDB.getString("addr_no_log");
-            addressTxt.setText(fullAddress);
-        }
         if (tinyDB.getBoolean("is_logged_in") && hasAddress) {
             addressTxt.setText(tinyDB.getObject("address", Address.class).getAddress_details());
             lat = tinyDB.getObject("address",Address.class).getLatitude();
             lng = tinyDB.getObject("address",Address.class).getLongitude();
             tinyDB.putDouble("lat",lat);
             tinyDB.putDouble("lng",lng);
+        }
+        else{
+            if(hasUAddress){
+                String fullAddress = tinyDB.getString("addr_no_log");
+                addressTxt.setText(fullAddress);
+            }
+            else{
+                addressTxt.setText("Thêm địa chỉ/cửa hàng");
+            }
         }
     }
 
