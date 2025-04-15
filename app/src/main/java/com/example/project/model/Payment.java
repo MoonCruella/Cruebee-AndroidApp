@@ -1,13 +1,14 @@
 package com.example.project.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Payment {
+public class Payment implements Serializable {
+    private User user;
     private String addressUser;
-    private String addressShop;
-    private String firstName;
-    private String lastName;
+    private int shopid;
+    private String fullName;
     private String sdt;
     private String note;
     private Boolean utensils;
@@ -15,6 +16,30 @@ public class Payment {
     private LocalDateTime receivedDate;
     private LocalDateTime orderDate;
     private List<PaymentProduct> products;
+    private String paymentMethod;
+
+    public Payment(User user, String addressUser, int shopid, String fullName, String sdt, String note, Boolean utensils, Long totalPrice, LocalDateTime receivedDate, LocalDateTime orderDate, List<PaymentProduct> products, String paymentMethod) {
+        this.user = user;
+        this.addressUser = addressUser;
+        this.shopid = shopid;
+        this.fullName = fullName;
+        this.sdt = sdt;
+        this.note = note;
+        this.utensils = utensils;
+        this.totalPrice = totalPrice;
+        this.receivedDate = receivedDate;
+        this.orderDate = orderDate;
+        this.products = products;
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
 
     public String getNote() {
         return note;
@@ -48,28 +73,28 @@ public class Payment {
         this.products = products;
     }
 
-    public String getAddressShop() {
-        return addressShop;
+    public User getUser() {
+        return user;
     }
 
-    public void setAddressShop(String addressShop) {
-        this.addressShop = addressShop;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public int getShopid() {
+        return shopid;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setShopid(int shopid) {
+        this.shopid = shopid;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getSdt() {

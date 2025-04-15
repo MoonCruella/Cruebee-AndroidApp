@@ -34,6 +34,17 @@
         <activity
             android:name=".AddAddressActivity"
             android:exported="false" />
+		<activity
+
+
+            android:name=".OrderDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OrderListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PaymentMethodActivity"
+            android:exported="false" />
         <activity
             android:name=".EnterAddressActivity"
             android:exported="false" />

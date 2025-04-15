@@ -14,7 +14,11 @@ public class User {
     private boolean active;
     private LocalDateTime optGeneratedTime;
 
-    public User(int id, String username, String password, String email, String sdt,String gender) {
+    public User(int id) {
+        this.id = id;
+    }
+
+    public User(int id, String username, String password, String email, String sdt) {
         this.id = id;
         this.username = username;
         this.password = password;

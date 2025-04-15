@@ -32,6 +32,10 @@ public class AddressShop {
         this.distance = distance;
     }
 
+    public AddressShop(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }
