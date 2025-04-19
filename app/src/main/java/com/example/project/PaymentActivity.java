@@ -284,12 +284,14 @@ public class PaymentActivity extends AppCompatActivity {
                 JSONObject jsonBody = new JSONObject();
                 try {
                     JSONObject userObject = new JSONObject();
+                    JSONObject shopObject = new JSONObject();
                     JSONArray productsArray = new JSONArray();
                     for (PaymentProduct item : products) {
                         JSONObject productObject = new JSONObject();
                         JSONObject productIdObject = new JSONObject();
 
                         productIdObject.put("id", item.getProduct().getId());
+                        productIdObject.put("name", item.getProduct().getName());
                         productObject.put("product", productIdObject);
                         productObject.put("quantity", item.getQuantity());
 
@@ -309,7 +311,8 @@ public class PaymentActivity extends AppCompatActivity {
                     userObject.put("id", tinyDB.getInt("userId"));
                     jsonBody.put("user", userObject);
                     jsonBody.put("addressUser", addUser);
-                    jsonBody.put("shop", addressShop);
+                    shopObject.put("id", addressShop.getId());
+                    jsonBody.put("shop", shopObject);
                     jsonBody.put("totalPrice", Long.parseLong(price));
                     jsonBody.put("fullName", fName);
                     jsonBody.put("sdt", phone);

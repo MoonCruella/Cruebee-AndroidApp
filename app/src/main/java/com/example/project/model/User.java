@@ -1,8 +1,9 @@
 package com.example.project.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class User {
+public class User implements Serializable {
     private int id;
     private String username;
     private String password;

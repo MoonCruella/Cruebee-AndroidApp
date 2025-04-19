@@ -7,7 +7,7 @@ import java.util.List;
 public class Payment implements Serializable {
     private User user;
     private String addressUser;
-    private int shopid;
+    private AddressShop shop;
     private String fullName;
     private String sdt;
     private String note;
@@ -18,10 +18,10 @@ public class Payment implements Serializable {
     private List<PaymentProduct> products;
     private String paymentMethod;
 
-    public Payment(User user, String addressUser, int shopid, String fullName, String sdt, String note, Boolean utensils, Long totalPrice, LocalDateTime receivedDate, LocalDateTime orderDate, List<PaymentProduct> products, String paymentMethod) {
+    public Payment(User user, String addressUser, AddressShop shop, String fullName, String sdt, String note, Boolean utensils, Long totalPrice, LocalDateTime receivedDate, LocalDateTime orderDate, List<PaymentProduct> products, String paymentMethod) {
         this.user = user;
         this.addressUser = addressUser;
-        this.shopid = shopid;
+        this.shop = shop;
         this.fullName = fullName;
         this.sdt = sdt;
         this.note = note;
@@ -81,12 +81,12 @@ public class Payment implements Serializable {
         this.user = user;
     }
 
-    public int getShopid() {
-        return shopid;
+    public AddressShop getShop() {
+        return shop;
     }
 
-    public void setShopid(int shopid) {
-        this.shopid = shopid;
+    public void setShop(AddressShop shop) {
+        this.shop = shop;
     }
 
     public String getFullName() {

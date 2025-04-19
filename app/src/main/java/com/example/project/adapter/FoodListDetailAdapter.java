@@ -4,6 +4,7 @@ import static android.view.View.VISIBLE;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,39 +19,35 @@ import com.example.project.OrderDetailActivity;
 import com.example.project.R;
 import com.example.project.model.Address;
 import com.example.project.model.AddressShop;
+import com.example.project.model.Food;
 import com.example.project.model.Payment;
+import com.example.project.model.PaymentProduct;
 
 import java.util.List;
 
-public class PaymentListAdapter extends RecyclerView.Adapter<PaymentListAdapter.PaymentListHolder>{
+public class FoodListDetailAdapter extends RecyclerView.Adapter<FoodListDetailAdapter.FoodListDetailHolder>{
     private Context context;
-    private List<Payment> paymentList;
+    private List<PaymentProduct> paymentList;
 
-    public PaymentListAdapter(Context context, List<Payment> paymentList) {
+    public FoodListDetailAdapter(Context context, List<PaymentProduct> paymentList) {
         this.context = context;
         this.paymentList = paymentList;
     }
 
     @NonNull
     @Override
-    public PaymentListAdapter.PaymentListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public FoodListDetailAdapter.FoodListDetailHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_orderlist, parent, false);
-        return new PaymentListAdapter.PaymentListHolder(view);
+        return new FoodListDetailAdapter.FoodListDetailHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PaymentListAdapter.PaymentListHolder holder, int position) {
-        Payment payment = paymentList.get(position);
-        holder.shopTxt.setText(payment.getShop().getName());
-        holder.detailTxt.setText(payment.getProducts().size() + " phần - " + payment.getTotalPrice());
-        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, OrderDetailActivity.class);
-                intent.putExtra("object",payment);
-                context.startActivity(intent);
-            }
-        });
+    public void onBindViewHolder(@NonNull FoodListDetailAdapter.FoodListDetailHolder holder, int position) {
+        PaymentProduct payment = paymentList.get(position);
+        Food food = payment.getProduct();
+        Log.d("food: ",food.toString());
+        holder.shopTxt.setText(food.getName());
+        holder.detailTxt.setText("Số lượng: " + payment.getQuantity());
     }
 
     @Override
@@ -58,10 +55,10 @@ public class PaymentListAdapter extends RecyclerView.Adapter<PaymentListAdapter.
         return paymentList.size();
     }
 
-    public class PaymentListHolder extends RecyclerView.ViewHolder{
+    public class FoodListDetailHolder extends RecyclerView.ViewHolder{
         ConstraintLayout constraintLayout;
         TextView shopTxt, detailTxt;
-        public PaymentListHolder(@NonNull View itemView) {
+        public FoodListDetailHolder(@NonNull View itemView) {
             super(itemView);
             constraintLayout = itemView.findViewById(R.id.main_layout);
             shopTxt = itemView.findViewById(R.id.shopTxt);
