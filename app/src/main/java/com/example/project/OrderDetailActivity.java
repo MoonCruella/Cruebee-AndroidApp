@@ -9,15 +9,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.project.adapter.FoodListDetailAdapter;
+import com.example.project.adapter.FoodListPaymentAdapter;
+import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.model.Address;
 import com.example.project.model.Payment;
+
+import org.json.JSONException;
 
 public class OrderDetailActivity extends AppCompatActivity {
     TextView idDonHang, timeOrder, phiGD, chiPhiDK, totalPrice, ptThanhtoan, nameSdt, diaChiOrder;
     RecyclerView recyclerView2;
     Payment payment;
+    FoodListDetailAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +50,20 @@ public class OrderDetailActivity extends AppCompatActivity {
         recyclerView2 = findViewById(R.id.recyclerView2);
         payment = (Payment) getIntent().getSerializableExtra("object");
 
-        idDonHang.setText("1");
+        idDonHang.setText("Đơn hàng #1");
         timeOrder.setText(payment.getOrderDate().toString());
-        phiGD.setText("20.000đ");
+        phiGD.setText("20.000");
         chiPhiDK.setText(payment.getTotalPrice().toString());
         totalPrice.setText(payment.getTotalPrice().toString());
         ptThanhtoan.setText(payment.getPaymentMethod());
         nameSdt.setText(payment.getFullName() + " - " + payment.getSdt());
         diaChiOrder.setText(payment.getAddressUser());
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        recyclerView2.setLayoutManager(linearLayoutManager);
+        adapter = new FoodListDetailAdapter(OrderDetailActivity.this,payment.getProducts());
+        RecyclerView.ItemDecoration decoration = new DividerItemDecoration(OrderDetailActivity.this,DividerItemDecoration.VERTICAL);
+        recyclerView2.addItemDecoration(decoration);
+        recyclerView2.setAdapter(adapter);
     }
 }

@@ -1,12 +1,17 @@
 package com.example.project.model;
 
-public class PaymentProduct {
+import java.io.Serializable;
+
+public class PaymentProduct implements Serializable {
     private Food product;
     private int quantity;
 
     public PaymentProduct(Food product, int quantity) {
         this.product = product;
         this.quantity = quantity;
+    }
+
+    public PaymentProduct() {
     }
 
     public int getQuantity() {

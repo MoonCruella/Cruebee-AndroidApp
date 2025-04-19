@@ -89,10 +89,6 @@ public class Food implements Serializable {
         this.numberInCart = numberInCart;
     }
 
-    public Food(int id) {
-        this.id = id;
-    }
-
     public Food(int id, String name, int price, String image, String description, int numberInCart){
         this.id = id;
         this.name = name;
@@ -110,5 +106,22 @@ public class Food implements Serializable {
         this.soldCount = soldCount;
     }
 
+    public Food(int id) {
+        this.id = id;
+    }
 
+    @Override
+    public String toString() {
+        return "Food{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", soldCount=" + soldCount +
+                ", active=" + active +
+                ", generatedTime=" + generatedTime +
+                ", numberInCart=" + numberInCart +
+                ", image='" + image + '\'' +
+                '}';
+    }
 }

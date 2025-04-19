@@ -25,6 +25,7 @@ import com.example.project.adapter.PaymentListAdapter;
 import com.example.project.helpers.TinyDB;
 
 import com.example.project.model.Address;
+import com.example.project.model.AddressShop;
 import com.example.project.model.Food;
 import com.example.project.model.Payment;
 import com.example.project.model.PaymentProduct;
@@ -94,31 +95,33 @@ public class OrderListActivity extends AppCompatActivity {
 
                                 // Extract shop details
                                 int id = payment.getInt("id");
-                                int shop = payment.getInt("shop_id");
-                                String addressUser = payment.getString("address_user");
-                                String fullname = payment.getString("fullname");
-                                Long totalprice = payment.getLong("total_price");
+                                JSONObject shop = payment.getJSONObject("shop");
+                                AddressShop addressShop = new AddressShop(shop.getString("name"));
+                                String addressUser = payment.getString("addressUser");
+                                String fullname = payment.getString("fullName");
+                                Long totalprice = payment.getLong("totalPrice");
                                 Boolean utensils = payment.getBoolean("utensils");
                                 String sdt = payment.getString("sdt");
                                 String note = payment.getString("note");
-                                String reDate = payment.getString("received_date");
-                                String orDate = payment.getString("order_date");
-                                String method = payment.getString("payment_method");
-                                LocalDateTime receiveDate = LocalDateTime.parse(reDate, formatter);
-                                LocalDateTime orderDate = LocalDateTime.parse(orDate, formatter);
+                                String reDate = payment.getString("receivedDate");
+                                String orDate = payment.getString("orderDate");
+                                LocalDateTime receiveDate = parseTime(reDate);
+                                LocalDateTime orderDate = parseTime(orDate);
+                                String method = payment.getString("paymentMethod");
                                 JSONArray productsArray = payment.getJSONArray("products");
                                 List<PaymentProduct> productList = new ArrayList<>();
 
                                 for (int j = 0; j < productsArray.length(); j++) {
                                     JSONObject productObj = productsArray.getJSONObject(j);
-                                    int productId = productObj.getInt("productId");
+                                    JSONObject product1 = productObj.getJSONObject("product");
+                                    int productId = product1.getInt("id");
                                     int quantity = productObj.getInt("quantity");
                                     Food food = new Food(productId);
                                     PaymentProduct product = new PaymentProduct(food, quantity);
                                     productList.add(product);
                                 }
                                 User user = new User(userId);
-                                Payment payment1 = new Payment(user, addressUser, shop, fullname, sdt, note, utensils, totalprice, receiveDate, orderDate,productList,method);
+                                Payment payment1 = new Payment(user, addressUser, addressShop, fullname, sdt, note, utensils, totalprice, receiveDate, orderDate,productList,method);
                                 payments.add(payment1);
                             }
                             // Cập nhật adapter cho RecyclerView
@@ -152,5 +155,21 @@ public class OrderListActivity extends AppCompatActivity {
 
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
+    }
+    private LocalDateTime parseTime(String dateTimeJson)
+    {
+        dateTimeJson = dateTimeJson.replaceAll("[\\[\\]\\s]", "");
+        String[] parts = dateTimeJson.split(",");
+
+        int year = Integer.parseInt(parts[0]);
+        int month = Integer.parseInt(parts[1]);
+        int day = Integer.parseInt(parts[2]);
+        int hour = Integer.parseInt(parts[3]);
+        int minute = Integer.parseInt(parts[4]);
+        int second = Integer.parseInt(parts[5]);
+        int nano = Integer.parseInt(parts[6]);
+
+        LocalDateTime receiveTime = LocalDateTime.of(year, month, day, hour, minute, second, nano);
+        return receiveTime;
     }
 }
