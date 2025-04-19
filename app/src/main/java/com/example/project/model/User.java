@@ -1,8 +1,9 @@
 package com.example.project.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class User {
+public class User implements Serializable {
     private int id;
     private String username;
     private String password;
@@ -14,7 +15,11 @@ public class User {
     private boolean active;
     private LocalDateTime optGeneratedTime;
 
-    public User(int id, String username, String password, String email, String sdt,String gender) {
+    public User(int id) {
+        this.id = id;
+    }
+
+    public User(int id, String username, String password, String email, String sdt) {
         this.id = id;
         this.username = username;
         this.password = password;

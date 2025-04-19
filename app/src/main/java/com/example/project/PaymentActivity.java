@@ -21,6 +21,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -81,19 +83,13 @@ public class PaymentActivity extends AppCompatActivity {
     private TextView giaTxt,themMonBtn,giaDKTxt,addressTxt,addressShopTxt;
     private List<String> timeList = new ArrayList<>();
     private ArrayAdapter<String> timeAdapter;
-    private EditText firstName,lastName,sdt,note;
+    private EditText fullName,sdt,note;
     private Spinner spinnerDate,spinnerTime;
     private Switch utensils;
     String price;
     private Button btnDatHang;
-    //Momo
-    private String amount = "10000";
-    private String fee = "0";
-    int environment = 0;//developer default
-    private String merchantName = "Thanh toán đơn hàng";
-    private String merchantCode = "CB01";
-    private String merchantNameLabel = "CrueBee";
-    private String description = "Thanh toán hóa đơn CrueBee";
+    private String paymentMethod = "Tiền mặt";
+    private ActivityResultLauncher<Intent> paymentMethodLauncher;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -145,8 +141,7 @@ public class PaymentActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-        firstName = findViewById(R.id.eTxtFName);
-        lastName = findViewById(R.id.eTxtLName);
+        fullName = findViewById(R.id.eTxtFName);
         sdt = findViewById(R.id.eTxtPhone);
         note = findViewById(R.id.eTxtNote);
         addressShopTxt = findViewById(R.id.txtShop);
@@ -160,8 +155,34 @@ public class PaymentActivity extends AppCompatActivity {
         btnDatHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                thanhToanZalopay();
+                if ("ZaloPay".equals(paymentMethod)) {
+                    thanhToanZalopay();
+                }
+                else{
+                    payment();
+                }
             }
+        });
+
+        paymentMethodLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        String updatedMethod = result.getData().getStringExtra("method");
+                        if (updatedMethod != null) {
+                            paymentMethod = updatedMethod;
+                            Button method = findViewById(R.id.btnPayment);
+                            method.setText("Thanh toán bằng \n " + paymentMethod);
+                        }
+                    }
+                }
+        );
+        Button method = findViewById(R.id.btnPayment);
+        method.setText("Thanh toán bằng \n " + paymentMethod);
+        method.setOnClickListener(view -> {
+            Intent intent = new Intent(PaymentActivity.this, PaymentMethodActivity.class);
+            intent.putExtra("method", paymentMethod);
+            paymentMethodLauncher.launch(intent);
         });
     }
     private void thanhToanZalopay()
@@ -204,7 +225,7 @@ public class PaymentActivity extends AppCompatActivity {
             return;
         }
         String addUser = addressTxt.getText().toString();
-        String addShop = addressShopTxt.getText().toString();
+        AddressShop addressShop = tinyDB.getObject("addressShop", AddressShop.class);
         LocalDateTime receiveTime;
         String selectedDate = spinnerDate.getSelectedItem().toString();
         String selectedTime = spinnerTime.getSelectedItem().toString();
@@ -220,8 +241,7 @@ public class PaymentActivity extends AppCompatActivity {
             // Kết hợp LocalDate và LocalTime thành LocalDateTime
             receiveTime = LocalDateTime.of(selectedLocalDate, selectedLocalTime);
         }
-        String fName = firstName.getText().toString();
-        String lName = lastName.getText().toString();
+        String fName = fullName.getText().toString();
         String phone = sdt.getText().toString();
         String noted = note.getText().toString();
         boolean dcu = false;
@@ -235,7 +255,7 @@ public class PaymentActivity extends AppCompatActivity {
         progressDialog.setMessage("Loading... Please wait...!!");
         progressDialog.show();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = UrlUtil.ADDRESS + "payment";
+        String url = UrlUtil.ADDRESS + "payment/order";
         boolean finalDcu = dcu;
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
@@ -265,12 +285,14 @@ public class PaymentActivity extends AppCompatActivity {
                 JSONObject jsonBody = new JSONObject();
                 try {
                     JSONObject userObject = new JSONObject();
+                    JSONObject shopObject = new JSONObject();
                     JSONArray productsArray = new JSONArray();
                     for (PaymentProduct item : products) {
                         JSONObject productObject = new JSONObject();
                         JSONObject productIdObject = new JSONObject();
 
                         productIdObject.put("id", item.getProduct().getId());
+                        productIdObject.put("name", item.getProduct().getName());
                         productObject.put("product", productIdObject);
                         productObject.put("quantity", item.getQuantity());
 
@@ -278,9 +300,8 @@ public class PaymentActivity extends AppCompatActivity {
                     }
                     managementCart.getTotalFee(new TotalFeeResponse() {
                         @Override
-                        public void onSuccess(int totalFee) throws JSONException {
+                        public void onSuccess(int totalFee) {
                             price = String.valueOf(totalFee);
-                            jsonBody.put("totalPrice", totalFee);
                         }
 
                         @Override
@@ -292,14 +313,16 @@ public class PaymentActivity extends AppCompatActivity {
                     userObject.put("id", user.getId());
                     jsonBody.put("user", userObject);
                     jsonBody.put("addressUser", addUser);
-                    jsonBody.put("addressShop", addShop);
-                    jsonBody.put("firstName", fName);
-                    jsonBody.put("lastName", lName);
+                    shopObject.put("id", addressShop.getId());
+                    jsonBody.put("shop", shopObject);
+                    jsonBody.put("totalPrice", Long.parseLong(price));
+                    jsonBody.put("fullName", fName);
                     jsonBody.put("sdt", phone);
                     jsonBody.put("utensils", finalDcu);
                     jsonBody.put("note", noted);
                     jsonBody.put("receivedDate", receiveTime);
                     jsonBody.put("products", productsArray);
+                    jsonBody.put("paymentMethod", paymentMethod);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -407,14 +430,10 @@ public class PaymentActivity extends AppCompatActivity {
         }
     }
     public boolean checkEditText(){
-        String fName = firstName.getText().toString();
-        String lName = lastName.getText().toString();
+        String fName = fullName.getText().toString();
         String phone = sdt.getText().toString();
         if(fName.isEmpty()){
-            firstName.setError("Vui lòng nhập thông tin!");
-            return false;
-        } else if (lName.isEmpty()) {
-            lastName.setError("Vui lòng nhập thông tin!");
+            fullName.setError("Vui lòng nhập thông tin!");
             return false;
         } else if (phone.isEmpty()) {
             sdt.setError("Vui lòng nhập thông tin!");
@@ -423,8 +442,7 @@ public class PaymentActivity extends AppCompatActivity {
             sdt.setError("Số điện thoại không chính xác!");
             return false;
         }
-        firstName.setError(null);
-        lastName.setError(null);
+        fullName.setError(null);
         sdt.setError(null);
         return true;
     }

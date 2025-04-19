@@ -110,6 +110,12 @@ public class ShowMore_User_Fragment extends Fragment {
             }
         });
 
+        orderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(),OrderListActivity.class));
+            }
+        });
     }
 
 }

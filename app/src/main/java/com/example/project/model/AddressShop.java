@@ -1,6 +1,8 @@
 package com.example.project.model;
 
-public class AddressShop {
+import java.io.Serializable;
+
+public class AddressShop implements Serializable {
     private int id;
     private String name;
     private String address;
@@ -30,6 +32,10 @@ public class AddressShop {
         this.openTime = openTime;
         this.phone = phone;
         this.distance = distance;
+    }
+
+    public AddressShop(String name) {
+        this.name = name;
     }
 
     public int getId() {
