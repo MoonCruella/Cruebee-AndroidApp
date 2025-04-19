@@ -62,12 +62,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="* Không được để trống"
-        android:textColor="@color/gray"
+        android:textColor="@color/black"
         android:fontFamily="@font/roboto"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/input1"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"/>
 
     <TextView
@@ -99,7 +98,7 @@
             android:layout_gravity="center"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
-            app:lottie_rawRes="@raw/loader3" />
+            app:lottie_rawRes="@raw/loader4" />
     </FrameLayout>
 
 </FrameLayout>

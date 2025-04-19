@@ -1,11 +1,14 @@
 package com.example.project;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -100,13 +103,18 @@ public class ForgotPassActivity extends AppCompatActivity {
             }
         });
     }
+    public void hideKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
     public void openForgotPassOTPActivity(View view){
 
+        hideKeyboard(this);
         loadingOverlay.setVisibility(View.VISIBLE);
-        loadingBar.setVisibility(View.VISIBLE);
-        loadingBar.setMinAndMaxFrame(0, 60);
-        loadingBar.setSpeed(1.5f);
         loadingBar.playAnimation();
         StringRequest stringRequest = new StringRequest(
         Request.Method.PUT,

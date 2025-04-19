@@ -1,10 +1,18 @@
 package com.example.project;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -14,6 +22,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -31,6 +40,10 @@ import java.util.Map;
 public class NewPasswordActivity extends AppCompatActivity {
     private EditText password,re_password;
     private String email;
+    private TextView tvError1,tvError2,saveTxt;
+    private LottieAnimationView loadingBar;
+    private FrameLayout loadingOverlay;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,24 +53,50 @@ public class NewPasswordActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
 
-
+        loadingBar = findViewById(R.id.loadingBar);
+        loadingOverlay = findViewById(R.id.loadingOverlay);
         password = (EditText) findViewById(R.id.password);
         re_password= (EditText) findViewById(R.id.re_password);
+        tvError1 = findViewById(R.id.tvError1);
+        tvError2 = findViewById(R.id.tvError2);
+        saveTxt = findViewById(R.id.saveTxt);
         Intent intent = getIntent();
         email = intent.getStringExtra("USER_EMAIL");
-    }
+        checkInput();
+        saveTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(password.getText().toString().isEmpty()){
+                    tvError1.setText("Không được để trống");
+                    tvError1.setVisibility(View.VISIBLE);
+                }
+                if(re_password.getText().toString().isEmpty()){
+                    tvError2.setText("Không được để trống");
+                    tvError2.setVisibility(View.VISIBLE);
+                }
+                if(tvError2.isShown() || tvError1.isShown() ){
+                    return;
+                }else{
+                    openMainActivity(v);
+                }
+            }
+        });
 
-    public void openMainActivity(View view){
-        if(!validatePassword()){
-            return;
+    }
+    public void hideKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+    public void openMainActivity(View view){
+
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Loading... Please wait...!!");
-        progressDialog.show();
+        hideKeyboard(this);
+        loadingOverlay.setVisibility(View.VISIBLE);
+        loadingBar.playAnimation();
 
 
         StringRequest stringRequest = new StringRequest(
@@ -66,7 +105,8 @@ public class NewPasswordActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.hide();
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
                         Toast.makeText(NewPasswordActivity.this,"" + response,Toast.LENGTH_SHORT).show();
                         if(response.equals("Change password successful!")){
                             Intent intent = new Intent(NewPasswordActivity.this,LoginActivity.class);
@@ -80,7 +120,8 @@ public class NewPasswordActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.hide();
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
                         Toast.makeText(NewPasswordActivity.this,"" + error,Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -88,8 +129,8 @@ public class NewPasswordActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String, String> hashMap = new HashMap<>();
-                hashMap.put("email", email);
-                hashMap.put("password",password.getText().toString());
+                hashMap.put("email", email.trim());
+                hashMap.put("password",password.getText().toString().trim());
                 return hashMap;
             }
 
@@ -100,28 +141,67 @@ public class NewPasswordActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    // Validate password field
-    public boolean validatePassword(){
-        String pass = password.getText().toString();
-        String pass_confirm = re_password.getText().toString();
-        if(pass.isEmpty() || pass_confirm.isEmpty()){
-            password.setError("Password cannot be empty!");
-            re_password.setError("Confirm field cannot be empty!");
-            return false;
-        }
-        else if(!pass.equals(pass_confirm)){
-            password.setError(null);
-            re_password.setError("Confirm field doesn't match with password!!!");
-            return false;
-        }
-        else if(!StringHelper.isValidPassword(pass)){
-            password.setError("Password is not valid!");
-            return false;
-        }
-        password.setError(null);
-        re_password.setError(null);
-        return true;
-    }
+    public void checkInput(){
+        password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String password = s.toString().trim();
+                String confirm = re_password.getText().toString().trim();
+                if (!confirm.isEmpty() && !confirm.equals(password)) {
+                    tvError2.setText("* Mật khẩu xác nhận không khớp");
+                    tvError2.setVisibility(View.VISIBLE);
+                }
+                if(confirm.equals(password)){
+                    tvError2.setVisibility(View.GONE);
+                }
+                if (password.isEmpty()) {
+                    tvError1.setText("* Không được để trống");
+                    tvError1.setVisibility(View.VISIBLE);
+                } else if (!StringHelper.isValidPassword(password)) {
+                    tvError1.setText("* Mật khẩu từ 8 kí tự trở lên, bao gồm chữ hoa, chữ thường và chữ số");
+                    tvError1.setVisibility(View.VISIBLE);
+                } else {
+                    tvError1.setVisibility(View.GONE);
+                }
+            }
+        });
+        re_password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String pass = password.getText().toString().trim();
+                String confirm = s.toString().trim();
+                if (!confirm.isEmpty() && !confirm.equals(pass)) {
+                    tvError2.setText("* Mật khẩu xác nhận không khớp");
+                    tvError2.setVisibility(View.VISIBLE);
+                }
+                else if (confirm.isEmpty()) {
+                    tvError2.setText("* Không được để trống");
+                    tvError2.setVisibility(View.VISIBLE);
+                } else if (!StringHelper.isValidPassword(confirm)) {
+                    tvError2.setText("* Mật khẩu từ 8 kí tự trở lên, bao gồm chữ hoa, chữ thường và chữ số");
+                    tvError2.setVisibility(View.VISIBLE);
+                } else {
+                    tvError2.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
 }
 

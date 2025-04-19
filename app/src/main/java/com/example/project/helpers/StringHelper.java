@@ -7,6 +7,18 @@ public class StringHelper {
         final Pattern EMAIL_REGEX = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", Pattern.CASE_INSENSITIVE);
         return EMAIL_REGEX.matcher(email).matches();
     }
+    public static boolean isValidVietnamPhone(String input) {
+        // Loại bỏ ký tự không phải số
+        String phone = input.replaceAll("[^0-9]", "");
+
+        // Chuyển từ 84 -> 0 nếu cần
+        if (phone.startsWith("84")) {
+            phone = "0" + phone.substring(2);
+        }
+
+        // Kiểm tra độ dài và bắt đầu bằng các đầu số hợp lệ
+        return (phone.length() == 10 || phone.length() == 11) && phone.matches("0[1-9][0-9]{8,9}");
+    }
     public static boolean isValidPassword(String password){
         String PASSWORD_SPECIAL_CHARS = "@#$%^`<>&+=\"!ºª·#~%&'¿¡€,:;*/+-.=_\\[\\]\\(\\)\\|\\_\\?\\\\";
         int PASSWORD_MIN_SIZE = 8;

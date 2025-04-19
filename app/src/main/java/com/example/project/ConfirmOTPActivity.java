@@ -1,10 +1,14 @@
 package com.example.project;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -40,6 +45,8 @@ public class ConfirmOTPActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private TextView resend_tv;
     private String email;
+    private LottieAnimationView loadingBar;
+    private FrameLayout loadingOverlay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,14 +67,22 @@ public class ConfirmOTPActivity extends AppCompatActivity {
         resend_tv = (TextView) findViewById(R.id.resend);
         resend_tv.setVisibility(View.INVISIBLE);
         requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
+        loadingOverlay = findViewById(R.id.loadingOverlay);
+        loadingBar = findViewById(R.id.loadingBar);
+    }
+    public void hideKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     public void verifyOTP(View view) {
-        String otp = user_otp.getText().toString();
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Loading... Please wait...!!");
-        progressDialog.show();
+        String otp = user_otp.getText().toString().trim();
+        hideKeyboard(this);
+        loadingOverlay.setVisibility(View.VISIBLE);
+        loadingBar.playAnimation();
 
 
         StringRequest stringRequest = new StringRequest(
@@ -80,7 +95,8 @@ public class ConfirmOTPActivity extends AppCompatActivity {
                             JSONObject jsonResponse = new JSONObject(response);
                             String mess = jsonResponse.getString("message");
                             if(mess.equals("OTP verified. You can login.")){
-                                progressDialog.hide();
+                                loadingOverlay.setVisibility(View.GONE);
+                                loadingBar.cancelAnimation();
                                 Intent intent = new Intent(ConfirmOTPActivity.this, LoginActivity.class);
                                 startActivity(intent);
                                 String access_token = jsonResponse.getString("access_token");
@@ -88,16 +104,26 @@ public class ConfirmOTPActivity extends AppCompatActivity {
                                 TinyDB tinyDB = new TinyDB(ConfirmOTPActivity.this);
                                 tinyDB.putString("token",access_token);
                                 tinyDB.putString("refresh_token",refresh_token);
-                                Toast.makeText(ConfirmOTPActivity.this, access_token, Toast.LENGTH_SHORT).show();
                             }
                             // Hiện nút resend
                             else if (mess.equals("OTP has expired. Please regenerate and try again.")) {
+                                loadingOverlay.setVisibility(View.GONE);
+                                loadingBar.cancelAnimation();
                                 resend_tv.setVisibility(View.VISIBLE);
+                                Toast.makeText(ConfirmOTPActivity.this,"Mã OTP đã quá hạn. Vui lòng gửi lại mã", Toast.LENGTH_SHORT).show();
+                            }
+                            // Hiện nút resend
+                            else if (mess.equals("Invalid OTP. Please check and try again.")) {
+                                loadingOverlay.setVisibility(View.GONE);
+                                loadingBar.cancelAnimation();
+                                Toast.makeText(ConfirmOTPActivity.this,"Mã OTP không hợp lệ",Toast.LENGTH_SHORT).show();
                             }
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            loadingOverlay.setVisibility(View.GONE);
+                            loadingBar.cancelAnimation();
                             Toast.makeText(ConfirmOTPActivity.this, "Error processing login response.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -105,7 +131,8 @@ public class ConfirmOTPActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.hide();
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
                         Toast.makeText(ConfirmOTPActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -125,18 +152,16 @@ public class ConfirmOTPActivity extends AppCompatActivity {
     public void resendOTP(View view)
     {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Loading... Please wait...!!");
-        progressDialog.show();
-
+        loadingOverlay.setVisibility(View.VISIBLE);
+        loadingBar.playAnimation();
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT, UrlUtil.ADDRESS +
                 "regenerate-otp",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.hide();
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
                         Toast.makeText(ConfirmOTPActivity.this, "" + response, Toast.LENGTH_SHORT).show();
                         resend_tv.setVisibility(View.INVISIBLE);
                     }
@@ -144,7 +169,8 @@ public class ConfirmOTPActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.hide();
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
                         Toast.makeText(ConfirmOTPActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                     }
                 }

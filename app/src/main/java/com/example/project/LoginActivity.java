@@ -4,7 +4,9 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -49,7 +52,7 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText email, password;
-    private TextView tvError1,tvError2,notLogin,registerBtn;
+    private TextView tvError1,tvError2,notLogin,registerBtn,loginBtn;
     private RequestQueue requestQueue;
     private TinyDB tinyDB;
     private String token;
@@ -75,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
         registerBtn = findViewById(R.id.registerBtn);
         loadingBar = findViewById(R.id.loadingBar);
         loadingOverlay = findViewById(R.id.loadingOverlay);
+        loginBtn = findViewById(R.id.loginBtn);
 
         tinyDB = new TinyDB(this);
         requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
@@ -83,6 +87,26 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+            }
+        });
+
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(tvError1.isShown() || tvError2.isShown()){
+                    return;
+                }
+                if(email.getText().toString().isEmpty()){
+                    tvError1.setText("Không được để trống");
+                    tvError1.setVisibility(View.VISIBLE);
+                }
+                if(password.getText().toString().isEmpty()){
+                    tvError2.setText("Không được để trống");
+                    tvError2.setVisibility(View.VISIBLE);
+                }
+                else{
+                    openHomeActivity(v);
+                }
             }
         });
 
@@ -180,11 +204,10 @@ public class LoginActivity extends AppCompatActivity {
 
     public void openHomeActivity(View view){
 
-        String email1 = email.getText().toString();
-        String password1 = password.getText().toString();
+        String email1 = email.getText().toString().trim();
+        String password1 = password.getText().toString().trim();
+        hideKeyboard(this);
         loadingOverlay.setVisibility(View.VISIBLE);
-        loadingBar.setMinAndMaxFrame(0, 60);
-        loadingBar.setSpeed(1.5f);
         loadingBar.playAnimation();
         String url = UrlUtil.ADDRESS + "loginn";
         StringRequest stringRequest = new StringRequest(
@@ -228,6 +251,8 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            loadingOverlay.setVisibility(View.GONE);
+                            loadingBar.cancelAnimation();
                             Toast.makeText(LoginActivity.this, "Error processing login response.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -273,6 +298,12 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(LoginActivity.this,ForgotPassActivity.class));
     }
 
-
+    public void hideKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
 }

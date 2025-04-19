@@ -1,8 +1,13 @@
 package com.example.project;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -47,6 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private TinyDB tinyDB;
     private EditText email,username, password, re_password,sdt;
+    private TextView tvError,tvError1,tvError2,tvError3,tvError4,tvError5;
     TextView register_btn;
     String itemGender;
     private LottieAnimationView loadingBar;
@@ -72,6 +78,13 @@ public class RegisterActivity extends AppCompatActivity {
         re_password= (EditText) findViewById(R.id.re_password);
         gender = findViewById(R.id.gender);
         sdt = findViewById(R.id.sdt);
+        tvError = findViewById(R.id.tvError);
+        tvError1 = findViewById(R.id.tvError1);
+        tvError2 = findViewById(R.id.tvError2);
+        tvError3 = findViewById(R.id.tvError3);
+        tvError4 = findViewById(R.id.tvError4);
+        tvError5 = findViewById(R.id.tvError5);
+
         tinyDB = new TinyDB(this);
         requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
 
@@ -88,15 +101,43 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 itemGender = adapter.getItem(position).toString();
-                Toast.makeText(RegisterActivity.this,"Item : " + itemGender,Toast.LENGTH_SHORT).show();
             }
         });
 
         register_btn = (TextView) findViewById(R.id.register);
+        checkInput();
         register_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerUser(v);
+                if(email.getText().toString().isEmpty()){
+                    tvError1.setText("Không được để trống");
+                    tvError1.setVisibility(View.VISIBLE);
+                }
+                if(password.getText().toString().isEmpty()){
+                    tvError3.setText("Không được để trống");
+                    tvError3.setVisibility(View.VISIBLE);
+                }
+                if(re_password.getText().toString().isEmpty()){
+                    tvError4.setText("Không được để trống");
+                    tvError4.setVisibility(View.VISIBLE);
+                }
+                if(sdt.getText().toString().isEmpty()){
+                    tvError.setText("Không được để trống");
+                    tvError.setVisibility(View.VISIBLE);
+                }
+                if(gender.getText().toString().isEmpty()){
+                    tvError5.setText("Không được để trống");
+                    tvError5.setVisibility(View.VISIBLE);
+                }
+                if(username.getText().toString().isEmpty()){
+                    tvError2.setText("Không được để trống");
+                    tvError2.setVisibility(View.VISIBLE);
+                }
+                if(tvError.isShown() || tvError2.isShown() || tvError1.isShown() || tvError3.isShown() || tvError4.isShown() || tvError5.isShown()){
+                    return;
+                }else{
+                    registerUser(v);
+                }
             }
         });
     }
@@ -104,14 +145,12 @@ public class RegisterActivity extends AppCompatActivity {
     public void registerUser(View view){
 
         register_btn.setEnabled(false);
-        String email1 = email.getText().toString();
-        String username1 = username.getText().toString();
-        String password1 = password.getText().toString();
-        String uSdt = sdt.getText().toString();
+        String email1 = email.getText().toString().trim();
+        String username1 = username.getText().toString().trim();
+        String password1 = password.getText().toString().trim();
+        String uSdt = sdt.getText().toString().trim();
 
         loadingOverlay.setVisibility(View.VISIBLE);
-        loadingBar.setMinAndMaxFrame(0, 60);        // Thiết lập khung hình
-        loadingBar.setSpeed(1.5f);                  // Tùy chỉnh tốc độ
         loadingBar.playAnimation();
 
         StringRequest stringRequest = new StringRequest(
@@ -174,6 +213,166 @@ public class RegisterActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
+    public void checkInput(){
+
+        email.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String ema = s.toString().trim();
+
+                if (ema.isEmpty()) {
+                    tvError1.setText("* Không được để trống");
+                    tvError1.setVisibility(VISIBLE);
+                }
+                else if(!StringHelper.isEmailValid(ema)){
+                    tvError1.setText("* Email không hợp lệ");
+                    tvError1.setVisibility(VISIBLE);
+                }
+                else {
+                    tvError1.setVisibility(GONE);
+                }
+            }
+        });
+        sdt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phone = s.toString().trim();
+
+                if (phone.isEmpty()) {
+                    tvError.setText("* Không được để trống");
+                    tvError.setVisibility(VISIBLE);
+                }
+                else if(!StringHelper.isValidVietnamPhone(phone)){
+                    tvError.setText("* Số điện thoại không hợp lệ");
+                    tvError.setVisibility(VISIBLE);
+                }
+                else {
+                    tvError.setVisibility(GONE);
+                }
+            }
+        });
+        username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phone = s.toString().trim();
+
+                if (phone.isEmpty()) {
+                    tvError2.setText("* Không được để trống");
+                    tvError2.setVisibility(VISIBLE);
+                }
+                else {
+                    tvError2.setVisibility(GONE);
+                }
+            }
+        });
+        gender.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phone = s.toString().trim();
+
+                if (phone.isEmpty()) {
+                    tvError5.setText("* Không được để trống");
+                    tvError5.setVisibility(VISIBLE);
+                }
+                else {
+                    tvError5.setVisibility(GONE);
+                }
+            }
+        });
+        password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String password = s.toString().trim();
+                String confirm = re_password.getText().toString().trim();
+                if (!confirm.isEmpty() && !confirm.equals(password)) {
+                    tvError4.setText("* Mật khẩu xác nhận không khớp");
+                    tvError4.setVisibility(View.VISIBLE);
+                }
+                if(confirm.equals(password)){
+                    tvError4.setVisibility(View.GONE);
+                }
+                if (password.isEmpty()) {
+                    tvError3.setText("* Không được để trống");
+                    tvError3.setVisibility(View.VISIBLE);
+                } else if (!StringHelper.isValidPassword(password)) {
+                    tvError3.setText("* Mật khẩu từ 8 kí tự trở lên, bao gồm chữ hoa, chữ thường và chữ số");
+                    tvError3.setVisibility(View.VISIBLE);
+                } else {
+                    tvError3.setVisibility(View.GONE);
+                }
+            }
+        });
+        re_password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String pass = password.getText().toString().trim();
+                String confirm = s.toString().trim();
+                if (!confirm.isEmpty() && !confirm.equals(pass)) {
+                    tvError4.setText("* Mật khẩu xác nhận không khớp");
+                    tvError4.setVisibility(View.VISIBLE);
+                }
+                else if (confirm.isEmpty()) {
+                    tvError4.setText("* Không được để trống");
+                    tvError4.setVisibility(View.VISIBLE);
+                } else if (!StringHelper.isValidPassword(confirm)) {
+                    tvError4.setText("* Mật khẩu từ 8 kí tự trở lên, bao gồm chữ hoa, chữ thường và chữ số");
+                    tvError4.setVisibility(View.VISIBLE);
+                } else {
+                    tvError4.setVisibility(View.GONE);
+                }
+            }
+        });
+
+    }
 
 
 
