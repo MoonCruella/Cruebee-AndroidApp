@@ -161,7 +161,8 @@ public class AddressShopActivity extends AppCompatActivity {
                                 // Ensure correct handling of the text
                                 shopName = new String(shopName.getBytes(), StandardCharsets.UTF_8);
                                 shopAddress = new String(shopAddress.getBytes(), StandardCharsets.UTF_8);
-                                addressShops.add(new AddressShop(id,shopName,shopAddress,shopOpenTime,shopPhone,distance));
+                                AddressShop shop = new AddressShop(id,shopName,shopAddress,shopOpenTime,shopPhone,distance);
+                                addressShops.add(shop);
                             }
 
                             updateRecyclerView(addressShops);

@@ -74,8 +74,10 @@ public class OrderListActivity extends AppCompatActivity {
     }
 
     private void getPayment() {
-        int userId = tinyDB.getInt("userId");
+        User savedUser = tinyDB.getObject("savedUser", User.class);
+        int userId = savedUser.getId();
         String url = UrlUtil.ADDRESS + "payment?userId=" + userId;
+        Log.d("USER ID", String.valueOf(userId));
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET,
                 url,
@@ -103,9 +105,7 @@ public class OrderListActivity extends AppCompatActivity {
                                 Boolean utensils = payment.getBoolean("utensils");
                                 String sdt = payment.getString("sdt");
                                 String note = payment.getString("note");
-                                String reDate = payment.getString("receivedDate");
                                 String orDate = payment.getString("orderDate");
-                                LocalDateTime receiveDate = parseTime(reDate);
                                 LocalDateTime orderDate = parseTime(orDate);
                                 String method = payment.getString("paymentMethod");
                                 JSONArray productsArray = payment.getJSONArray("products");
@@ -121,7 +121,7 @@ public class OrderListActivity extends AppCompatActivity {
                                     productList.add(product);
                                 }
                                 User user = new User(userId);
-                                Payment payment1 = new Payment(user, addressUser, addressShop, fullname, sdt, note, utensils, totalprice, receiveDate, orderDate,productList,method);
+                                Payment payment1 = new Payment(user, addressUser, addressShop, fullname, sdt, note, utensils, totalprice, orderDate,productList,method);
                                 payments.add(payment1);
                             }
                             // Cập nhật adapter cho RecyclerView
@@ -132,6 +132,7 @@ public class OrderListActivity extends AppCompatActivity {
                             e.printStackTrace();
                             Log.e("JSON_ERROR", "Invalid JSON response: " + response);
                             Toast.makeText(OrderListActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+
                         }
                     }
                 },

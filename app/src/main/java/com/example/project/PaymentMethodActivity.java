@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -20,6 +21,10 @@ public class PaymentMethodActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.payment_method);
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
 
         RadioButton rbCash = findViewById(R.id.cash);
         RadioButton rbZl = findViewById(R.id.zlpay);
@@ -31,7 +36,7 @@ public class PaymentMethodActivity extends AppCompatActivity {
                 rbZl.setChecked(true);
             }
         }
-        Button confirm = findViewById(R.id.btn_confirm);
+        EditText confirm = findViewById(R.id.btn_confirm);
         RadioGroup radioGroup = findViewById(R.id.payment_group);
 
         confirm.setOnClickListener(new View.OnClickListener() {

@@ -2,33 +2,30 @@ package com.example.project;
 
 import static android.content.ContentValues.TAG;
 
-import android.app.AlertDialog;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -41,7 +38,6 @@ import com.example.project.helpers.ManagementCart;
 import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
-import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.example.project.interfaces.TotalFeeResponse;
 import com.example.project.model.Address;
 import com.example.project.model.AddressShop;
@@ -50,16 +46,13 @@ import com.example.project.model.Food;
 import com.example.project.model.PaymentProduct;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -67,8 +60,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import vn.momo.momo_partner.AppMoMoLib;
 import vn.zalopay.sdk.Environment;
 import vn.zalopay.sdk.ZaloPayError;
 import vn.zalopay.sdk.ZaloPaySDK;
@@ -80,17 +71,16 @@ public class PaymentActivity extends AppCompatActivity {
     private ManagementCart managementCart;
     private TinyDB tinyDB;
     private FoodListPaymentAdapter adapter;
-    private TextView giaTxt,themMonBtn,giaDKTxt,addressTxt,addressShopTxt;
+    private TextView giaTxt,themMonBtn,giaDKTxt,addressTxt,addressShopTxt,btnDatHang;
     private List<String> timeList = new ArrayList<>();
-    private ArrayAdapter<String> timeAdapter;
     private EditText fullName,sdt,note;
-    private Spinner spinnerDate,spinnerTime;
     private Switch utensils;
+    private CheckBox checkBox;
     String price;
-    private Button btnDatHang;
     private String paymentMethod = "Tiền mặt";
     private ActivityResultLauncher<Intent> paymentMethodLauncher;
 
+    @SuppressLint("MissingInflatedId")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,34 +91,7 @@ public class PaymentActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
 
-        spinnerDate = findViewById(R.id.spinnerDate);
-        spinnerTime = findViewById(R.id.spinnerTime);
         managementCart = new ManagementCart(this);
-        LocalDate today = LocalDate.now();
-        LocalDate tomorrow = today.plusDays(1);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
-        List<String> dateList = new ArrayList<>();
-        dateList.add("Hôm nay");
-        dateList.add(getDayOfWeek(tomorrow.getDayOfWeek()) + ", " + tomorrow.format(formatter));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, dateList);
-        spinnerDate.setAdapter(adapter);
-        timeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, timeList);
-        spinnerTime.setAdapter(timeAdapter);
-        spinnerDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
-                if (position == 0) { // Nếu chọn Hôm nay
-                    updateTimeListForToday();
-                } else { // Nếu chọn Ngày mai
-                    updateTimeListForTomorrow();
-                }
-                timeAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
-        });
-
         initView();
         try {
             initList();
@@ -141,17 +104,23 @@ public class PaymentActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-        fullName = findViewById(R.id.eTxtFName);
+        fullName = findViewById(R.id.fullName);
         sdt = findViewById(R.id.eTxtPhone);
         note = findViewById(R.id.eTxtNote);
         addressShopTxt = findViewById(R.id.txtShop);
         utensils = findViewById(R.id.switch1);
 
+        if(tinyDB.getBoolean("is_logged_in")){
+            User user = tinyDB.getObject("savedUser", User.class);
+            fullName.setText(user.getUsername());
+            sdt.setText(user.getSdt());
+        }
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         ZaloPaySDK.init(2553, Environment.SANDBOX);
 
-        btnDatHang = findViewById(R.id.btnDatHang);
+
         btnDatHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,21 +195,7 @@ public class PaymentActivity extends AppCompatActivity {
         }
         String addUser = addressTxt.getText().toString();
         AddressShop addressShop = tinyDB.getObject("addressShop", AddressShop.class);
-        LocalDateTime receiveTime;
-        String selectedDate = spinnerDate.getSelectedItem().toString();
-        String selectedTime = spinnerTime.getSelectedItem().toString();
-        LocalDate today = LocalDate.now();
-        LocalDate selectedLocalDate = selectedDate.equals("Hôm nay") ? today : today.plusDays(1);
-        if (selectedTime.equals("Bây giờ")) {
-            receiveTime = LocalDateTime.now();
-        } else {
-            // Chuyển đổi thời gian thành LocalTime
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
-            LocalTime selectedLocalTime = LocalTime.parse(selectedTime, formatter);
 
-            // Kết hợp LocalDate và LocalTime thành LocalDateTime
-            receiveTime = LocalDateTime.of(selectedLocalDate, selectedLocalTime);
-        }
         String fName = fullName.getText().toString();
         String phone = sdt.getText().toString();
         String noted = note.getText().toString();
@@ -264,10 +219,13 @@ public class PaymentActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         progressDialog.hide();
-                        if(response.equals("Đặt hàng thành công!")){
+                        if(response.equals("Ordering Successfully!")){
                             Toast.makeText(PaymentActivity.this, "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(PaymentActivity.this,BaseActivity.class);
                             startActivity(intent);
+                        }
+                        else{
+                            Toast.makeText(PaymentActivity.this, "Thanh toán that bai", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -275,12 +233,13 @@ public class PaymentActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.hide();
-                        Toast.makeText(PaymentActivity.this,"" + error,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PaymentActivity.this,"Error :" + error,Toast.LENGTH_SHORT).show();
                     }
                 }
         ){
             @Override
             public byte[] getBody() throws AuthFailureError {
+
                 // Create a JSONObject and put data into it
                 JSONObject jsonBody = new JSONObject();
                 try {
@@ -310,6 +269,7 @@ public class PaymentActivity extends AppCompatActivity {
                         }
                     });
                     User user = tinyDB.getObject("savedUser", com.example.project.model.User.class);
+                    Log.d("USSER",user.getId() + user.getEmail());
                     userObject.put("id", user.getId());
                     jsonBody.put("user", userObject);
                     jsonBody.put("addressUser", addUser);
@@ -320,7 +280,6 @@ public class PaymentActivity extends AppCompatActivity {
                     jsonBody.put("sdt", phone);
                     jsonBody.put("utensils", finalDcu);
                     jsonBody.put("note", noted);
-                    jsonBody.put("receivedDate", receiveTime);
                     jsonBody.put("products", productsArray);
                     jsonBody.put("paymentMethod", paymentMethod);
                 } catch (JSONException e) {
@@ -348,6 +307,9 @@ public class PaymentActivity extends AppCompatActivity {
         themMonBtn = (TextView) findViewById(R.id.btnAddFood);
         giaDKTxt = (TextView) findViewById(R.id.txtCost);
         addressTxt = findViewById(R.id.txtAddress);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        btnDatHang = findViewById(R.id.btnDatHang);
+        btnDatHang.setAlpha(0.5f);
         tinyDB = new TinyDB(this);
         addressShopTxt = findViewById(R.id.txtShop);
         AddressShop addressShop = tinyDB.getObject("addressShop", AddressShop.class);
@@ -374,7 +336,22 @@ public class PaymentActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    btnDatHang.setAlpha(1.0f);
+                    btnDatHang.setEnabled(true);
+                } else {
+                    btnDatHang.setAlpha(0.5f);
+                    btnDatHang.setEnabled(false);
+                }
+            }
+        });
+
+
     }
+
 
     private void initList() throws JSONException {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
@@ -399,35 +376,6 @@ public class PaymentActivity extends AppCompatActivity {
             }
         });
 
-    }
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private String getDayOfWeek(DayOfWeek dayOfWeek) {
-        switch (dayOfWeek) {
-            case MONDAY: return "Thứ Hai";
-            case TUESDAY: return "Thứ Ba";
-            case WEDNESDAY: return "Thứ Tư";
-            case THURSDAY: return "Thứ Năm";
-            case FRIDAY: return "Thứ Sáu";
-            case SATURDAY: return "Thứ Bảy";
-            case SUNDAY: return "Chủ Nhật";
-            default: return "";
-        }
-    }
-    private void updateTimeListForToday() {
-        timeList.clear();
-        timeList.add("Bây giờ");
-    }
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void updateTimeListForTomorrow() {
-        timeList.clear();
-        LocalTime startTime = LocalTime.of(10, 0); // 10:00 AM
-        LocalTime endTime = LocalTime.of(21, 0);   // 9:00 PM
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault());
-
-        while (!startTime.isAfter(endTime)) {
-            timeList.add(startTime.format(timeFormatter));
-            startTime = startTime.plusMinutes(15);
-        }
     }
     public boolean checkEditText(){
         String fName = fullName.getText().toString();

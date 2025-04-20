@@ -13,12 +13,11 @@ public class Payment implements Serializable {
     private String note;
     private Boolean utensils;
     private Long totalPrice;
-    private LocalDateTime receivedDate;
     private LocalDateTime orderDate;
     private List<PaymentProduct> products;
     private String paymentMethod;
 
-    public Payment(User user, String addressUser, AddressShop shop, String fullName, String sdt, String note, Boolean utensils, Long totalPrice, LocalDateTime receivedDate, LocalDateTime orderDate, List<PaymentProduct> products, String paymentMethod) {
+    public Payment(User user, String addressUser, AddressShop shop, String fullName, String sdt, String note, Boolean utensils, Long totalPrice, LocalDateTime orderDate, List<PaymentProduct> products, String paymentMethod) {
         this.user = user;
         this.addressUser = addressUser;
         this.shop = shop;
@@ -27,7 +26,6 @@ public class Payment implements Serializable {
         this.note = note;
         this.utensils = utensils;
         this.totalPrice = totalPrice;
-        this.receivedDate = receivedDate;
         this.orderDate = orderDate;
         this.products = products;
         this.paymentMethod = paymentMethod;
@@ -121,11 +119,4 @@ public class Payment implements Serializable {
         this.totalPrice = totalPrice;
     }
 
-    public LocalDateTime getReceivedDate() {
-        return receivedDate;
-    }
-
-    public void setReceivedDate(LocalDateTime receivedDate) {
-        this.receivedDate = receivedDate;
-    }
 }
