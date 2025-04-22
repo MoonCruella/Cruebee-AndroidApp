@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +37,7 @@ public class PaymentMethodActivity extends AppCompatActivity {
                 rbZl.setChecked(true);
             }
         }
-        EditText confirm = findViewById(R.id.btn_confirm);
+        TextView confirm = findViewById(R.id.btn_confirm);
         RadioGroup radioGroup = findViewById(R.id.payment_group);
 
         confirm.setOnClickListener(new View.OnClickListener() {

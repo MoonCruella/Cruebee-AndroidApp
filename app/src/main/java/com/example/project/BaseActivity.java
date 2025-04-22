@@ -1,8 +1,10 @@
 package com.example.project;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -10,17 +12,20 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.project.adapter.ViewPager2Adapter;
+import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -31,6 +36,8 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
     private TabLayout tabLayout;
     private FloatingActionButton fab;
     private float dX, dY;
+    private TinyDB tinyDB;
+    boolean hasShopAddress;
     private int lastAction;
     private final int[] tabIcons = {
             R.drawable.home,       // Icon cho Trang chủ
@@ -62,6 +69,8 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
         viewPager.setUserInputEnabled(false);
         tabLayout = findViewById(R.id.tabLayout);
         fab = findViewById(R.id.fabAction);
+        tinyDB = new TinyDB(this);
+        hasShopAddress = tinyDB.getAll().containsKey("addressShop");
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,16 +172,31 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
                 tabUnderline.setAlpha(1); // Hiển thị underline mặc định
             }
         }
-
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            final int index = i;
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if (tab != null && tab.getCustomView() != null) {
+                tab.getCustomView().setOnClickListener(v -> {
+                    if (index == 1) { // Tab "Thực đơn"
+                        if (!hasShopAddress) {
+                            showErrorDialog();
+                            return;
+                        }
+                    }
+                    tabLayout.selectTab(tab); // Chỉ select nếu hợp lệ
+                });
+            }
+        }
         // Xử lý sự kiện khi chọn tab
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition()); // Chuyển Fragment theo vị trí tab
+                int position = tab.getPosition();
+                viewPager.setCurrentItem(position); // chuyển fragment
                 View tabView = tab.getCustomView();
                 if (tabView != null) {
                     View tabUnderline = tabView.findViewById(R.id.tabUnderline);
-                    tabUnderline.setAlpha(1);  // Hiện underline
+                    tabUnderline.setAlpha(1);
                 }
             }
 
@@ -221,7 +245,18 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
     @Override
     public void onSwitchToFragment(String fragmentTag) {
         if (fragmentTag.equals("MENU")) {
+            if(!hasShopAddress){
+                showErrorDialog();
+                return;
+            }
             viewPager.setCurrentItem(1, true); // Chuyển đến tab "Thực Đơn"
+        }
+        else if (fragmentTag.equals("HOME")) {
+            if(!hasShopAddress){
+                showErrorDialog();
+                return;
+            }
+            viewPager.setCurrentItem(0, true); // Chuyển đến tab "Thêm"
         }
         else if (fragmentTag.equals("SHOW_MORE")) {
             viewPager.setCurrentItem(3, true); // Chuyển đến tab "Thêm"
@@ -239,6 +274,28 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
             super.onBackPressed();  // Default back press behavior
         }
     }
-
+    private void showErrorDialog(){
+        ConstraintLayout errorConstrlayout = findViewById(R.id.errrorConstraintLayout);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_error,errorConstrlayout);
+        TextView errorClose = view.findViewById(R.id.errorClose);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(view);
+        final AlertDialog alertDialog = builder.create();
+        errorClose.findViewById(R.id.errorClose).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        if(alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        hasShopAddress = tinyDB.getAll().containsKey("addressShop");
+    }
 
 }

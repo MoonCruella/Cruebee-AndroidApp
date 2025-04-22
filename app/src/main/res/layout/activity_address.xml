@@ -178,6 +178,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:textColor="@color/red"
+                android:foreground="?attr/selectableItemBackground"
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:gravity="center"

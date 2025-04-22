@@ -28,7 +28,6 @@ public class AddAddressActivity extends AppCompatActivity {
     TextInputLayout address_form;
     SwitchMaterial switch_is_primary;
     int is_primary,addressId;
-    private ProgressDialog progressDialog;
     TinyDB tinyDB;
     RequestQueue requestQueue;
     Address address;
@@ -95,6 +94,7 @@ public class AddAddressActivity extends AppCompatActivity {
                 Address addressUser = new Address(address.getId(),is_primary,address.getAddress_details(),address.getLatitude(),address.getLongitude(),address.getUserId(),usernameTxt.getText().toString(),noteTxt.getText().toString(),sdtTxt.getText().toString());
                 if(is_primary == 1){
                     tinyDB.putObject("address",addressUser);
+                    tinyDB.remove("addressShop");
                 }
                 addAddress(addressUser);
                 Intent intent = new Intent(AddAddressActivity.this, DeliveryAddressActivity.class);

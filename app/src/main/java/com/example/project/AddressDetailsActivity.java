@@ -107,6 +107,7 @@ public class AddressDetailsActivity extends AppCompatActivity {
                 Address addressUser = new Address(address.getId(),is_primary,address.getAddress_details(),address.getLatitude(),address.getLongitude(),address.getUserId(),usernameTxt.getText().toString(),noteTxt.getText().toString(),sdtTxt.getText().toString());
                 if(is_primary == 1){
                     tinyDB.putObject("address",addressUser);
+                    tinyDB.remove("addressShop");
                 }
                 updateAddress(addressUser);
                 Intent intent = new Intent(AddressDetailsActivity.this, DeliveryAddressActivity.class);

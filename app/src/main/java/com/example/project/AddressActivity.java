@@ -224,6 +224,7 @@ public class AddressActivity extends AppCompatActivity {
                     Intent intent = new Intent(AddressActivity.this, AddressShopActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear tất cả các activity trước đó
                     startActivity(intent);
+                    tinyDB.remove("addressShop");
                     finish();
 
                 }

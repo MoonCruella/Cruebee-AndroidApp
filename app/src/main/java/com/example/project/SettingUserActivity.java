@@ -75,6 +75,7 @@ public class SettingUserActivity extends AppCompatActivity {
                                  tinyDB.remove("token");
                                  tinyDB.remove("userId");
                                  tinyDB.remove("username");
+                                 tinyDB.remove("addressShop");
                                  tinyDB.putBoolean("is_logged_in", false);
 
                                  Log.d("Logout", "Token after logout: " + tinyDB.getString("token"));

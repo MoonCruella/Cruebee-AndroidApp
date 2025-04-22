@@ -73,6 +73,7 @@
         android:layout_height="0dp"
         android:background="@color/red"
         android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/bottomApp"
         app:layout_constraintTop_toBottomOf="@id/constraint">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -121,46 +122,62 @@
             </ImageView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.41"
         android:background="@color/red"
-        android:padding="16dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/layout">
+        android:id="@+id/bottomApp"
+        android:padding="16dp"
+        app:layout_constraintHeight_percent="0.41"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Về Chúng Tôi"
             android:textColor="#ffffff"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="Về Chúng Tôi">
+            android:textStyle="bold">
         </TextView>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Nhóm sinh viên Khoa CNTT - Đại học Sư Phạm Kĩ Thuật TPHCM"
             android:textColor="#ffffff"
             android:textSize="16sp"
-            android:layout_marginTop="10dp"
-            android:textStyle="bold"
-            android:text="Nhóm sinh viên Khoa CNTT - Đại học Sư Phạm Kĩ Thuật TPHCM">
+            android:textStyle="bold">
         </TextView>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#ffffff"
             android:layout_marginTop="10dp"
-            android:textSize="16sp"
-            android:text="Địa chỉ: 01 Võ Văn Ngân, Thủ Đức, TP Hồ Chí Minh">
+            android:text="Địa chỉ: 01 Võ Văn Ngân, Thủ Đức, TP Hồ Chí Minh"
+            android:textColor="#ffffff"
+            android:textSize="16sp">
         </TextView>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#ffffff"
             android:layout_marginTop="10dp"
-            android:textSize="16sp"
-            android:text="Hộp thư góp ý: nhunguyetpy206@gmail.com">
+            android:text="Hộp thư góp ý: nhunguyetpy206@gmail.com"
+            android:textColor="#ffffff"
+            android:textSize="16sp">
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Hộp thư góp ý: pnhpy2306@gmail.com"
+            android:textColor="#ffffff"
+            android:textSize="16sp">
         </TextView>
     </LinearLayout>
 

@@ -1,16 +1,24 @@
 package com.example.project;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +29,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -62,6 +72,8 @@ public class HomeFragment extends Fragment {
 
     private TextView addressTxt,usernameTxt,viewAllBtn;
     private RecyclerView mustTryRcView,topTenRcView;
+    private LinearLayout linearLayout;
+    private boolean hasShopAddress;
     private ImageView editAddress;
     private List<Food> rcmFoodList;
     private List<Food> topTenFoodList;
@@ -74,6 +86,7 @@ public class HomeFragment extends Fragment {
     private CardView avtUser;
     int userId;
     String token;
+    private boolean hasAddressUser;
     private ArrayList<Integer> discountList = new ArrayList<>();
 
     public HomeFragment(OnFragmentSwitchListener listener) {
@@ -102,8 +115,11 @@ public class HomeFragment extends Fragment {
         topTenRcView = view.findViewById(R.id.topTenList);
         usernameTxt = view.findViewById(R.id.usernameTxt);
         viewAllBtn = view.findViewById(R.id.viewAllBtn);
+        linearLayout = view.findViewById(R.id.linear);
         avtUser = view.findViewById(R.id.avtUser);
         tinyDB = new TinyDB(requireContext());
+        hasShopAddress = tinyDB.getAll().containsKey("addressShop");
+        hasAddressUser = false;
         requestQueue = VolleySingleton.getmInstance(requireContext()).getRequestQueue();
         rcmFoodList = new ArrayList<>();
         topTenFoodList = new ArrayList<>();
@@ -124,12 +140,19 @@ public class HomeFragment extends Fragment {
             if(hasUAddress){
                 String fullAddress = tinyDB.getString("addr_no_log");
                 addressTxt.setText(fullAddress);
+                hasAddressUser = true;
             }
             else{
                 addressTxt.setText("Thêm địa chỉ/cửa hàng");
+                hasAddressUser = false;
             }
         }
+        if(!hasShopAddress){
 
+            // Thêm hiệu ứng blink
+            Animation blink = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
+            linearLayout.startAnimation(blink);
+        }
 
 
         Animation inAnimation = AnimationUtils.loadAnimation(requireContext(), android.R.anim.slide_in_left);
@@ -169,8 +192,15 @@ public class HomeFragment extends Fragment {
         editAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(requireContext(), AddressShopActivity.class);
-                startActivity(intent);
+                if(!hasAddressUser){
+                    Intent intent = new Intent(requireContext(), AddressActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    Intent intent = new Intent(requireContext(), AddressShopActivity.class);
+                    startActivity(intent);
+                }
+
             }
         });
 
@@ -278,7 +308,7 @@ public class HomeFragment extends Fragment {
 
                                 // Lưu đối tượng vào TinyDB
                                 tinyDB.putObject("address", address1);
-
+                                hasAddressUser = true;
                                 // Cập nhật giao diện với địa chỉ mới
                                 addressTxt.setText(addressDetails);
 
@@ -291,6 +321,7 @@ public class HomeFragment extends Fragment {
                             // Xử lý khi phản hồi là rỗng
                             tinyDB.remove("address");
                             addressTxt.setText("Thêm địa chỉ/cửa hàng");
+                            hasAddressUser = false;
                         }
                     }
                 },
@@ -325,9 +356,18 @@ public class HomeFragment extends Fragment {
         if(hasUAddress){
             String fullAddress = tinyDB.getString("addr_no_log");
             addressTxt.setText(fullAddress);
+            hasAddressUser = true;
         }
         if (tinyDB.getBoolean("is_logged_in")) {
             loadAddress(userId);
+            hasAddressUser  = true;
+        }
+        if(!hasShopAddress){
+
+            // Thêm hiệu ứng blink
+            Animation blink = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
+            linearLayout.startAnimation(blink);
         }
     }
+
 }

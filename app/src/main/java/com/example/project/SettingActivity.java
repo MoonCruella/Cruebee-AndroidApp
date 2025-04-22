@@ -13,6 +13,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+
+import com.example.project.helpers.TinyDB;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import android.content.Intent;
 import android.net.Uri;
@@ -43,6 +45,9 @@ public class SettingActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TinyDB tinyDB = new TinyDB(SettingActivity.this);
+                tinyDB.remove("addr_no_log");
+                tinyDB.remove("addressShop");
                 startActivity(new Intent(SettingActivity.this,LoginActivity.class));
             }
         });

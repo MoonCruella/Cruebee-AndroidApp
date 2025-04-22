@@ -103,6 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity=""
             android:background="@drawable/border"
+            android:foreground="?attr/selectableItemBackground"
             android:backgroundTint="@color/yellow"
             android:fontFamily="@font/fonts_com_merge_bold"
             android:layout_marginBottom="10dp"

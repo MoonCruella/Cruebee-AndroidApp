@@ -1,15 +1,19 @@
 package com.example.project;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Outline;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +32,7 @@ import androidx.lifecycle.GenericLifecycleObserver;
 
 import com.bumptech.glide.Glide;
 import com.example.project.helpers.ManagementCart;
+import com.example.project.helpers.TinyDB;
 import com.example.project.model.Food;
 import com.example.project.utils.UrlUtil;
 
@@ -44,6 +49,8 @@ public class ShowDetailActivity extends AppCompatActivity {
     private ImageView plusBtn,minusBtn,picFood;
     private ManagementCart managementCart;
     private Food object;
+    private TinyDB tinyDB;
+    private boolean hasShopAddress;
 
     private int numberOrder = 1;
     @Override
@@ -76,6 +83,8 @@ public class ShowDetailActivity extends AppCompatActivity {
         plusBtn = findViewById(R.id.plusImgView);
         minusBtn = findViewById(R.id.minusImgView);
         picFood = findViewById(R.id.foodImgView);
+        tinyDB = new TinyDB(this);
+        hasShopAddress = tinyDB.getAll().containsKey("addressShop");
         BlurView blurView = findViewById(R.id.blurView);
         LinearLayout contentLayout = findViewById(R.id.content);
 
@@ -136,26 +145,58 @@ public class ShowDetailActivity extends AppCompatActivity {
         addToCartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                object.setNumberInCart(numberOrder);
-                try {
-                    managementCart.insertFood(object);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                if(!hasShopAddress){
+                    showErrorDialogAndFinish();
                 }
+                else{
+                    object.setNumberInCart(numberOrder);
+                    try {
+                        managementCart.insertFood(object);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
 
-                //Quay tro lai man hinh chon menu
-                finish();
+                    //Quay tro lai man hinh chon menu
+                    finish();
+                }
             }
         });
 
         thanhtoanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, PaymentActivity.class);
-                context.startActivity(intent);
+                if(!hasShopAddress){
+                    showErrorDialogAndFinish();
+                }
+                else {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, PaymentActivity.class);
+                    context.startActivity(intent);
+                }
             }
         });
+    }
+    private void showErrorDialogAndFinish() {
+        ConstraintLayout errorConstrlayout = findViewById(R.id.errrorConstraintLayout);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_error, errorConstrlayout);
+        TextView errorClose = view.findViewById(R.id.errorClose);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(view);
+        final AlertDialog alertDialog = builder.create();
+
+        errorClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                finish(); // 👈 Chỉ gọi finish() sau khi bấm OK
+            }
+        });
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+
+        alertDialog.show();
     }
 
 

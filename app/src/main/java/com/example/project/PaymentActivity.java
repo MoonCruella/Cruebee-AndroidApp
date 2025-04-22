@@ -3,12 +3,15 @@ package com.example.project;
 import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,6 +25,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -220,9 +224,7 @@ public class PaymentActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         progressDialog.hide();
                         if(response.equals("Ordering Successfully!")){
-                            Toast.makeText(PaymentActivity.this, "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(PaymentActivity.this,BaseActivity.class);
-                            startActivity(intent);
+                            showErrorDialog();
                         }
                         else{
                             Toast.makeText(PaymentActivity.this, "Thanh toán that bai", Toast.LENGTH_SHORT).show();
@@ -415,5 +417,26 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         ZaloPaySDK.getInstance().onResult(intent);
+    }
+    private void showErrorDialog(){
+        ConstraintLayout errorConstrlayout = findViewById(R.id.successConstraintLayout);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_order_success,errorConstrlayout);
+        TextView okBtn = view.findViewById(R.id.okBtn);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(view);
+        final AlertDialog alertDialog = builder.create();
+        okBtn.findViewById(R.id.okBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                Intent intent = new Intent(PaymentActivity.this,BaseActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        if(alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
     }
 }

@@ -2,24 +2,30 @@ package com.example.project;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project.adapter.CartListAdapter;
 import com.example.project.helpers.ManagementCart;
+import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.example.project.interfaces.TotalFeeResponse;
@@ -40,6 +46,8 @@ public class CartDialog extends Dialog {
     private TextView giaTxt, themMonBtn, thanhToanBtn, emptyTxt;
     private ArrayList<Food> cartList;
     private OnFragmentSwitchListener listener;
+    private TinyDB tinyDB;
+    private boolean hasShopAddress;
 
     public CartDialog(@NonNull Context context, OnFragmentSwitchListener listener) {
         super(context);
@@ -83,6 +91,8 @@ public class CartDialog extends Dialog {
         cartList = new ArrayList<>();
         adapter = new CartListAdapter(cartList, getContext(), CartDialog.this::updateTotalPrice);
         recyclerView.setAdapter(adapter);
+        tinyDB = new TinyDB(getContext());
+        hasShopAddress = tinyDB.getAll().containsKey("addressShop");
 
         // Chuyển sang MenuFragment khi bấm nút
         themMonBtn.setOnClickListener(v -> {
@@ -94,18 +104,21 @@ public class CartDialog extends Dialog {
         thanhToanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
-                Intent intent = new Intent(getContext(),PaymentActivity.class);
-                getContext().startActivity(intent);
+                if(!hasShopAddress){
+                    if (listener != null) {
+                        listener.onSwitchToFragment("HOME"); // Gọi phương thức để chuyển Fragment
+                    }
+                    dismiss();
+                }
+                else {
+                    dismiss();
+                    Intent intent = new Intent(getContext(),PaymentActivity.class);
+                    getContext().startActivity(intent);
+                }
+
             }
         });
-        thanhToanBtn.setOnClickListener(v -> {
-            Context context = getContext();
-            if (context != null) {
-                Intent intent = new Intent(context, PaymentActivity.class);
-                context.startActivity(intent);
-            }
-        });
+
     }
 
     private void initList() throws JSONException {
