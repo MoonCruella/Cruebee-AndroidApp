@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -29,7 +29,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.StringHelper;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
@@ -49,9 +48,10 @@ public class ForgotPassActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_forgot_pass);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+        FrameLayout mainLayout = findViewById(R.id.main);
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
+            Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            v.setPadding(0, 0, 0, navBarInsets.bottom); // đẩy layout lên khỏi nav bar
             return insets;
         });
         requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
@@ -114,41 +114,31 @@ public class ForgotPassActivity extends AppCompatActivity {
     public void openForgotPassOTPActivity(View view){
 
         hideKeyboard(this);
+        String email1 = email.getText().toString().trim();
         loadingOverlay.setVisibility(View.VISIBLE);
         loadingBar.playAnimation();
+        String url = UrlUtil.ADDRESS + "forget-password?email=" + Uri.encode(email1);
+
         StringRequest stringRequest = new StringRequest(
-        Request.Method.PUT,
-                  UrlUtil.ADDRESS + "forget-password",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        loadingOverlay.setVisibility(View.GONE);
-                        loadingBar.cancelAnimation();
-                        Toast.makeText(ForgotPassActivity.this, "" + response, Toast.LENGTH_SHORT).show();
-                        if (response.equals("Email sent ... please verify account within 3 minute")) {
-                            Intent intent = new Intent(ForgotPassActivity.this, ForgotPassOTPActivity.class);
-                            intent.putExtra("USER_EMAIL",email.getText().toString());
-                            startActivity(intent);
-                        }
+                Request.Method.PUT,
+                url,
+                response -> {
+                    loadingOverlay.setVisibility(View.GONE);
+                    loadingBar.cancelAnimation();
+                    Toast.makeText(ForgotPassActivity.this, response, Toast.LENGTH_SHORT).show();
+                    if (response.equals("Email sent ... please verify account within 3 minute")) {
+                        Intent intent = new Intent(ForgotPassActivity.this, ForgotPassOTPActivity.class);
+                        intent.putExtra("USER_EMAIL", email1);
+                        startActivity(intent);
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        loadingOverlay.setVisibility(View.GONE);
-                        loadingBar.cancelAnimation();
-                        Toast.makeText(ForgotPassActivity.this, "" + error, Toast.LENGTH_SHORT).show();
-                    }
+                error -> {
+                    loadingOverlay.setVisibility(View.GONE);
+                    loadingBar.cancelAnimation();
+                    Toast.makeText(ForgotPassActivity.this, "Lỗi: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-        ) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap<String, String> hashMap = new HashMap<>();
-                hashMap.put("email", email.getText().toString());
-                return hashMap;
-            }
+        );
 
-        };
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
     }

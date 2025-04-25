@@ -2,31 +2,56 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/register_activity"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity"
-    android:background="@color/red"
-    android:padding="40dp"
-    android:orientation="vertical"
-    android:gravity="center">
-    <ScrollView
+    android:orientation="vertical">
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/login_bg"
+            app:shapeAppearanceOverlay="@style/BottomRoundedCorners" />
+
+        <!-- BlurView over the image, to blur it -->
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/blurView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/blur_rounded_bottom" />
+    </FrameLayout>
+
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="32dp"
+        android:id="@+id/cardView"
+        android:layout_gravity="center"
+        app:cardElevation="20dp"
+        tools:context=".CartDialog"
+        app:cardUseCompatPadding="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
         <LinearLayout
             android:id="@+id/loginMainLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:layout_margin="20dp"
             android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/fonts_com_merge_bold"
                 android:text="Đăng Ký Tài Khoản"
-                android:textColor="@color/white"
-                android:layout_gravity="center"
+                android:textColor="@color/red"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center|top"
                 android:textSize="26sp"
                 android:textStyle="bold" />
             <TextView
@@ -34,10 +59,9 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto"
                 android:text="Bạn vui lòng điền đầy đủ thông tin dưới đây"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
-                android:textColor="@color/white"
-                android:layout_gravity="center"
+                android:textColor="@color/gray"
+                android:layout_gravity="center|top"
                 android:textSize="16sp"
                 android:textStyle="bold" />
             <com.google.android.material.textfield.TextInputLayout
@@ -45,16 +69,15 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/input"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:boxBackgroundMode="none"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="10dp"
+                app:boxBackgroundMode="outline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toolbar">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/sdt"
                     android:layout_width="match_parent"
                     android:hint="Số Điện Thoại *"
-                    android:background="@drawable/border"
+                    android:background="@drawable/border_btn_1"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
                     android:paddingTop="16dp"
@@ -65,27 +88,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="* Không được để trống"
-                android:textColor="@color/black"
+                android:textColor="@color/yellow"
                 android:fontFamily="@font/roboto"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/input"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="4dp"/>
+                app:layout_constraintStart_toStartOf="parent" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/input1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:boxBackgroundMode="none"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                app:boxBackgroundMode="outline"
+                android:layout_marginBottom="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toolbar">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:hint="Email *"
-                    android:background="@drawable/border"
+                    android:background="@drawable/border_btn_1"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
                     android:paddingTop="16dp"
@@ -96,28 +117,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="* Không được để trống"
-                android:textColor="@color/black"
+                android:textColor="@color/yellow"
                 android:fontFamily="@font/roboto"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/input1"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="4dp"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/input2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:boxBackgroundMode="none"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                app:boxBackgroundMode="outline"
+                android:layout_marginBottom="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toolbar">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:hint="Họ Tên *"
-                    android:background="@drawable/border"
+                    android:background="@drawable/border_btn_1"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
                     android:paddingTop="16dp"
@@ -128,12 +147,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="* Không được để trống"
-                android:textColor="@color/black"
+                android:textColor="@color/yellow"
                 android:fontFamily="@font/roboto"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/input2"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="4dp"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -141,16 +159,15 @@
                 app:endIconMode="password_toggle"
                 android:id="@+id/input3"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:boxBackgroundMode="none"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                app:boxBackgroundMode="outline"
+                android:layout_marginBottom="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toolbar">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:hint="Mật Khẩu *"
-                    android:background="@drawable/border"
+                    android:background="@drawable/border_btn_1"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
                     android:paddingTop="16dp"
@@ -162,21 +179,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="* Không được để trống"
-                android:textColor="@color/black"
+                android:textColor="@color/yellow"
                 android:fontFamily="@font/roboto"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/input3"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="4dp"/>
+                app:layout_constraintStart_toStartOf="parent" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 app:endIconMode="password_toggle"
                 android:layout_height="wrap_content"
                 android:id="@+id/input4"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:boxBackgroundMode="none"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                app:boxBackgroundMode="outline"
+                android:layout_marginBottom="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toolbar">
 
@@ -184,7 +199,7 @@
                     android:id="@+id/re_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/border"
+                    android:background="@drawable/border_btn_1"
                     android:fontFamily="@font/roboto"
                     android:hint="Xác Nhận Mật Khẩu *"
                     android:inputType="textPassword"
@@ -196,19 +211,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="* Không được để trống"
-                android:textColor="@color/black"
+                android:textColor="@color/yellow"
                 android:fontFamily="@font/roboto"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/input4"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="4dp"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:hint="Giới Tính *">
                 <AutoCompleteTextView
@@ -217,7 +228,7 @@
                     android:inputType="none"
                     android:paddingTop="16dp"
                     android:paddingBottom="16dp"
-                    android:background="@drawable/border"
+                    android:background="@drawable/border_btn_1"
                     android:layout_height="wrap_content">
                 </AutoCompleteTextView>
             </com.google.android.material.textfield.TextInputLayout>
@@ -226,29 +237,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="* Không được để trống"
-                android:textColor="@color/black"
+                android:textColor="@color/yellow"
                 android:fontFamily="@font/roboto"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/input3"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="8dp"/>
             <TextView
                 android:id="@+id/register"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:background="@drawable/red_button"
+                android:background="@drawable/btn_more_radius"
                 android:text="Đăng Ký"
                 android:layout_gravity="center"
                 android:textSize="18sp"
                 android:foreground="?attr/selectableItemBackground"
                 android:textStyle="bold"
                 android:layout_marginTop="50dp"
+                android:layout_marginBottom="20dp"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:padding="12dp"
                 android:onClick="registerUser"/>
         </LinearLayout>
-    </ScrollView>
+    </androidx.cardview.widget.CardView>
+    </FrameLayout>
     <FrameLayout
         android:id="@+id/loadingOverlay"
         android:layout_width="match_parent"

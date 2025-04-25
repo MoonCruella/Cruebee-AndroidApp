@@ -34,6 +34,10 @@ import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.StringHelper;
 import com.example.project.utils.UrlUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,10 +52,13 @@ public class NewPasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_password);
-        getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
-        getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        FrameLayout mainLayout = findViewById(R.id.main);
+        EdgeToEdge.enable(this);
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
+            Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            v.setPadding(0, 0, 0, navBarInsets.bottom); // đẩy layout lên khỏi nav bar
+            return insets;
+        });
 
         loadingBar = findViewById(R.id.loadingBar);
         loadingOverlay = findViewById(R.id.loadingOverlay);
@@ -127,13 +134,26 @@ public class NewPasswordActivity extends AppCompatActivity {
                 }
         ){
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap<String, String> hashMap = new HashMap<>();
-                hashMap.put("email", email.trim());
-                hashMap.put("password",password.getText().toString().trim());
-                return hashMap;
+            public byte[] getBody() throws AuthFailureError {
+                // Create a JSONObject and put data into it
+                JSONObject jsonBody = new JSONObject();
+                try {
+                    jsonBody.put("email", email.trim());
+                    jsonBody.put("password", password.getText().toString().trim());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                // Return the byte[] of the JSON string
+                return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
             }
 
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headerMap = new HashMap<String, String>();
+                headerMap.put("Content-Type", "application/json");
+                return headerMap;
+            }
         };
 
         //Fix Volley time out error

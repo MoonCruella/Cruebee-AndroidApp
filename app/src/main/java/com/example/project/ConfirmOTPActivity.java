@@ -1,10 +1,13 @@
 package com.example.project;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -52,12 +56,13 @@ public class ConfirmOTPActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_confirm_otp);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.verify_otp_activity), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+        FrameLayout mainLayout = findViewById(R.id.main);
+
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
+            Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            v.setPadding(0, 0, 0, navBarInsets.bottom); // đẩy layout lên khỏi nav bar
             return insets;
         });
-
 
         // Lay biến USER_EMAIL được truyền từ RegisterActivity
         Intent intent = getIntent();
@@ -97,13 +102,12 @@ public class ConfirmOTPActivity extends AppCompatActivity {
                             if(mess.equals("OTP verified. You can login.")){
                                 loadingOverlay.setVisibility(View.GONE);
                                 loadingBar.cancelAnimation();
-                                Intent intent = new Intent(ConfirmOTPActivity.this, LoginActivity.class);
-                                startActivity(intent);
                                 String access_token = jsonResponse.getString("access_token");
                                 String refresh_token = jsonResponse.getString("refresh_token");
                                 TinyDB tinyDB = new TinyDB(ConfirmOTPActivity.this);
                                 tinyDB.putString("token",access_token);
                                 tinyDB.putString("refresh_token",refresh_token);
+                                showErrorDialog();
                             }
                             // Hiện nút resend
                             else if (mess.equals("OTP has expired. Please regenerate and try again.")) {
@@ -185,5 +189,26 @@ public class ConfirmOTPActivity extends AppCompatActivity {
         };
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
+    }
+    private void showErrorDialog(){
+        ConstraintLayout errorConstrlayout = findViewById(R.id.successConstraintLayout);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_register_success,errorConstrlayout);
+        TextView okBtn = view.findViewById(R.id.okBtn);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(view);
+        final AlertDialog alertDialog = builder.create();
+        okBtn.findViewById(R.id.okBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                Intent intent = new Intent(ConfirmOTPActivity.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        if(alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
     }
 }

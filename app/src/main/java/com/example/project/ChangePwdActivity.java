@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,11 +48,13 @@ public class ChangePwdActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_pwd);
-        getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
-        getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-
+        FrameLayout mainLayout = findViewById(R.id.main);
+        EdgeToEdge.enable(this);
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
+            Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            v.setPadding(0, 0, 0, navBarInsets.bottom); // đẩy layout lên khỏi nav bar
+            return insets;
+        });
         requestQueue = Volley.newRequestQueue(this);
         edtPassword = findViewById(R.id.edtPassword);
         newPassword = findViewById(R.id.newPassword);

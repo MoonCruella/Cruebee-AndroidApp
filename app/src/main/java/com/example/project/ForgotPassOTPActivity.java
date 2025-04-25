@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -49,9 +50,10 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_forgot_pass_otp);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+        FrameLayout mainLayout = findViewById(R.id.main);
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
+            Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            v.setPadding(0, 0, 0, navBarInsets.bottom); // đẩy layout lên khỏi nav bar
             return insets;
         });
 
@@ -67,15 +69,19 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
     public void verifyOTP(View view) {
 
         String otp = user_otp.getText().toString().trim();
-
         requestQueue = Volley.newRequestQueue(this);
         hideKeyboard(this);
         loadingOverlay.setVisibility(View.VISIBLE);
         loadingBar.playAnimation();
 
+        String encodedEmail = Uri.encode(email);
+        String encodedOtp = Uri.encode(otp);
+
+        String url = UrlUtil.ADDRESS + "verify-otp?email=" + encodedEmail + "&otp=" + encodedOtp;
+
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
-                  UrlUtil.ADDRESS +"verify-otp",
+                url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -83,19 +89,13 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
                         loadingBar.cancelAnimation();
                         if (response.equals("OTP Verified. You can set new password")) {
                             Intent intent = new Intent(ForgotPassOTPActivity.this, NewPasswordActivity.class);
-                            intent.putExtra("USER_EMAIL",email);
+                            intent.putExtra("USER_EMAIL", email);
                             startActivity(intent);
-                        }
-                        else if(response.equals("OTP has expired. Please regenerate and try again.")){
-                            loadingOverlay.setVisibility(View.GONE);
-                            loadingBar.cancelAnimation();
+                        } else if (response.equals("OTP has expired. Please regenerate and try again.")) {
                             resend_tv.setVisibility(View.VISIBLE);
-                            Toast.makeText(ForgotPassOTPActivity.this,"Mã OTP quá hạn. Vui lòng gửi lại mã",Toast.LENGTH_SHORT).show();
-                        }
-                        else if(response.equals("Invalid OTP. Please check and try again.")){
-                            loadingOverlay.setVisibility(View.GONE);
-                            loadingBar.cancelAnimation();
-                            Toast.makeText(ForgotPassOTPActivity.this,"Mã OTP không hợp lệ",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ForgotPassOTPActivity.this, "Mã OTP quá hạn. Vui lòng gửi lại mã", Toast.LENGTH_SHORT).show();
+                        } else if (response.equals("Invalid OTP. Please check and try again.")) {
+                            Toast.makeText(ForgotPassOTPActivity.this, "Mã OTP không hợp lệ", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -104,19 +104,10 @@ public class ForgotPassOTPActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         loadingOverlay.setVisibility(View.GONE);
                         loadingBar.cancelAnimation();
-                        Toast.makeText(ForgotPassOTPActivity.this, "" + error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ForgotPassOTPActivity.this, "Lỗi: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
-        ) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap<String, String> hashMap = new HashMap<>();
-                hashMap.put("email", email);
-                hashMap.put("otp",otp);
-                return hashMap;
-            }
-
-        };
+        );
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
     }

@@ -99,6 +99,13 @@ public class ShowDetailActivity extends AppCompatActivity {
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) blurView.getLayoutParams();
                 params.height = contentHeight;
                 blurView.setLayoutParams(params);
+                blurView.setClipToOutline(true);
+                blurView.setOutlineProvider(new ViewOutlineProvider() {
+                    @Override
+                    public void getOutline(View view, Outline outline) {
+                        outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), 60f); // 60dp tương đương
+                    }
+                });
 
                 // Optionally, you can setup the BlurView with other configurations
                 View decorView = getWindow().getDecorView();
@@ -108,7 +115,7 @@ public class ShowDetailActivity extends AppCompatActivity {
                 blurView.setClipToOutline(true);
                 blurView.setupWith(rootView)
                         .setFrameClearDrawable(windowBackground)
-                        .setBlurRadius(20f);  // Adjust blur radius as needed
+                        .setBlurRadius(5f);
             }
         });
 

@@ -1,6 +1,8 @@
 package com.example.project;
 
 import static android.content.ContentValues.TAG;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -10,6 +12,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +30,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +42,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.adapter.FoodListPaymentAdapter;
 import com.example.project.helpers.ManagementCart;
+import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
@@ -55,14 +59,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import vn.zalopay.sdk.Environment;
 import vn.zalopay.sdk.ZaloPayError;
@@ -75,8 +74,7 @@ public class PaymentActivity extends AppCompatActivity {
     private ManagementCart managementCart;
     private TinyDB tinyDB;
     private FoodListPaymentAdapter adapter;
-    private TextView giaTxt,themMonBtn,giaDKTxt,addressTxt,addressShopTxt,btnDatHang;
-    private List<String> timeList = new ArrayList<>();
+    private TextView giaTxt,themMonBtn,giaDKTxt,addressTxt,addressShopTxt,btnDatHang,tvError,tvError1;
     private EditText fullName,sdt,note;
     private Switch utensils;
     private CheckBox checkBox;
@@ -108,12 +106,6 @@ public class PaymentActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-        fullName = findViewById(R.id.fullName);
-        sdt = findViewById(R.id.eTxtPhone);
-        note = findViewById(R.id.eTxtNote);
-        addressShopTxt = findViewById(R.id.txtShop);
-        utensils = findViewById(R.id.switch1);
-
         if(tinyDB.getBoolean("is_logged_in")){
             User user = tinyDB.getObject("savedUser", User.class);
             fullName.setText(user.getUsername());
@@ -124,15 +116,26 @@ public class PaymentActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
         ZaloPaySDK.init(2553, Environment.SANDBOX);
 
-
         btnDatHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ("ZaloPay".equals(paymentMethod)) {
-                    thanhToanZalopay();
+                if(sdt.getText().toString().isEmpty()){
+                    tvError1.setText("Không được để trống");
+                    tvError1.setVisibility(View.VISIBLE);
                 }
-                else{
-                    payment();
+                if(fullName.getText().toString().isEmpty()){
+                    tvError.setText("Không được để trống");
+                    tvError.setVisibility(View.VISIBLE);
+                }
+                if(tvError.isShown() || tvError1.isShown()){
+                    return;
+                }else{
+                    if ("ZaloPay".equals(paymentMethod)) {
+                        thanhToanZalopay();
+                    }
+                    else{
+                        payment();
+                    }
                 }
             }
         });
@@ -193,10 +196,6 @@ public class PaymentActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void payment(){
-        if (!checkEditText())
-        {
-            return;
-        }
         String addUser = addressTxt.getText().toString();
         AddressShop addressShop = tinyDB.getObject("addressShop", AddressShop.class);
 
@@ -312,7 +311,14 @@ public class PaymentActivity extends AppCompatActivity {
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         btnDatHang = findViewById(R.id.btnDatHang);
         btnDatHang.setAlpha(0.5f);
+        fullName = findViewById(R.id.fullName);
+        sdt = findViewById(R.id.eTxtPhone);
+        note = findViewById(R.id.eTxtNote);
+        addressShopTxt = findViewById(R.id.txtShop);
+        utensils = findViewById(R.id.switch1);
         tinyDB = new TinyDB(this);
+        tvError = findViewById(R.id.tvError);
+        tvError1 = findViewById(R.id.tvError1);
         addressShopTxt = findViewById(R.id.txtShop);
         AddressShop addressShop = tinyDB.getObject("addressShop", AddressShop.class);
         addressShopTxt.setText(addressShop.getName());
@@ -350,6 +356,54 @@ public class PaymentActivity extends AppCompatActivity {
                 }
             }
         });
+        sdt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phone = s.toString().trim();
+
+                if (phone.isEmpty()) {
+                    tvError1.setText("* Không được để trống");
+                    tvError1.setVisibility(VISIBLE);
+                }
+                else if(!StringHelper.isValidVietnamPhone(phone)){
+                    tvError1.setText("* Số điện thoại không hợp lệ");
+                    tvError1.setVisibility(VISIBLE);
+                }
+                else {
+                    tvError1.setVisibility(GONE);
+                }
+            }
+        });
+        fullName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phone = s.toString().trim();
+
+                if (phone.isEmpty()) {
+                    tvError.setText("* Không được để trống");
+                    tvError.setVisibility(VISIBLE);
+                }
+                else {
+                    tvError.setVisibility(GONE);
+                }
+            }
+        });
 
 
     }
@@ -378,23 +432,6 @@ public class PaymentActivity extends AppCompatActivity {
             }
         });
 
-    }
-    public boolean checkEditText(){
-        String fName = fullName.getText().toString();
-        String phone = sdt.getText().toString();
-        if(fName.isEmpty()){
-            fullName.setError("Vui lòng nhập thông tin!");
-            return false;
-        } else if (phone.isEmpty()) {
-            sdt.setError("Vui lòng nhập thông tin!");
-            return false;
-        } else if (!phone.matches("^[0-9]{10}$")) {
-            sdt.setError("Số điện thoại không chính xác!");
-            return false;
-        }
-        fullName.setError(null);
-        sdt.setError(null);
-        return true;
     }
  public void updateTotal() throws JSONException {
         managementCart.getTotalFee(new TotalFeeResponse() {

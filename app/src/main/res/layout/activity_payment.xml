@@ -122,6 +122,18 @@
                 android:inputType="text"
                 android:padding="14dp"
                 android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tvError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="* Không được để trống"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/yellow"
+                android:fontFamily="@font/roboto"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/input"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="4dp"/>
 
             <TextView
                 android:id="@+id/textViewPhone"
@@ -144,6 +156,18 @@
                 android:inputType="text"
                 android:padding="14dp"
                 android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tvError1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="* Không được để trống"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/yellow"
+                android:fontFamily="@font/roboto"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/input"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="4dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_margin="16dp"
