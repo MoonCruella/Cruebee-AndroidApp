@@ -3,19 +3,13 @@ package com.example.project.helpers;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
@@ -25,16 +19,13 @@ import com.example.project.model.Food;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
-import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ManagementCart {
@@ -86,7 +77,7 @@ public class ManagementCart {
                     updateCartOnServer(food, food.getNumberInCart(), new UpdateCartCallback() {
                         @Override
                         public void onSuccess() {
-                            Toast.makeText(context, "Đã thêm vào giỏ hàng: ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
@@ -307,6 +298,29 @@ public class ManagementCart {
         changeNumberItemsListener.change();
 
     }
+    public void clearCart(ArrayList<Food> listFood,ChangeNumberItemsListener changeNumberItemsListener) throws JSONException {
+        if(is_logged_in){
+            clearAllFood(new UpdateCartCallback() {
+                @Override
+                public void onSuccess() {
+                    try {
+                        changeNumberItemsListener.change(); // ✅ chỉ gọi khi server OK
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                @Override
+                public void onError(String error) {
+
+                }
+            });
+        }
+        else{
+            listFood.clear();
+            tinyDB.putListObject("CartList", listFood);
+        }
+        changeNumberItemsListener.change();
+    }
 
     public void getTotalFee(TotalFeeResponse callback) throws JSONException {
         getListCart(new CartResponse() {
@@ -374,6 +388,33 @@ public class ManagementCart {
             }
         };
 
+        requestQueue.add(stringRequest);
+    }
+
+    // Hàm gọi API để cập nhật giỏ hàng khi người dùng mua hàng thành cong
+    private void clearAllFood( UpdateCartCallback callback) {
+
+        String url = UrlUtil.ADDRESS + "cart/clear?userId=" + userId;
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                url,
+                response -> {
+                    Log.d(TAG, "Delete Response: " + response);
+                    callback.onSuccess();
+                },
+                error -> {
+                    Log.e(TAG, "Delete Error: " + error.toString());
+                    callback.onError(error.getMessage());
+
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
         requestQueue.add(stringRequest);
     }
 

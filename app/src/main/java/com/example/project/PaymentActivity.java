@@ -95,16 +95,6 @@ public class PaymentActivity extends AppCompatActivity {
 
         managementCart = new ManagementCart(this);
         initView();
-        try {
-            initList();
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            updateTotal();
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
 
         if(tinyDB.getBoolean("is_logged_in")){
             User user = tinyDB.getObject("savedUser", User.class);
@@ -223,6 +213,30 @@ public class PaymentActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         progressDialog.hide();
                         if(response.equals("Ordering Successfully!")){
+                            try {
+                                managementCart.getListCart(new CartResponse() {
+                                    @Override
+                                    public void onSuccess(ArrayList<Food> listFood) {
+                                        try {
+                                            managementCart.clearCart(listFood, new ChangeNumberItemsListener() {
+                                                @Override
+                                                public void change() throws JSONException {
+
+                                                }
+                                            });
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(String errorMessage) {
+                                        Toast.makeText(PaymentActivity.this, "Không thể lấy giỏ hàng: " + errorMessage, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
                             showErrorDialog();
                         }
                         else{
@@ -328,6 +342,16 @@ public class PaymentActivity extends AppCompatActivity {
             Address addressUser = tinyDB.getObject("address", Address.class);
             addUser = addressUser.getAddress_details();
         }
+        try {
+            initList();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            updateTotal();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         addressTxt.setText(addUser);
         btnShop.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -404,10 +428,7 @@ public class PaymentActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
-
 
     private void initList() throws JSONException {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
@@ -431,24 +452,24 @@ public class PaymentActivity extends AppCompatActivity {
                 Log.e(TAG, "Lỗi khi lấy giỏ hàng: " + errorMessage);
             }
         });
-
     }
- public void updateTotal() throws JSONException {
-        managementCart.getTotalFee(new TotalFeeResponse() {
-            @Override
-            public void onSuccess(int totalFee) {
-                price = String.valueOf(totalFee);
-                DecimalFormat decimalFormat = new DecimalFormat("#,###");
-                String formattedPrice = decimalFormat.format(totalFee) + " đ";
-                giaTxt.setText(formattedPrice);
-                giaDKTxt.setText(formattedPrice);
-            }
 
-            @Override
-            public void onError(String errorMessage) {
-                Log.e(TAG, "Lỗi khi tính tổng tiền: " + errorMessage);
-            }
-        });
+     public void updateTotal() throws JSONException {
+            managementCart.getTotalFee(new TotalFeeResponse() {
+                @Override
+                public void onSuccess(int totalFee) {
+                    price = String.valueOf(totalFee);
+                    DecimalFormat decimalFormat = new DecimalFormat("#,###");
+                    String formattedPrice = decimalFormat.format(totalFee) + " đ";
+                    giaTxt.setText(formattedPrice);
+                    giaDKTxt.setText(formattedPrice);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    Log.e(TAG, "Lỗi khi tính tổng tiền: " + errorMessage);
+                }
+            });
     }
     @Override
     protected void onNewIntent(Intent intent) {

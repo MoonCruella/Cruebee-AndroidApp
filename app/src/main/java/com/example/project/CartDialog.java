@@ -44,7 +44,7 @@ public class CartDialog extends Dialog {
 
     private CartListAdapter adapter;
     private TextView giaTxt, themMonBtn, thanhToanBtn, emptyTxt;
-    private ArrayList<Food> cartList;
+    private ArrayList<Food> cartList_temp;
     private OnFragmentSwitchListener listener;
     private TinyDB tinyDB;
     private boolean hasShopAddress;
@@ -65,19 +65,7 @@ public class CartDialog extends Dialog {
             getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
         managementCart = new ManagementCart(getContext());
-
         initView();
-        try {
-            initList();
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            updateTotalPrice();
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
         closeBtn.setOnClickListener(v -> dismiss());
     }
 
@@ -88,11 +76,22 @@ public class CartDialog extends Dialog {
         themMonBtn = findViewById(R.id.themMonBtn);
         thanhToanBtn = findViewById(R.id.thanhToanBtn);
         emptyTxt = findViewById(R.id.emptyTxt);
-        cartList = new ArrayList<>();
-        adapter = new CartListAdapter(cartList, getContext(), CartDialog.this::updateTotalPrice);
+        cartList_temp = new ArrayList<>();
+        adapter = new CartListAdapter(cartList_temp, getContext(), CartDialog.this::updateTotalPrice);
         recyclerView.setAdapter(adapter);
         tinyDB = new TinyDB(getContext());
         hasShopAddress = tinyDB.getAll().containsKey("addressShop");
+
+        try {
+            initList();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            updateTotalPrice();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
         // Chuyển sang MenuFragment khi bấm nút
         themMonBtn.setOnClickListener(v -> {
@@ -109,6 +108,9 @@ public class CartDialog extends Dialog {
                         listener.onSwitchToFragment("HOME"); // Gọi phương thức để chuyển Fragment
                     }
                     dismiss();
+                }
+                else if(cartList_temp.isEmpty()){
+                    showDialog();
                 }
                 else {
                     dismiss();
@@ -137,6 +139,7 @@ public class CartDialog extends Dialog {
                     adapter = new CartListAdapter(cartList, getContext(), CartDialog.this::updateTotalPrice);
                     recyclerView.setAdapter(adapter);
                 }
+                cartList_temp = cartList;
             }
 
             @Override
@@ -175,5 +178,27 @@ public class CartDialog extends Dialog {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    private void showDialog(){
+        ConstraintLayout errorConstrlayout = findViewById(R.id.successConstraintLayout);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_empty_cart,errorConstrlayout);
+        TextView okBtn = view.findViewById(R.id.okBtn);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setView(view);
+        final AlertDialog alertDialog = builder.create();
+        okBtn.findViewById(R.id.okBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                if (listener != null) {
+                    listener.onSwitchToFragment("MENU"); // Gọi phương thức để chuyển Fragment
+                }
+                dismiss();
+            }
+        });
+        if(alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
     }
 }

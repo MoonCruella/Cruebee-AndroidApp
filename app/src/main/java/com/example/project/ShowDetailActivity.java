@@ -66,8 +66,6 @@ public class ShowDetailActivity extends AppCompatActivity {
             return insets;
         });
 
-
-
         managementCart = new ManagementCart(this);
         initView();
         getBundle();
@@ -176,6 +174,15 @@ public class ShowDetailActivity extends AppCompatActivity {
                     showErrorDialogAndFinish();
                 }
                 else {
+
+                    // Them san pham vao gio hang, sau do chuyen den man hinh thanh toan
+                    object.setNumberInCart(numberOrder);
+                    try {
+                        managementCart.insertFood(object);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     Context context = v.getContext();
                     Intent intent = new Intent(context, PaymentActivity.class);
                     context.startActivity(intent);

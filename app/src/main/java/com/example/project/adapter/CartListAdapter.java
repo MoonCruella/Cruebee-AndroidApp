@@ -1,5 +1,6 @@
 package com.example.project.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.project.R;
 import com.example.project.helpers.ManagementCart;
+import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.model.Food;
+import com.example.project.model.User;
 
 import org.json.JSONException;
 
@@ -41,7 +44,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CartListViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CartListViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Food food = foods.get(position);
         holder.title.setText(food.getName());
         holder.des.setText(food.getDescription());
