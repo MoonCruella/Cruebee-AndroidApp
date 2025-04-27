@@ -231,8 +231,8 @@ public class LoginActivity extends AppCompatActivity {
                             JSONObject jsonResponse = new JSONObject(response);
                             if(jsonResponse.has("message"))
                             {
-                                String mess = jsonResponse.getString("message");
-                                Toast.makeText(LoginActivity.this, mess, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Sai email hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                                return;
                             }
                             if (jsonResponse.has("token")) {
 
@@ -255,8 +255,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent intent = new Intent(LoginActivity.this, BaseActivity.class);
                                 startActivity(intent);
                             } else {
-                                String errorMessage = jsonResponse.getString("message");
-                                Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Sai email hoặc mật khẩu", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

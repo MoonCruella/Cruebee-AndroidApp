@@ -17,6 +17,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -496,5 +498,10 @@ public class PaymentActivity extends AppCompatActivity {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         alertDialog.show();
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        initView();
     }
 }

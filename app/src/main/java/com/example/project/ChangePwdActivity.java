@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -48,7 +49,7 @@ public class ChangePwdActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_pwd);
-        FrameLayout mainLayout = findViewById(R.id.main);
+        ConstraintLayout mainLayout = findViewById(R.id.main);
         EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
             Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
