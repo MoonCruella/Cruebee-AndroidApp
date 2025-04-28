@@ -22,6 +22,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.example.project.adapter.AddressUserAdapter;
 import com.example.project.adapter.PaymentListAdapter;
+import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
 
 import com.example.project.model.Address;
@@ -74,10 +75,20 @@ public class OrderListActivity extends AppCompatActivity {
     }
 
     private void getPayment() {
-        User savedUser = tinyDB.getObject("savedUser", User.class);
-        int userId = savedUser.getId();
-        String url = UrlUtil.ADDRESS + "payment?userId=" + userId;
-        Log.d("USER ID", String.valueOf(userId));
+        String url = "";
+        int userId = 0;
+        if(tinyDB.getBoolean("is_logged_in")){
+            User savedUser = tinyDB.getObject("savedUser", User.class);
+            userId = savedUser.getId();
+            url = UrlUtil.ADDRESS + "payment?userId=" + userId;
+        }
+        else{
+            ArrayList<Integer> payments = tinyDB.getListInt("paymentList");
+            userId = 1;
+            String tem = StringHelper.createPaymentIdsQuery(payments);
+            url = UrlUtil.ADDRESS + "payment/findByIds?" + tem;
+        }
+        int finalUserId = userId;
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET,
                 url,
@@ -105,6 +116,7 @@ public class OrderListActivity extends AppCompatActivity {
                                 Boolean utensils = payment.getBoolean("utensils");
                                 String sdt = payment.getString("sdt");
                                 String note = payment.getString("note");
+                                String status = payment.getString("status");
                                 String orDate = payment.getString("orderDate");
                                 LocalDateTime orderDate = parseTime(orDate);
                                 String method = payment.getString("paymentMethod");
@@ -113,15 +125,22 @@ public class OrderListActivity extends AppCompatActivity {
 
                                 for (int j = 0; j < productsArray.length(); j++) {
                                     JSONObject productObj = productsArray.getJSONObject(j);
-                                    JSONObject product1 = productObj.getJSONObject("product");
-                                    int productId = product1.getInt("id");
+                                    JSONObject jsonObject = productObj.getJSONObject("product");
+                                    int productId = jsonObject.getInt("id");
+                                    String name = jsonObject.getString("name");
+                                    int price = jsonObject.getInt("price");
+                                    String imageId = jsonObject.getString("attachmentId");
+                                    String image = UrlUtil.ADDRESS + "download/" + imageId;
+                                    String des = jsonObject.isNull("description") ? "" : jsonObject.getString("description");
+                                    int soldCount = jsonObject.getInt("soldCount");
                                     int quantity = productObj.getInt("quantity");
-                                    Food food = new Food(productId);
+                                    Food food =new Food(id, name, price, image,soldCount, des);
                                     PaymentProduct product = new PaymentProduct(food, quantity);
                                     productList.add(product);
                                 }
-                                User user = new User(userId);
-                                Payment payment1 = new Payment(user, addressUser, addressShop, fullname, sdt, note, utensils, totalprice, orderDate,productList,method);
+                                Log.d("productlist",productList.toString());
+                                User user = new User(finalUserId);
+                                Payment payment1 = new Payment(user, addressUser, addressShop, fullname, sdt, note, utensils, totalprice, orderDate,productList,method,status);
                                 payments.add(payment1);
                             }
                             // Cập nhật adapter cho RecyclerView
@@ -139,7 +158,7 @@ public class OrderListActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(OrderListActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+
                     }
                 }
         ) {

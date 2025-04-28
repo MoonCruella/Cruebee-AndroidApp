@@ -10,14 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.project.R;
 import com.example.project.helpers.ManagementCart;
 import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.model.Food;
 import com.example.project.model.PaymentProduct;
 
-import org.checkerframework.checker.units.qual.C;
 import org.json.JSONException;
 
 import java.text.DecimalFormat;
@@ -39,7 +37,7 @@ public class FoodListPaymentAdapter extends RecyclerView.Adapter<FoodListPayment
     @NonNull
     @Override
     public FoodListPaymentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.food_item_payment,parent,false);
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_food_payment,parent,false);
         return new FoodListPaymentViewHolder(inflate);
     }
 

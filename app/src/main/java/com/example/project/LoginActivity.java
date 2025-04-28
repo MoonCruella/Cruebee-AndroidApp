@@ -206,6 +206,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tinyDB.putBoolean("is_logged_in",false);
+                tinyDB.remove("addressShop");
                 startActivity(new Intent(LoginActivity.this,BaseActivity.class));
             }
         });

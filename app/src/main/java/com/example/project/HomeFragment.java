@@ -148,7 +148,6 @@ public class HomeFragment extends Fragment {
             }
         }
         if(!hasShopAddress){
-
             // Thêm hiệu ứng blink
             Animation blink = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
             linearLayout.startAnimation(blink);
@@ -363,7 +362,6 @@ public class HomeFragment extends Fragment {
             hasAddressUser  = true;
         }
         if(!hasShopAddress){
-
             // Thêm hiệu ứng blink
             Animation blink = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
             linearLayout.startAnimation(blink);

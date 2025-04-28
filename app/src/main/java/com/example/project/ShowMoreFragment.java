@@ -20,7 +20,7 @@ import com.google.android.material.card.MaterialCardView;
 
 public class ShowMoreFragment extends Fragment {
 
-    ConstraintLayout supportBtn,verifyBtn,settingsBtn;
+    ConstraintLayout supportBtn,verifyBtn,settingsBtn,orderBtn;
     LinearLayout btn_login;
 
     @Nullable
@@ -35,8 +35,14 @@ public class ShowMoreFragment extends Fragment {
         supportBtn = (ConstraintLayout) view.findViewById(R.id.supportBtn);
         verifyBtn = (ConstraintLayout) view.findViewById(R.id.verifyBtn);
         settingsBtn = (ConstraintLayout) view.findViewById(R.id.settingsBtn);
+        orderBtn = view.findViewById(R.id.orderBtn);
         btn_login = view.findViewById(R.id.btn_login);
-
+        orderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),OrderListActivity.class));
+            }
+        });
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

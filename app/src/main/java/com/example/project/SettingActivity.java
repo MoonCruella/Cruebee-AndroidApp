@@ -46,7 +46,6 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TinyDB tinyDB = new TinyDB(SettingActivity.this);
-                tinyDB.remove("addr_no_log");
                 tinyDB.remove("addressShop");
                 startActivity(new Intent(SettingActivity.this,LoginActivity.class));
             }

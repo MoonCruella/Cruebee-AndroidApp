@@ -41,11 +41,14 @@ public class ManagementCart {
     public ManagementCart(Context context) {
         this.context = context;
         this.tinyDB = new TinyDB(context);
-        user = tinyDB.getObject("savedUser",User.class);
+        boolean hasUser = tinyDB.getAll().containsKey("savedUser");
+        if(hasUser){
+            user = tinyDB.getObject("savedUser",User.class);
+            this.userId = user.getId();
+            this.token = tinyDB.getString("token");
+        }
         this.is_logged_in = tinyDB.getBoolean("is_logged_in");
         requestQueue = VolleySingleton.getmInstance(context).getRequestQueue();
-        this.userId = user.getId();
-        this.token = tinyDB.getString("token");
     }
 
     public void insertFood(Food food, InsertCartCallback callback) throws JSONException {

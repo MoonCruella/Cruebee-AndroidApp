@@ -2,6 +2,7 @@ package com.example.project.adapter;
 
 import static android.view.View.VISIBLE;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +22,8 @@ import com.example.project.model.Address;
 import com.example.project.model.AddressShop;
 import com.example.project.model.Payment;
 
+import java.text.DecimalFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class PaymentListAdapter extends RecyclerView.Adapter<PaymentListAdapter.PaymentListHolder>{
@@ -39,15 +43,21 @@ public class PaymentListAdapter extends RecyclerView.Adapter<PaymentListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PaymentListAdapter.PaymentListHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PaymentListAdapter.PaymentListHolder holder, @SuppressLint("RecyclerView") int position) {
         Payment payment = paymentList.get(position);
         holder.shopTxt.setText(payment.getShop().getName());
-        holder.detailTxt.setText(payment.getProducts().size() + " phần - " + payment.getTotalPrice());
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        String formattedPrice = decimalFormat.format(payment.getTotalPrice()) + " đ";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        String formattedDate = payment.getOrderDate().format(formatter);
+        holder.timeOrder.setText(formattedDate);
+        holder.detailTxt.setText(payment.getProducts().size() + " phần - " + formattedPrice);
         holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, OrderDetailActivity.class);
                 intent.putExtra("object",payment);
+                intent.putExtra("stt",position + 1);
                 context.startActivity(intent);
             }
         });
@@ -59,13 +69,14 @@ public class PaymentListAdapter extends RecyclerView.Adapter<PaymentListAdapter.
     }
 
     public class PaymentListHolder extends RecyclerView.ViewHolder{
-        ConstraintLayout constraintLayout;
-        TextView shopTxt, detailTxt;
+        CardView constraintLayout;
+        TextView shopTxt, detailTxt,timeOrder;
         public PaymentListHolder(@NonNull View itemView) {
             super(itemView);
             constraintLayout = itemView.findViewById(R.id.main_layout);
             shopTxt = itemView.findViewById(R.id.shopTxt);
             detailTxt = itemView.findViewById(R.id.detailTxt);
+            timeOrder = itemView.findViewById(R.id.timeOrder);
         }
     }
 }

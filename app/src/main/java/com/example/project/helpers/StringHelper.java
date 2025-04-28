@@ -1,6 +1,8 @@
 package com.example.project.helpers;
 
+import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class StringHelper {
     public static boolean isEmailValid(String email) {
@@ -37,5 +39,11 @@ public class StringHelper {
         } else {
             return "Không tìm thấy ký tự phù hợp!";
         }
+    }
+    public static String createPaymentIdsQuery(ArrayList<Integer> paymentIds) {
+        // Sử dụng stream để tạo chuỗi theo định dạng "paymentIds=1&paymentIds=2&paymentIds=3"
+        return paymentIds.stream()
+                .map(id -> "paymentIds=" + id)  // Tạo chuỗi "paymentIds=ID"
+                .collect(Collectors.joining("&"));  // Nối các phần tử lại với dấu "&"
     }
 }

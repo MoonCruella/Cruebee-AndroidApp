@@ -214,36 +214,57 @@ public class PaymentActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         progressDialog.hide();
-                        if(response.equals("Ordering Successfully!")){
-                            try {
-                                managementCart.getListCart(new CartResponse() {
-                                    @Override
-                                    public void onSuccess(ArrayList<Food> listFood) {
-                                        try {
-                                            managementCart.clearCart(listFood, new ChangeNumberItemsListener() {
-                                                @Override
-                                                public void change() throws JSONException {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            if(jsonResponse.has("paymentId"))
+                            {
+                                int id = jsonResponse.getInt("paymentId");
+                                if(!tinyDB.getBoolean("is_logged_in")){
 
-                                                }
-                                            });
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
+                                    // Neu chua cho listpayment, tao moi 1 listpayment
+                                    if(!tinyDB.getAll().containsKey("paymentList")){
+                                        ArrayList<Integer> payments = new ArrayList<>();
+                                        tinyDB.putListInt("paymentList",payments);
+                                    }
+                                    ArrayList<Integer> payments = tinyDB.getListInt("paymentList");
+                                    payments.add(id);
+                                    tinyDB.putListInt("paymentList",payments);
+                                }
+                                try {
+                                    managementCart.getListCart(new CartResponse() {
+                                        @Override
+                                        public void onSuccess(ArrayList<Food> listFood) {
+                                            try {
+                                                managementCart.clearCart(listFood, new ChangeNumberItemsListener() {
+                                                    @Override
+                                                    public void change() throws JSONException {
+
+                                                    }
+                                                });
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
-                                    }
 
-                                    @Override
-                                    public void onError(String errorMessage) {
-                                        Toast.makeText(PaymentActivity.this, "Không thể lấy giỏ hàng: " + errorMessage, Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
+                                        @Override
+                                        public void onError(String errorMessage) {
+                                            Toast.makeText(PaymentActivity.this, "Không thể lấy giỏ hàng: " + errorMessage, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                showErrorDialog();
                             }
-                            showErrorDialog();
+                            else{
+                                Toast.makeText(PaymentActivity.this, "Thanh toán that bai", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(PaymentActivity.this, "Error processing login response.", Toast.LENGTH_SHORT).show();
                         }
-                        else{
-                            Toast.makeText(PaymentActivity.this, "Thanh toán that bai", Toast.LENGTH_SHORT).show();
-                        }
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -285,9 +306,12 @@ public class PaymentActivity extends AppCompatActivity {
                             Log.e(TAG, "Lỗi khi tính tổng tiền: " + errorMessage);
                         }
                     });
-                    User user = tinyDB.getObject("savedUser", com.example.project.model.User.class);
-                    Log.d("USSER",user.getId() + user.getEmail());
-                    userObject.put("id", user.getId());
+                    int id = 1;
+                    if(tinyDB.getAll().containsKey("savedUser")){
+                        User user = tinyDB.getObject("savedUser", com.example.project.model.User.class);
+                        id = user.getId();
+                    }
+                    userObject.put("id", id);
                     jsonBody.put("user", userObject);
                     jsonBody.put("addressUser", addUser);
                     shopObject.put("id", addressShop.getId());
@@ -297,6 +321,7 @@ public class PaymentActivity extends AppCompatActivity {
                     jsonBody.put("sdt", phone);
                     jsonBody.put("utensils", finalDcu);
                     jsonBody.put("note", noted);
+                    jsonBody.put("status","");
                     jsonBody.put("products", productsArray);
                     jsonBody.put("paymentMethod", paymentMethod);
                 } catch (JSONException e) {

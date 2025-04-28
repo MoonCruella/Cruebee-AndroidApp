@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="16dp"
+    android:id="@+id/main_layout"
+    app:cardElevation="1dp"
+    android:foreground="?attr/selectableItemBackground">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:padding="10dp"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            app:cardCornerRadius="16dp"
+            android:id="@+id/cardView"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints">
+            <ImageView
+                android:id="@+id/imageview"
+                android:layout_width="60dp"
+                android:scaleType="centerCrop"
+                android:layout_height="60dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/combo_my_khoai_nuoc"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteY="0dp" />
+        </androidx.cardview.widget.CardView>
+
+
+        <TextView
+            android:id="@+id/titleTxt"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_max="130dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:maxLines="2"
+            android:fontFamily="@font/fonts_com_merge_bold"
+            android:ellipsize="end"
+            android:text="Name"
+            android:textColor="@color/black"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/cardView"
+            app:layout_constraintTop_toTopOf="@+id/cardView" />
+
+
+        <TextView
+            android:id="@+id/numTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="x1"
+            android:textColor="@color/black"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/descriptionTxt"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/priceTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:text="0 đ"
+            android:textSize="14sp"
+            android:fontFamily="@font/fonts_com_merge_bold"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/titleTxt"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/descriptionTxt"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_max="200dp"
+            android:maxLines="2"
+            android:fontFamily="@font/roboto"
+            android:ellipsize="end"
+            android:textSize="13sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/titleTxt"
+            app:layout_constraintTop_toBottomOf="@+id/titleTxt" />
+
+        <TextView
+            android:id="@+id/totalPriceTxt"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_max="200dp"
+            android:maxLines="2"
+            android:fontFamily="@font/roboto"
+            android:ellipsize="end"
+            android:textSize="13sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:text="Thành tiền: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionTxt" />
+        <TextView
+            android:id="@+id/totalPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:text="0 đ"
+            android:textColor="@color/red"
+            android:textSize="14sp"
+            android:fontFamily="@font/fonts_com_merge_bold"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/totalPriceTxt"
+            app:layout_constraintVertical_bias="1.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
