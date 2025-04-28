@@ -2,8 +2,6 @@ package com.example.project;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,24 +10,21 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
-
 import com.example.project.adapter.ViewPager2Adapter;
 import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+
 
 public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchListener  {
     private ViewPager2 viewPager;
@@ -179,7 +174,7 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
                 tab.getCustomView().setOnClickListener(v -> {
                     if (index == 1) { // Tab "Thực đơn"
                         if (!hasShopAddress) {
-                            showErrorDialog();
+                            showErrorDialog("Bạn vui lòng nhập địa chỉ/chọn cửa hàng nhé!");
                             return;
                         }
                     }
@@ -246,14 +241,14 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
     public void onSwitchToFragment(String fragmentTag) {
         if (fragmentTag.equals("MENU")) {
             if(!hasShopAddress){
-                showErrorDialog();
+                showErrorDialog("Bạn vui lòng nhập địa chỉ/chọn cửa hàng nhé!");
                 return;
             }
             viewPager.setCurrentItem(1, true); // Chuyển đến tab "Thực Đơn"
         }
         else if (fragmentTag.equals("HOME")) {
             if(!hasShopAddress){
-                showErrorDialog();
+                showErrorDialog("Bạn vui lòng nhập địa chỉ/chọn cửa hàng nhé!");
                 return;
             }
             viewPager.setCurrentItem(0, true); // Chuyển đến tab "Thêm"
@@ -274,10 +269,12 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
             super.onBackPressed();  // Default back press behavior
         }
     }
-    private void showErrorDialog(){
+    private void showErrorDialog(String mess){
         ConstraintLayout errorConstrlayout = findViewById(R.id.errrorConstraintLayout);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_error,errorConstrlayout);
         TextView errorClose = view.findViewById(R.id.errorClose);
+        TextView errorDes = view.findViewById(R.id.errorDes);
+        errorDes.setText(mess);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(view);
         final AlertDialog alertDialog = builder.create();
@@ -297,5 +294,4 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
         super.onResume();
         hasShopAddress = tinyDB.getAll().containsKey("addressShop");
     }
-
 }

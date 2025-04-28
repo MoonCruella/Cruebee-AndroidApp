@@ -3,8 +3,11 @@ package com.example.project;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -16,6 +19,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.Address;
 import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleyHelper;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -115,35 +119,19 @@ public class AddAddressActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        // Create the JsonObjectRequest
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+        VolleyHelper.getInstance(this).sendJsonObjectRequestWithAuth(
                 Request.Method.POST,
-                url,
+                UrlUtil.ADDRESS + "addresses/add",
                 requestBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                    }
+                true,
+                response -> {
+                    // Xử lý khi thành công
+                    Toast.makeText(this, "Thêm địa chỉ thành công!", Toast.LENGTH_SHORT).show();
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                error -> {
 
-                    }
                 }
         );
-
-        // Set a retry policy if necessary
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                20 * 1000, // 20 seconds timeout
-                2,          // Max retries
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
-
-        // Add the request to the RequestQueue
-        requestQueue.add(jsonObjectRequest);
     }
 
     @Override

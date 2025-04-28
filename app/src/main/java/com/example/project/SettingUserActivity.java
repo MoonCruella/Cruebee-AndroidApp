@@ -31,6 +31,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleyHelper;
 import com.example.project.volley.VolleySingleton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import android.content.Intent;
@@ -80,46 +81,39 @@ public class SettingUserActivity extends AppCompatActivity {
         });
 
         logoutBtn.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 String url = UrlUtil.ADDRESS + "logout";
-                 StringRequest stringRequest = new StringRequest(
-                         Request.Method.GET,
-                         url,
-                         new Response.Listener<String>() {
-                             @Override
-                             public void onResponse(String response) {
-                                 tinyDB.remove("token");
-                                 tinyDB.remove("addressShop");
-                                 tinyDB.remove("savedUser");
-                                 tinyDB.putBoolean("is_logged_in", false);
+            @Override
+            public void onClick(View v) {
+                String url = UrlUtil.ADDRESS + "logout";
 
-                                 Log.d("Logout", "Token after logout: " + tinyDB.getString("token"));
+                VolleyHelper.getInstance(SettingUserActivity.this).sendStringRequestWithAuth(
+                        Request.Method.GET,
+                        url,
+                        null,
+                        true,
+                        response -> {
+                            // ✅ Xoá thông tin local
+                            tinyDB.remove("token");
+                            tinyDB.remove("addressShop");
+                            tinyDB.remove("refresh_token");
+                            tinyDB.remove("savedUser");
+                            tinyDB.putBoolean("is_logged_in", false);
 
-                                 // Parse the JSON response from the backend
-                                 Toast.makeText(SettingUserActivity.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
-                                 Intent intent = new Intent(SettingUserActivity.this, LoginActivity.class);
-                                 startActivity(intent);
-                             }
-                         },
-                         new Response.ErrorListener() {
-                             @Override
-                             public void onErrorResponse(VolleyError error) {
+                            Log.d("Logout", "Token after logout: " + tinyDB.getString("token"));
 
-                                 Toast.makeText(SettingUserActivity.this, "" + error, Toast.LENGTH_SHORT).show();
-                             }
-                         }) {
-                     @Override
-                     public Map<String, String> getHeaders() throws AuthFailureError {
-                         Map<String, String> headers = new HashMap<>();
-                         String token = tinyDB.getString("token");
-                         headers.put("Authorization", "Bearer " + token); // Thêm token nếu cần
-                         return headers;
-                     }
-                 };
-                 requestQueue.add(stringRequest);
-             }
-         });
+                            Toast.makeText(SettingUserActivity.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+
+                            // Chuyển về màn hình đăng nhập
+                            Intent intent = new Intent(SettingUserActivity.this, LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // clear backstack
+                            startActivity(intent);
+                        },
+                        error -> {
+                            Toast.makeText(SettingUserActivity.this, "Lỗi khi đăng xuất: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                );
+            }
+        });
+
         changePwdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -231,62 +225,41 @@ public class SettingUserActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void deleteAccount( AlertDialog alertDialog,String email,String password){
+    private void deleteAccount(AlertDialog alertDialog, String email, String password) {
         String url = UrlUtil.ADDRESS + "user/delete-account";
-        StringRequest stringRequest = new StringRequest(
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("email", email);
+            jsonBody.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        VolleyHelper.getInstance(this).sendStringRequestWithAuth(
                 Request.Method.POST,
                 url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if(response.equals("Delete Success!"))
-                        {
-                            tinyDB.remove("token");
-                            tinyDB.remove("addressShop");
-                            tinyDB.remove("savedUser");
-                            tinyDB.putBoolean("is_logged_in", false);
-                            alertDialog.dismiss();
-                            showAnnDeleteSuccess();
-                        } else {
-                            Toast.makeText(SettingUserActivity.this, "Sai mật khẩu!", Toast.LENGTH_SHORT).show();
-                        }
+                jsonBody.toString(),
+                true,
+                response -> {
+                    if (response.toString().equals("Delete Success!")) {
+                        tinyDB.remove("token");
+                        tinyDB.remove("addressShop");
+                        tinyDB.remove("savedUser");
+                        tinyDB.putBoolean("is_logged_in", false);
+
+                        alertDialog.dismiss();
+                        showAnnDeleteSuccess();
+                    } else {
+                        Toast.makeText(SettingUserActivity.this, "Sai mật khẩu!", Toast.LENGTH_SHORT).show();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(SettingUserActivity.this,"Wrong: " + error,Toast.LENGTH_SHORT).show();
-                    }
+                error -> {
+                    Toast.makeText(SettingUserActivity.this, "Lỗi: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-        ){
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                // Create a JSONObject and put data into it
-                JSONObject jsonBody = new JSONObject();
-                try {
-                    jsonBody.put("email", email);
-                    jsonBody.put("password",password);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                // Return the byte[] of the JSON string
-                return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                String token = tinyDB.getString("token");
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-
-        //Fix Volley time out error
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(stringRequest);
+        );
     }
+
     private void showAnnDeleteSuccess(){
         ConstraintLayout errorConstrlayout = findViewById(R.id.successConstraintLayout);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_delete_acc_success,errorConstrlayout);

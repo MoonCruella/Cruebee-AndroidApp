@@ -43,7 +43,7 @@ dependencies {
     implementation(libs.material.v180)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    annotationProcessor("com.github.bumptech.glide:compiler:4.15.0")
+    annotationProcessor(libs.compiler)
     implementation(libs.volley)
     implementation(libs.cardview)
     implementation(libs.glide)
@@ -53,11 +53,13 @@ dependencies {
     implementation(libs.gravitysnaphelper)
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
-    implementation("com.github.Dimezis:BlurView:version-2.0.4")
-    implementation("com.airbnb.android:lottie:3.4.0")
-    //zalo
-    implementation("com.squareup.okhttp3:okhttp:4.6.0")
-    implementation("commons-codec:commons-codec:1.14")
+    implementation(libs.blurview)
+    implementation(libs.lottie)
 
-    implementation("com.github.momo-wallet:mobile-sdk:1.0.7")
+    //zalo
+    implementation(libs.okhttp)
+    implementation(libs.commons.codec)
+    implementation(libs.mobile.sdk)
+
+    implementation (libs.java.jwt)
 }

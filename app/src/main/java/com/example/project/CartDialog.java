@@ -2,6 +2,7 @@ package com.example.project;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -30,6 +31,7 @@ import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.OnFragmentSwitchListener;
 import com.example.project.interfaces.TotalFeeResponse;
 import com.example.project.model.Food;
+import com.example.project.volley.VolleyHelper;
 
 import org.json.JSONException;
 
@@ -81,6 +83,11 @@ public class CartDialog extends Dialog {
         recyclerView.setAdapter(adapter);
         tinyDB = new TinyDB(getContext());
         hasShopAddress = tinyDB.getAll().containsKey("addressShop");
+        VolleyHelper.getInstance(getContext()).setDialogCloseHandler(() -> {
+            if (CartDialog.this.isShowing()) {
+                CartDialog.this.dismiss(); // Đóng dialog nếu đang mở
+            }
+        });
 
         try {
             initList();
@@ -169,36 +176,69 @@ public class CartDialog extends Dialog {
         });
 
     }
+
     @Override
     public void show() {
-        super.show();
+        Context context = getContext();
+
+        // Nếu là activity thì kiểm tra thêm
+        if (context instanceof Activity) {
+            Activity activity = (Activity) context;
+            if (activity.isFinishing()) {
+                Log.e(TAG, "Activity đang kết thúc, không thể hiển thị dialog.");
+                return;
+            }
+        }
+
         try {
-            initList();          // Load lại danh sách giỏ hàng
-            updateTotalPrice();  // Cập nhật lại tổng giá tiền
+            super.show();              // Hiển thị dialog
+            initList();                // Load lại giỏ hàng
+            updateTotalPrice();        // Cập nhật giá
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (Exception ex) {
+            Log.e(TAG, "Lỗi khi hiển thị dialog: " + ex.getMessage());
         }
     }
-    private void showDialog(){
+
+
+    private void showDialog() {
+        Context context = getContext();
+        if (!(context instanceof Activity)) return;
+
+        Activity activity = (Activity) context;
+        if (activity.isFinishing() || activity.isDestroyed()) {
+            Log.e(TAG, "Không thể hiển thị alertDialog vì Activity đã bị destroy.");
+            return;
+        }
+
         ConstraintLayout errorConstrlayout = findViewById(R.id.successConstraintLayout);
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_empty_cart,errorConstrlayout);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_empty_cart, errorConstrlayout);
         TextView okBtn = view.findViewById(R.id.okBtn);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(view);
         final AlertDialog alertDialog = builder.create();
-        okBtn.findViewById(R.id.okBtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                if (listener != null) {
-                    listener.onSwitchToFragment("MENU"); // Gọi phương thức để chuyển Fragment
-                }
-                dismiss();
+
+        okBtn.setOnClickListener(v -> {
+            alertDialog.dismiss();
+            if (listener != null) {
+                listener.onSwitchToFragment("MENU");
             }
+            dismiss();
         });
-        if(alertDialog.getWindow() != null){
+
+        if (alertDialog.getWindow() != null) {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
+
         alertDialog.show();
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isShowing()) {
+            dismiss(); // Tránh rò rỉ
+        }
     }
 }

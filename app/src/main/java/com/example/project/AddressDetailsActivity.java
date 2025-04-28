@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -18,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.Address;
 import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleyHelper;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -118,78 +121,48 @@ public class AddressDetailsActivity extends AppCompatActivity {
         });
     }
 
-    public void removeAddress(int addressId){
-
+    public void removeAddress(int addressId) {
         String url = UrlUtil.ADDRESS + "addresses/delete?addressId=" + addressId;
 
-        StringRequest jsonObjectRequest = new StringRequest(
+        VolleyHelper.getInstance(this).sendStringRequestWithAuth(
                 Request.Method.POST,
                 url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                    }
+                null,
+                true,
+                response -> {
+                    Toast.makeText(this, "Đã xóa địa chỉ!", Toast.LENGTH_SHORT).show();
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle error
+                error -> {
 
-                    }
+                    Toast.makeText(this, "Lỗi xóa địa chỉ", Toast.LENGTH_SHORT).show();
                 }
         );
-
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        requestQueue.add(jsonObjectRequest);
     }
 
+    public void updateAddress(Address address) {
+        String url = UrlUtil.ADDRESS + "addresses/update";
 
-    public void updateAddress(Address address){
+        JSONObject requestBody;
+        try {
+            requestBody = address.toJson();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return; // Không gửi request nếu JSON lỗi
+        }
 
-            String url = UrlUtil.ADDRESS + "addresses/update";
-            // Create the JSONObject for the POST request body
-            JSONObject requestBody = null;
-            try {
-                requestBody = address.toJson();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        VolleyHelper.getInstance(this).sendJsonObjectRequestWithAuth(
+                Request.Method.POST,
+                url,
+                requestBody,
+                true,
+                response -> {
+                    Toast.makeText(this, "Cập nhật địa chỉ thành công!", Toast.LENGTH_SHORT).show();
+                },
+                error -> {
 
-            // Create the JsonObjectRequest
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                    Request.Method.POST,
-                    url,
-                    requestBody,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            // Handle response from the server
-
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // Handle error
-
-                        }
-                    }
-            );
-
-            // Set a retry policy if necessary
-            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                    20 * 1000, // 20 seconds timeout
-                    2,          // Max retries
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            ));
-
-            // Add the request to the RequestQueue
-            requestQueue.add(jsonObjectRequest);
+                }
+        );
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

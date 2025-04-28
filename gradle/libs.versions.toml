@@ -1,13 +1,22 @@
 [versions]
 agp = "8.8.0"
+auth0Auth0 = "2.7.0"
+blurviewVersion = "version-2.0.4"
+commonsCodec = "1.15"
+compiler = "4.15.0"
+javaJwt = "4.4.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+jwtdecode = "2.0.1"
+lottie = "3.4.0"
 material = "1.12.0"
 activity = "1.10.0"
 constraintlayout = "2.2.0"
 materialVersion = "1.8.0"
+mobileSdk = "1.0.7"
+okhttp = "4.9.1"
 volley="1.2.1"
 cardview="1.0.0"
 glide="4.16.0"
@@ -18,14 +27,23 @@ play-services-maps  = "19.1.0"
 gravitysnaphelper = "2.2.1"
 blurview = "2.0.4"
 [libraries]
+auth0-auth0 = { module = "com.auth0.android:auth0", version.ref = "auth0Auth0" }
+blurview = { module = "com.github.Dimezis:BlurView", version.ref = "blurviewVersion" }
+commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodec" }
+compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
+java-jwt = { module = "com.auth0:java-jwt", version.ref = "javaJwt" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+jwtdecode = { module = "com.auth0.android:jwtdecode", version.ref = "jwtdecode" }
+lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 material-v180 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+mobile-sdk = { module = "com.github.momo-wallet:mobile-sdk", version.ref = "mobileSdk" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 volley = {group="com.android.volley", name ="volley", version.ref ="volley"}
 cardview = {group ="androidx.cardview",name="cardview",version.ref="cardview"}
 glide = {group = "com.github.bumptech.glide",name = "glide", version.ref = "glide"}

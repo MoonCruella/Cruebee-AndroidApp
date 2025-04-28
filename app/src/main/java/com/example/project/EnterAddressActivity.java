@@ -221,7 +221,6 @@ public class EnterAddressActivity extends AppCompatActivity {
                     Toast.makeText(EnterAddressActivity.this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
                 } else {
                     saveAddress(lat,lng,selectedAddress);
-                    Toast.makeText(EnterAddressActivity.this, "Đã lưu địa chỉ!", Toast.LENGTH_SHORT).show();
                     // Tạo Intent để trả lại dữ liệu đã thay đổi
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("updated_address", address);  // Truyền đối tượng address đã cập nhật

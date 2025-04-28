@@ -58,6 +58,7 @@ import com.example.project.model.Address;
 import com.example.project.model.Food;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleyHelper;
 import com.example.project.volley.VolleySingleton;
 
 import org.json.JSONArray;
@@ -281,71 +282,53 @@ public class HomeFragment extends Fragment {
     public void loadAddress(int userId){
 
         String url = UrlUtil.ADDRESS + "addresses/primary?userId=" + userId;
-
-        StringRequest jsonObjectRequest = new StringRequest(
+        VolleyHelper volleyHelper = VolleyHelper.getInstance(getContext());
+        volleyHelper.sendStringRequestWithAuth(
                 Request.Method.GET,
                 url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if (response != null && !response.isEmpty()) {
-                            try {
-                                JSONObject address = new JSONObject(response);
+                null, // Body nếu là GET
+                true, // Require token
+                response -> {
+                    if (response != null && !response.isEmpty()) {
+                        try {
+                            JSONObject address = new JSONObject(response);
 
-                                // Lấy thông tin từ JSONObject
-                                int id = address.getInt("id");
-                                int isPrimary = address.getInt("isPrimary");
-                                String addressDetails = address.getString("addressDetails");
-                                double latitude = address.getDouble("latitude");
-                                double longitude = address.getDouble("longitude");
-                                String username = address.getString("username");
-                                String sdt = address.getString("sdt");
-                                String note = address.getString("note");
+                            // Lấy thông tin từ JSONObject
+                            int id = address.getInt("id");
+                            int isPrimary = address.getInt("isPrimary");
+                            String addressDetails = address.getString("addressDetails");
+                            double latitude = address.getDouble("latitude");
+                            double longitude = address.getDouble("longitude");
+                            String username = address.getString("username");
+                            String sdt = address.getString("sdt");
+                            String note = address.getString("note");
 
-                                // Tạo đối tượng Address
-                                Address address1 = new Address(id, isPrimary, addressDetails, latitude, longitude, userId, username, note, sdt);
+                            // Tạo đối tượng Address
+                            Address address1 = new Address(id, isPrimary, addressDetails, latitude, longitude, userId, username, note, sdt);
 
-                                // Lưu đối tượng vào TinyDB
-                                tinyDB.putObject("address", address1);
-                                hasAddressUser = true;
-                                // Cập nhật giao diện với địa chỉ mới
-                                addressTxt.setText(addressDetails);
+                            // Lưu đối tượng vào TinyDB
+                            tinyDB.putObject("address", address1);
+                            hasAddressUser = true;
+                            // Cập nhật giao diện với địa chỉ mới
+                            addressTxt.setText(addressDetails);
 
-                            } catch (JSONException e) {
+                        } catch (JSONException e) {
 
-                                // Xử lý lỗi nếu có vấn đề với JSON
-                                e.printStackTrace();
-                            }
-                        } else {
-                            // Xử lý khi phản hồi là rỗng
-                            tinyDB.remove("address");
-                            addressTxt.setText("Thêm địa chỉ/cửa hàng");
-                            hasAddressUser = false;
+                            // Xử lý lỗi nếu có vấn đề với JSON
+                            e.printStackTrace();
                         }
+                    } else {
+                        // Xử lý khi phản hồi là rỗng
+                        tinyDB.remove("address");
+                        addressTxt.setText("Thêm địa chỉ/cửa hàng");
+                        hasAddressUser = false;
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
+                error -> {
+                    // handle error
                 }
-        ){
-            @Override
-            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                try {
-                    String utf8 = new String(response.data, StandardCharsets.UTF_8);
-                    return Response.success(utf8, HttpHeaderParser.parseCacheHeaders(response));
-                } catch (Exception e) {
-                    return Response.error(new ParseError(e));
-                }
-            }
-        };
+        );
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        requestQueue.add(jsonObjectRequest);
     }
     @Override
     public void onResume() {

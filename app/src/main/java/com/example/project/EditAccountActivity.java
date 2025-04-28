@@ -21,6 +21,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleyHelper;
 import com.example.project.volley.VolleySingleton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -90,42 +91,34 @@ public class EditAccountActivity extends AppCompatActivity {
     private void updateUser(User user) {
         String url = UrlUtil.ADDRESS + "user/update";
 
-        StringRequest request = new StringRequest(
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("id", user.getId());
+            requestBody.put("username", user.getUsername());
+            requestBody.put("email", user.getEmail());
+            requestBody.put("gender", user.getGender());
+            requestBody.put("sdt", user.getSdt());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Lỗi tạo dữ liệu gửi đi!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        VolleyHelper volleyHelper = VolleyHelper.getInstance(this);
+        volleyHelper.sendJsonObjectRequestWithAuth(
                 Request.Method.PUT,
                 url,
+                requestBody,
+                true,
                 response -> {
                     Log.d("UpdateUser", "Response: " + response);
                     Toast.makeText(this, "Cập nhật tài khoản thành công!", Toast.LENGTH_SHORT).show();
                 },
                 error -> {
-                    Log.e("UpdateUser", "Lỗi: " + error.toString());
-                    Toast.makeText(this, "Lỗi cập nhật: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-        ) {
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                JSONObject jsonBody = new JSONObject();
-                try {
-                    jsonBody.put("id", user.getId());
-                    jsonBody.put("username", user.getUsername());
-                    jsonBody.put("email", user.getEmail());
-                    jsonBody.put("gender", user.getGender());
-                    jsonBody.put("sdt", user.getSdt());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
-            }
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-        requestQueue.add(request);
+                }
+        );
     }
+
 
 }

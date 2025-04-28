@@ -28,6 +28,7 @@ import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleyHelper;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
@@ -229,46 +230,38 @@ public class ChangePwdActivity extends AppCompatActivity {
         });
 
     }
-    private void savePassNewPw(User user,String password,String newPassword){
+    private void savePassNewPw(User user, String password, String newPassword) {
         String url = UrlUtil.ADDRESS + "user/change-pw";
-        StringRequest request = new StringRequest(
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("email", user.getEmail());
+            jsonBody.put("password", password);
+            jsonBody.put("newPassword", newPassword);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        VolleyHelper volleyHelper = VolleyHelper.getInstance(this);
+        volleyHelper.sendStringRequestWithAuth(
                 Request.Method.PUT,
                 url,
+                jsonBody.toString(),
+                true,
                 response -> {
-                    Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
-                    if(response.equals("Cập nhật mật khẩu thành công!")){
-                        Intent intent=new Intent(ChangePwdActivity.this,SettingUserActivity.class);
+                    if (response.equals("Change password successful!")) {
+                        Toast.makeText(this,"Cập nhật mật khẩu thành công",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(ChangePwdActivity.this, SettingUserActivity.class);
                         startActivity(intent);
                         finish();
                     }
                 },
                 error -> {
                     Log.e("UpdatePassword", "Lỗi: " + error.toString());
-                    Toast.makeText(this, "Lỗi cập nhật: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Lỗi cập nhật: " + "Sai mật khẩu", Toast.LENGTH_SHORT).show();
                 }
-        ) {
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                JSONObject jsonBody = new JSONObject();
-                try {
-                    jsonBody.put("email", user.getEmail());
-                    jsonBody.put("password", password);
-                    jsonBody.put("newPassword", newPassword);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-        requestQueue.add(request);
+        );
     }
+
 
 }

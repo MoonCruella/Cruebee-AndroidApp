@@ -2,23 +2,36 @@ package com.example.project.helpers;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.example.project.LoginActivity;
+import com.example.project.R;
 import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.interfaces.InsertCartCallback;
 import com.example.project.interfaces.TotalFeeResponse;
 import com.example.project.interfaces.UpdateCartCallback;
+import com.example.project.model.Address;
 import com.example.project.model.Food;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleyHelper;
 import com.example.project.volley.VolleySingleton;
 
 import org.json.JSONException;
@@ -37,6 +50,7 @@ public class ManagementCart {
     private RequestQueue requestQueue;
     String token;
     User user;
+    private static boolean isDialogShown = false;
 
     public ManagementCart(Context context) {
         this.context = context;
@@ -107,55 +121,49 @@ public class ManagementCart {
         });
     }
 
-    // Hàm gọi API để cập nhật giỏ hàng khi người dùng đã đăng nhập
     private void updateCartOnServer(Food food, int count, UpdateCartCallback callback) {
         String url = UrlUtil.ADDRESS + "cart/add";
 
+        // Tạo JSON body
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("userId", userId);
+            jsonBody.put("userId", userId); // Đảm bảo userId đã được khai báo và hợp lệ
             jsonBody.put("productId", food.getId());
             jsonBody.put("quantity", count);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        StringRequest stringRequest = new StringRequest(
+        // Gửi yêu cầu đến server
+        VolleyHelper volleyHelper = VolleyHelper.getInstance(context);
+        volleyHelper.sendStringRequestWithAuth(
                 Request.Method.POST,
                 url,
+                jsonBody.toString(),  // Chuyển đổi JSONObject thành String
+                true, // Yêu cầu token
                 response -> {
                     Log.d(TAG, "API Response: " + response);
-                    callback.onSuccess();
+                    callback.onSuccess();  // Gọi callback khi thành công
                 },
                 error -> {
                     String message = "API Error: " + error.toString();
                     Log.e(TAG, message);
-                    callback.onError(message);
+                    callback.onError(message);  // Gọi callback khi gặp lỗi
                 }
-        ) {
-            @Override
-            public byte[] getBody() {
-                return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-
-        requestQueue.add(stringRequest);
+        );
     }
+
 
     public void getListCart(CartResponse callback) throws JSONException {
         if (is_logged_in) {
             String url = UrlUtil.ADDRESS + "cart/" + userId;
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-                    Request.Method.GET, url, null,
+
+            VolleyHelper volleyHelper = VolleyHelper.getInstance(context);
+            volleyHelper.sendJsonArrayRequestWithAuth(url, true,
                     response -> {
+
+                        // Xử lý dữ liệu trả về (JSONArray)
+                        Log.d("VolleyResponse", "Response: " + response.toString());
                         ArrayList<Food> foods = new ArrayList<>();
                         try {
                             for (int i = 0; i < response.length(); i++) {
@@ -178,17 +186,12 @@ public class ManagementCart {
                         } catch (JSONException e) {
                             callback.onError("Lỗi khi phân tích dữ liệu JSON");
                         }
+
                     },
-                    error -> callback.onError("Lỗi khi lấy giỏ hàng!")
-            ) {
-                @Override
-                public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", "Bearer " + token);
-                    return headers;
-                }
-            };
-            requestQueue.add(jsonArrayRequest);
+                    error -> {
+                        // Xử lý khi có lỗi
+                        Log.e("VolleyError", "Error: " + error.getMessage());
+                    });
         } else {
             callback.onSuccess(tinyDB.getListObject("CartList"));
         }
@@ -355,73 +358,56 @@ public class ManagementCart {
         // Tạo JSONObject để làm body
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("userId", userId);
+            jsonBody.put("userId", userId); // Đảm bảo userId hợp lệ
             jsonBody.put("productId", food.getId());
             jsonBody.put("quantity", food.getNumberInCart());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        StringRequest stringRequest = new StringRequest(
+        // Gửi yêu cầu đến server
+        VolleyHelper volleyHelper = VolleyHelper.getInstance(context);
+        volleyHelper.sendStringRequestWithAuth(
                 Request.Method.POST,
                 url,
+                jsonBody.toString(),  // Chuyển đổi JSONObject thành String
+                true, // Yêu cầu token
                 response -> {
                     Log.d(TAG, "Delete Response: " + response);
-                    callback.onSuccess();
+                    callback.onSuccess();  // Gọi callback khi thành công
                 },
                 error -> {
                     Log.e(TAG, "Delete Error: " + error.toString());
-                    callback.onError(error.getMessage());
-
+                    callback.onError(error.getMessage());  // Gọi callback khi gặp lỗi
                 }
-        ) {
-            @Override
-            public byte[] getBody() {
-                return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
-
-        requestQueue.add(stringRequest);
+        );
     }
+
 
     // Hàm gọi API để cập nhật giỏ hàng khi người dùng mua hàng thành cong
-    private void clearAllFood( UpdateCartCallback callback) {
-
+    private void clearAllFood(UpdateCartCallback callback) {
         String url = UrlUtil.ADDRESS + "cart/clear?userId=" + userId;
-        StringRequest stringRequest = new StringRequest(
+
+        // Tạo đối tượng VolleyHelper
+        VolleyHelper volleyHelper = VolleyHelper.getInstance(context);
+
+        // Sử dụng sendStringRequestWithAuth để gửi yêu cầu với token
+        volleyHelper.sendStringRequestWithAuth(
                 Request.Method.POST,
                 url,
+                null,  // Không có body trong yêu cầu này
+                true, // Cần xác thực bằng token
                 response -> {
-                    Log.d(TAG, "Delete Response: " + response);
-                    callback.onSuccess();
+                    Log.d(TAG, "Clear Cart Response: " + response);
+                    callback.onSuccess();  // Gọi callback thành công
                 },
                 error -> {
-                    Log.e(TAG, "Delete Error: " + error.toString());
-                    callback.onError(error.getMessage());
-
+                    Log.e(TAG, "Clear Cart Error: " + error.toString());
+                    callback.onError(error.getMessage());  // Gọi callback khi có lỗi
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
-        requestQueue.add(stringRequest);
+        );
     }
+
 
 
 }
