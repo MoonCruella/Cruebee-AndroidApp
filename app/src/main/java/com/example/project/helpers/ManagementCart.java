@@ -13,6 +13,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
+import com.example.project.interfaces.InsertCartCallback;
 import com.example.project.interfaces.TotalFeeResponse;
 import com.example.project.interfaces.UpdateCartCallback;
 import com.example.project.model.Food;
@@ -47,7 +48,7 @@ public class ManagementCart {
         this.token = tinyDB.getString("token");
     }
 
-    public void insertFood(Food food) throws JSONException {
+    public void insertFood(Food food, InsertCartCallback callback) throws JSONException {
         getListCart(new CartResponse() {
             @Override
             public void onSuccess(ArrayList<Food> listFood) {
@@ -77,6 +78,7 @@ public class ManagementCart {
                     updateCartOnServer(food, food.getNumberInCart(), new UpdateCartCallback() {
                         @Override
                         public void onSuccess() {
+                            callback.onInserted();
                             Toast.makeText(context, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
                         }
 

@@ -33,6 +33,7 @@ import androidx.lifecycle.GenericLifecycleObserver;
 import com.bumptech.glide.Glide;
 import com.example.project.helpers.ManagementCart;
 import com.example.project.helpers.TinyDB;
+import com.example.project.interfaces.InsertCartCallback;
 import com.example.project.model.Food;
 import com.example.project.utils.UrlUtil;
 
@@ -155,12 +156,16 @@ public class ShowDetailActivity extends AppCompatActivity {
                 }
                 else{
                     object.setNumberInCart(numberOrder);
+                    InsertCartCallback callback1;
                     try {
-                        managementCart.insertFood(object);
+                        managementCart.insertFood(object, new InsertCartCallback() {
+                            @Override
+                            public void onInserted() {
+                            }
+                        });
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-
                     //Quay tro lai man hinh chon menu
                     finish();
                 }
@@ -178,7 +183,15 @@ public class ShowDetailActivity extends AppCompatActivity {
                     // Them san pham vao gio hang, sau do chuyen den man hinh thanh toan
                     object.setNumberInCart(numberOrder);
                     try {
-                        managementCart.insertFood(object);
+                        managementCart.insertFood(object, new InsertCartCallback() {
+                            @Override
+                            public void onInserted() {
+                                // Khi insert xong, mới chuyển màn
+                                Context context = v.getContext();
+                                Intent intent = new Intent(context, PaymentActivity.class);
+                                context.startActivity(intent);
+                            }
+                        });
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
