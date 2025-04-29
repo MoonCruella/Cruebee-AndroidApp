@@ -1,5 +1,5 @@
 package com.example.project.utils;
 
 public class UrlUtil {
-    public static final String ADDRESS = "http://192.168.1.4:8888/";
+    public static final String ADDRESS = "http://192.168.1.103:8888/";
 }

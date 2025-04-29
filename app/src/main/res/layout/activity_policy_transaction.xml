@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PolicyPaymentActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="300dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:textAlignment="center"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/fonts_com_merge_bold"
+            android:text="Thông tin về đăng ký giao dịch chung"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintTop_toTopOf="@+id/toolbar"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="151dp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="410dp"
+        android:layout_height="769dp"
+        android:layout_marginTop="4dp"
+        android:padding="16dp"
+        android:paddingTop="100dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:justificationMode="inter_word"
+            android:orientation="vertical">
+
+
+            <!-- 1. Giới thiệu -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Chính sách giao hàng – nhận hàng"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Sau khi tiếp nhận đơn hàng, nhân viên giao hàng Cruebee Việt Nam sẽ giao hàng đến địa chỉ do khách hàng cung cấp trong vòng 30 phút trở lên. Tại thời điểm giao hàng, khách hàng kiểm tra phần ăn theo đơn hàng ghi trên hóa đơn và số tiền cần thanh toán. Việc giao hàng kết thúc khi khách hàng xác nhận đủ phần ăn. \n
+*Các lưu ý:\n
+- Cruebee Việt Nam chỉ tiếp nhận đơn hàng trực tuyến từ 09:00 sáng đến 21:00 tối. \n
+- Cruebee Việt Nam chỉ tiếp nhận đơn hàng có tổng giá tối thiểu 60.000 VNĐ. \n
+- Thời gian giao hàng có thể nhanh hơn hoặc lâu hơn với dự kiến vì lý do thời tiết, đơn hàng tại cửa hàng hiện quá tải, địa chỉ do khách hàng cung cấp quá xa với cửa hàng hoặc địa chỉ của khách hàng bị nhầm lẫn với các địa chỉ khác hoặc do ách tắc giao thông hoặc sự cố trên đường hoặc một số lý do khác nằm ngoài sự mong muốn. Lúc này, Cruebee Việt Nam sẽ thông báo cụ thể đến khách hàng ngay khi phát sinh sự kiện gây chậm trễ việc giao hàng. \n
+- Trường hợp khách hàng muốn thay đổi địa chỉ hoặc yêu cầu điều chỉnh đơn hàng chỉ cần bấm xác nhận hủy đơn hàng và thực hiện lại thao tác đặt đơn hàng mới. \n
+- Việc điều chỉnh đơn hàng nhằm thay đổi phần ăn mới, khách hàng chỉ cần bấm xác nhận hủy đơn hàng và thực hiện lại thao tác đặt đơn hàng mới."
+                android:textSize="16sp" />
+
+            <!-- 2. Hoạt động xử lý dữ liệu cá nhân -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Đồng ý chính sách và quy định chung khi sử dụng ứng dụng"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Các chính sách và quy định chung này liên quan đến việc Khách hàng truy cập Website của Cruebee Việt Nam. \n
+Khi khách hàng truy cập vào Website Cruebee.com.vn là khách hàng đã chấp nhận và đồng ý với các chính sách và quy định chung này và những chính sách, quy định của chính sách bảo mật thông tin từ Cruebee Việt Nam. \n
+Nếu khách hàng không đồng ý với bất kỳ điều khoản nào dưới đây, vui lòng không truy cập vào website của Cruebee Việt Nam. Chính sách và quy định chung này được áp dụng khi Khách hàng sử dụng website của Jovfllibee Việt Nam. Những chính sách và quy định chung này ảnh hưởng đến quyền lợi của Khách hàng, vui lòng đọc kỹ trước khi sử dụng."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Những thay đổi liên quan đến các chính sách và quy định chung này"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Cruebee Việt Nam có quyền thay đổi các chính sách và quy định chung này bất cứ thời điểm nào mà không cần thông báo trước với khách hàng. Khách hàng có thể xem phiên bản cập nhật mới nhất của chính sách và quy định chung này bằng cách nhấp chuột vào 'Chính Sách và Quy Định Chung' tại trang chủ của www.Cruebee.com.vn. Phiên bản cập nhật này sẽ thay thế tất cả các phiên bản cũ. Nếu khách hàng truy cập vào ứng dụng của Cruebee Việt Nam sau khi xuất hiện những thay đổi đối với chính sách và quy định chung đồng nghĩa là khách hàng đã đồng ý với những thay đổi này."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Những hạn chế về nghĩa vụ pháp lý"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Cruebee Việt Nam không chịu bất cứ trách nhiệm pháp lý nào cho khách hàng trong bất kỳ trường hợp nào bao gồm trực tiếp, gián tiếp, ngẫu nhiên, đặc biệt, hư hỏng do cố ý hay bất kỳ vấn đề gì là kết quả của các vấn đề sau: những nội dung sai sót hoặc không chính xác, những tổn hại cá nhân hoặc hư hại tài sản tự phát sinh trong quá trình truy cập và sử dụng website của Cruebee Việt Nam, truy cập bất hợp pháp vào các máy chủ của Cruebee Việt Nam để lấy thông tin cá nhân hoặc những thông tin tài chính mà Cruebee Việt Nam bảo quản trong đó, cắt ngang hoặc chấm dứt truyền thông tin đến website của chúng tôi, sai sót, vi-rút, và lỗi hoặc sai sót trong phần nội dung hoặc những mất mát hư hỏng do sử dụng nội dung đăng tải, email, đường truyền hoặc những thứ tương tự từ ứng dụng của Cruebee Việt Nam, công ty sẽ không chịu trách nhiệm cho những thiệt hại có thể xảy ra này. Các hạn chế về nghĩa vụ pháp lý như đã nói ở trên sẽ được áp dụng trong phạm vi quy định của luật pháp Việt Nam. \n
+Khách hàng cần nhận thức rõ việc Cruebee Việt Nam sẽ không chịu trách nhiệm cho việc thông tin của người sử dụng hoặc bất cứ những rủi ro thiệt hại nào khác cho khách hàng."
+                android:textSize="16sp" />
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

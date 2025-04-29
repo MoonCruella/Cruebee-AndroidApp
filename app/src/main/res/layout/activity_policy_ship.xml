@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PolicyShipActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="320dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:textAlignment="center"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/fonts_com_merge_bold"
+            android:text="Thông tin về vận chuyển giao nhận"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintTop_toTopOf="@+id/toolbar"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="151dp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="415dp"
+        android:layout_height="792dp"
+        android:layout_marginTop="4dp"
+        android:padding="16dp"
+        android:paddingTop="100dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:justificationMode="inter_word"
+            android:orientation="vertical">
+
+
+            <!-- 1. Giới thiệu -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Phương thức giao hàng"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Nhân viên của Cruebee Việt Nam tiếp nhận đơn hàng, xác nhận đơn đặt hàng và giao hàng trong thời gian cụ thể như bên dưới tính từ thời điểm tiếp nhận đơn hàng: \n
+ + Phạm vi giao hàng bằng hoặc dưới 3km, thời gian giao hàng trong vòng 30 phút, cho các đơn hàng có giá trị từ 60.000 VNĐ trở lên \n
+ + Phạm vi giao hàng trên hoặc bằng 3km đến dưới 5km, thời gian giao hàng trong vòng 45 phút, cho các đơn hàng có giá tri từ 100.000 VNĐ trở lên \n
+ + Pham vi giao hàng trên hoặc bằng 5km đến dưới hoặc bằng 8km, thời gian giao hàng trong vòng 60 phút, cho các đơn hàng có giá trị từ 150.000 VNĐ trở lên \n
+* Lưu ý: Khi đặt hàng trên ứng dụng Cruebee Việt Nam, Khách hàng hiểu và chấp nhân các điều kiên/ lưu ý sau: \n
+ - Cruebee Việt Nam chỉ tiếp nhân đơn hàng trực tuyến từ 09:00 sáng đến 21:00 tối. \n
+ - Cruebee Việt Nam chỉ tiếp nhận đơn hàng có tổng giá tối thiểu 60.000 VNĐ.
+"
+                android:textSize="16sp" />
+
+            <!-- 2. Hoạt động xử lý dữ liệu cá nhân -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Xác nhận đơn hàng khi đặt hàng trực tuyến trên ứng dụng CrueBee Việt Nam"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Sau khi hoàn thành việc đặt hàng trực tuyến trên ứng dụng Cruebee Việt Nam, hệ thống sẽ tự động cập nhật tình trạng đơn hàng trên ứng dụng. \n
+Trong vòng 5 phút, nhân viên trực tổng đài của Cruebee Việt Nam sẽ xử lý, hoàn thành các thủ tục đặt hàng. \n
+Trong hầu hết trường hợp, khách hàng sẽ theo dõi được tình trạng của đơn hàng, thời gian nhận hàng dự kiến."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Hủy đơn hàng"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Đơn hàng trên ứng dụng Cruebee VIỆT NAM không thể bị hủy sau khi hàng đã được giao cho Khách hàng. Khách hàng chỉ có thể hủy đơn hàng qua ứng dụng Cruebee VIỆT NAM khi trạng thái đơn hàng là 'Sẫn sàng' hoặc 'Chuẩn bị'. Hoặc Khách hàng có thể liên hê bộ phân Chăm Sóc Khách Hàng thông qua số điện thoại 1900 1533 để hủy đơn hàng. Bộ phận CSKH sẽ kiểm tra trạng thái đơn hàng sau khi nhận được yêu cầu hủy."
+                android:textSize="16sp" />
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

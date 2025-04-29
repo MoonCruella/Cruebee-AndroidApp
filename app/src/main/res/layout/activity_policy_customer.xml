@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PolicyCustomerActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="250dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:textAlignment="center"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/fonts_com_merge_bold"
+            android:text="Chính sách bảo mật thông tin khách hàng"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintTop_toTopOf="@+id/toolbar"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="151dp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="408dp"
+        android:layout_height="765dp"
+        android:layout_marginTop="4dp"
+        android:padding="16dp"
+        android:paddingTop="100dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:justificationMode="inter_word"
+            android:orientation="vertical">
+
+            <!-- Tiêu đề chính -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="\nChính Sách Bảo Mật"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- 1. Giới thiệu -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="1. Giới thiệu"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Công ty TNHH Cruebee Việt Nam và công ty liên kết của mình (gọi chung là “Cruebee”, “chúng tôi” hoặc “của chúng tôi”) công nhận và tôn trọng quyền riêng tư của bạn và cam kết bảo vệ quyền riêng tư đó. Chúng tôi đã phát triển một số cơ chế bảo mật nhất định để duy trì các tiêu chuẩn này và tuân thủ pháp luật hiện hành. \n
+Bản Chính Sách này mô tả các cơ chế bảo vệ quyền riêng tư của chúng tôi đối với thông tin cá nhân mà chúng tôi thu thập được, bao gồm các loại thông tin chúng tôi có thể thu thập từ bạn khi bạn sử dụng dịch vụ tại Cửa Hàng Cruebee, truy cập Trang mạng Cruebee (“Trang Web”), sử dụng ứng dụng Cruebee trên thiết bị di động (“Ứng Dụng Di Động”), sử dụng Đường Dây Nóng Giao Hàng Của Cruebee hoặc đặt hàng qua điện thoại cố định của Cửa hàng Cruebee hoặc sử dụng hay truy cập bất kỳ dịch vụ hoặc chương trình trực tuyến nào khác mà có đăng tải hoặc có liên kết đến Điều Khoản, Điều Kiện Của Cruebee hoặc Chính Sách này (gọi chung là “Dịch Vụ Của Cruebee”). Chính sách này cũng nêu lên các mục đích của chúng tôi khi thu thập thông tin cá nhân, cách chúng tôi sử dụng hoặc xử lý thông tin cá nhân mà chúng tôi thu thập được, đối tượng mà chúng tôi chia sẻ thông tin đó và các quyền của bạn đối với thông tin cá nhân của bạn và cách bạn có thể thực hiện các quyền này. \n
+Xin vui lòng đọc kỹ Chính sách này. Một khi sử dụng Dịch Vụ của Cruebee, bạn đã đồng ý với các điều khoản và điều kiện của Chính sách này. Nếu bạn không đồng ý với các điều khoản của Chính sách này, vui lòng không sử dụng Dịch Vụ Của Cruebee."
+                android:textSize="16sp" />
+
+            <!-- 2. Hoạt động xử lý dữ liệu cá nhân -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="2. Hoạt động xử lý dữ liệu cá nhân"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Dữ liệu chúng tôi thu thập \n\n
+Bản Chính Sách này áp dụng đối với dữ liệu chúng tôi thu thập: \n\n
+    •   Trên Trang Web của chúng tôi; \n\n
+    •   Trong thư điện tử, văn bản và các trao đổi liên lạc điện tử khác giữa bạn và chúng tôi, bao gồm giữa bạn và Trang Web của chúng tôi, giữa bạn và Ứng Dụng Di Động cũng như giữa bạn và các trang truyền thông xã hội của chúng tôi; \n\n
+    •   Thông qua Ứng Dụng Di Động mà bạn tải xuống từ App Store hoặc Google Play; \n\n
+    •   Khi bạn đăng ký nhận khuyến mãi trực tuyến hoặc tham gia vào các chương trình có giải thưởng, chương trình trực tuyến, các khảo sát hoặc các giao dịch hoặc hoạt động khác; \n\n
+    •   Khi bạn sử dụng hoặc truy cập bất kỳ dịch vụ hoặc chương trình trực tuyến nào khác có đăng tải hoặc có liên kết với Điều Khoản Và Điều Kiện hoặc Chính Sách Bảo Vệ Dữ Liệu Cá Nhân của Cruebee; \n\n
+    •   Thông qua hoặc do việc bạn tiến vào bất kỳ cơ sở nào của chúng tôi hoặc có liên quan đến tổ chức kinh doanh của chúng tôi, hoặc việc tham dự một sự kiện do chúng tôi tổ chức hoặc chủ trì; \n\n
+    •   Do kết quả của bất kỳ hoạt động mua, bán hoặc giao dịch nào khác được thực hiện thông qua chúng tôi hoặc thông qua dịch vụ giao hàng của bên thứ ba; \n\n
+    •   Khi bạn đến các cửa hàng Cruebee hoặc sử dụng Đường Dây Nóng Giao Hàng Của Cruebee hoặc đặt hàng qua điện thoại cố định của Cửa hàng Cruebee. \n\n
+Bản Chính Sách này không áp dụng đối với thông tin được thu thập bởi bất kỳ bên thứ ba nào, kể cả thông qua bất kỳ ứng dụng hoặc nội dung nào (bao gồm cả hoạt động quảng cáo) có liên kết đến hoặc có thể truy cập được từ hoặc trên Trang Web của chúng tôi. \n\n
+Chúng tôi thu thập thông tin có tính nhận dạng, liên quan đến, mô tả, tham chiếu, có khả năng được liên kết với hoặc có thể được liên kết một cách hợp lý, trực tiếp hoặc gián tiếp, với một khách hàng hoặc hộ gia đình cụ thể (“Thông Tin Cá Nhân”). Cụ thể, Cruebee thu thập và đã thu thập từ khách hàng các loại Thông Tin Cá Nhân sau: \n\n
+Dữ liệu chúng tôi thu thập\n\nBản Chính Sách này áp dụng đối với dữ liệu chúng tôi thu thập:\n
+    •   Trên Trang Web của chúng tôi;\n\n
+    •   Trong thư điện tử, văn bản và các trao đổi liên lạc điện tử khác giữa bạn và chúng tôi, bao gồm giữa bạn và Trang Web của chúng tôi, giữa bạn và Ứng Dụng Di Động cũng như giữa bạn và các trang truyền thông xã hội của chúng tôi;\n\n
+    •   Thông qua Ứng Dụng Di Động mà bạn tải xuống từ App Store hoặc Google Play;\n\n
+    •   Khi bạn đăng ký nhận khuyến mãi trực tuyến hoặc tham gia vào các chương trình có giải thưởng, chương trình trực tuyến, các khảo sát hoặc các giao dịch hoặc hoạt động khác;\n\n
+    •   Khi bạn sử dụng hoặc truy cập bất kỳ dịch vụ hoặc chương trình trực tuyến nào khác có đăng tải hoặc có liên kết với Điều Khoản Và Điều Kiện hoặc Chính Sách Bảo Vệ Dữ Liệu Cá Nhân của [Tên Công Ty];\n\n
+    •   Thông qua hoặc do việc bạn tiến vào bất kỳ cơ sở nào của chúng tôi hoặc có liên quan đến tổ chức kinh doanh của chúng tôi, hoặc việc tham dự một sự kiện do chúng tôi tổ chức hoặc chủ trì;\n\n
+    •   Do kết quả của bất kỳ hoạt động mua, bán hoặc giao dịch nào khác được thực hiện thông qua chúng tôi hoặc thông qua dịch vụ giao hàng của bên thứ ba;\n\n
+    •   Khi bạn đến các cửa hàng của chúng tôi hoặc sử dụng Đường Dây Nóng Giao Hàng hoặc đặt hàng qua điện thoại cố định của cửa hàng.\n\nBản Chính Sách này không áp dụng đối với thông tin được thu thập bởi bất kỳ bên thứ ba nào, kể cả thông qua bất kỳ ứng dụng hoặc nội dung nào (bao gồm cả hoạt động quảng cáo) có liên kết đến hoặc có thể truy cập được từ hoặc trên Trang Web của chúng tôi. \n\nChúng tôi thu thập thông tin có tính nhận dạng, liên quan đến, mô tả, tham chiếu, có khả năng được liên kết với hoặc có thể được liên kết một cách hợp lý, trực tiếp hoặc gián tiếp, với một khách hàng hoặc hộ gia đình cụ thể (“Thông Tin Cá Nhân”). Cụ thể, [Tên Công Ty] thu thập và đã thu thập từ khách hàng các loại Thông Tin Cá Nhân sau:\n\n
+    •   Thông tin nhận dạng cá nhân mà bạn cung cấp khi bạn cung cấp thông tin cho các đơn đặt hàng qua điện thoại cố định tại cửa hàng hoặc qua Đường Dây Nóng Giao Hàng hoặc đăng ký qua Trang Web hoặc Mobile App của chúng tôi, bao gồm họ và tên, bí danh, địa chỉ, địa chỉ hộp thư điện tử, số điện thoại, ngày sinh, giới tính, tên tài khoản hoặc bất kỳ thông tin nhận dạng cá nhân nào bạn cung cấp cho chúng tôi khi liên lạc với chúng tôi.\n\n
+    •   Thông tin giao dịch bạn cung cấp khi mua hàng từ chúng tôi, chẳng hạn như họ và tên, bí danh, địa chỉ, số điện thoại, địa chỉ hộp thư điện tử và thông tin thanh toán hoặc thông tin tài chính của bạn.\n\n
+    •   Thông tin tài chính bạn cung cấp cho việc thanh toán khi bạn mua hàng từ [Tên Công Ty], bao gồm thông qua Trang Web hoặc Mobile App của chúng tôi, chẳng hạn như số tài khoản ngân hàng, số thẻ ghi nợ và/hoặc số thẻ tín dụng, ví kỹ thuật số của bạn.\n\n
+    •   Bản lưu thông tin thương mại chẳng hạn như các thông tin hiện thời hoặc trước đây của bạn về các giao dịch tại điểm bán hàng và các lần mua sản phẩm từ chúng tôi.\n\n
+    •   Thông tin về kết nối, sử dụng và hoạt động trên mạng điện tử liên quan đến việc bạn và bất kỳ người nào mà bạn ủy quyền sử dụng Trang Web hoặc Mobile App của chúng tôi, bao gồm nội dung bạn xem, loại và thiết bị trình duyệt, số nhận dạng thiết bị độc nhất và/hoặc địa chỉ Giao Thức Internet (IP) và thông tin về các tương tác của bạn với Trang Web hoặc Ứng Dụng Di Động của chúng tôi.\n\n
+    •   Thông tin hoạt động trên Internet hoặc mạng điện tử khác, bao gồm nhưng không giới hạn ở địa chỉ IP, lịch sử duyệt web, lịch sử tìm kiếm, cookie, tập tin chỉ báo (web beacons), thẻ (tag), ngôn ngữ kịch bản (scripts), HTML5, số nhận dạng quảng cáo và các công nghệ tương tự, thông tin về tương tác của bạn với Trang Web hoặc Mobile App của chúng tôi và dữ liệu định vị địa lý.\n\nCruebee thu thập các loại Thông Tin Cá Nhân được liệt kê ở trên:\n\n
+    •   Trực tiếp từ bạn: Chúng tôi thu thập thông tin bạn cung cấp cho chúng tôi khi bạn hỏi về hàng hóa hoặc dịch vụ của chúng tôi; đăng ký với chúng tôi; đặt hàng; tham gia vào các chương trình có phần thưởng, chương trình trực tuyến, khảo sát hoặc các giao dịch hoặc hoạt động khác; thông qua thông tin lập hóa đơn và liên lạc mà bạn cung cấp cho chúng tôi; liên lạc hoặc tương tác với chúng tôi thông qua điện thoại, thư điện tử hoặc phương thức liên lạc điện tử khác; thông qua việc sử dụng Trang Web, Mobile App, các trang truyền thông xã hội của chúng tôi hoặc thông qua sự hiện diện trực tiếp.\n\n
+    •   Gián tiếp từ bạn: Chúng tôi thu thập thông tin từ bạn, hộ gia đình của bạn hoặc các thiết bị được liên kết với bạn hoặc hộ gia đình của bạn thông qua việc bạn sử dụng và hành động trên Trang Web, Mobile App, cookie liên tục (persistent cookies) trên Trang Web, Ứng Dụng Di Động của chúng tôi và phân tích của bên thứ ba đối với Trang Web, Mobile App của chúng tôi cũng như các nguồn thông tin có sẵn công khai.\n\nChúng tôi có thể sử dụng hoặc tiết lộ Dữ Liệu Cá Nhân (bao gồm cả Dữ Liệu Cá Nhân Nhạy Cảm) mà chúng tôi thu thập được cho một hoặc nhiều mục đích sau:\n\n
+    •   Để hoàn thành hoặc đáp ứng lý do bạn cung cấp thông tin.\n\n
+    •   Để có phương tiện liên lạc với bạn về các giao dịch với chúng tôi và gửi cho bạn thông tin hoặc yêu cầu phản hồi về các giao dịch mua của bạn, các dịch vụ của chúng tôi và các tính năng trên Trang Web và các ứng dụng di động của chúng tôi.\n\n
+    •   Để đăng ký cho bạn một tài khoản trên Dịch Vụ Trực Tuyến, bao gồm tài khoản Thưởng hoặc tài khoản chương trình khách hàng thân thiết khác, đồng thời quản lý và duy trì tài khoản của bạn.\n\n
+    •   Để quản lý các cuộc khảo sát, cuộc thi, rút thăm trúng thưởng hoặc các chương trình khuyến mãi khác thông qua Dịch vụ Trực tuyến của chúng tôi hoặc thông qua phương tiện truyền thông xã hội.\n\n
+    •   Để gửi cho bạn các ưu đãi và khuyến mãi đối với các sản phẩm và dịch vụ của chúng tôi. \n\n
+    •   Để cung cấp, hỗ trợ, cá nhân hóa và phát triển Trang Web, Mobile App, trang truyền thông xã hội, sản phẩm và dịch vụ của chúng tôi. \n\n
+Cruebee có thể chia sẻ Thông Tin Cá Nhân với các bên thứ ba được chọn, bao gồm các đối tác truyền thông xã hội, quảng cáo và phân tích, cho các dịch vụ liên quan đến tiếp thị. Chúng tôi có thể tiết lộ Thông Tin Cá Nhân của bạn, bao gồm địa chỉ thư điện tử của bạn, số điện thoại của bạn, cho các bên thứ ba để thực hiện các hoạt động tiếp thị số của chúng tôi, bao gồm cả mục đích quảng cáo có định hướng đối tượng và để đưa ra các nội dung cần liên lạc, các ưu đãi, khuyến mãi và/hoặc dịch vụ phù hợp với sở thích của bạn. Chúng tôi có thể đã tiết lộ một số loại Thông Tin Cá Nhân nhất định cho các bên thứ ba cung cấp các dịch vụ liên quan đến tiếp thị và quảng cáo cho Cruebee. \n\n
+Chúng tôi cũng có thể tiết lộ Thông Tin Cá Nhân cho các nhà cung cấp dịch vụ và nhà thầu đáng tin cậy của chúng tôi, các chủ thể này xử lý hoặc nhận thông tin để phụ vụ mục đích hoạt động của họ. Chúng tôi tiết lộ Thông Tin Cá Nhân cho các nhà cung cấp dịch vụ đó với mục đích có hạn chế và có quy định cụ thể là để cho phép họ thực hiện chức năng cung cấp dịch vụ của họ cho chúng tôi (bao gồm, nhưng không giới hạn, việc xử lý hoặc thực hiện các đơn đặt hàng và giao dịch của bạn, xác minh thông tin của bạn, xử lý các khoản thanh toán hoặc thay mặt chúng tôi cung cấp các dịch vụ tương tự). \n\n
+Ngoài ra, chúng tôi có thể tiết lộ thông tin không xác định danh tính hoặc đã tổng hợp (không xác định danh tính của bạn hoặc bất kỳ cá nhân nào khác) mà không bị hạn chế. Chúng tôi cũng có thể tiết lộ Thông Tin Cá Nhân cho các công ty liên kết, đại lý, người đại diện và người được nhượng quyền của chúng tôi để sử dụng cho bất kỳ mục đích nào được chỉ ra tại thời điểm chúng tôi thu thập thông tin đó. Chúng tôi cũng có thể tiết lộ Thông Tin Cá Nhân của bạn để (1) tuân thủ bất kỳ luật hoặc quy trình pháp lý nào, bao gồm cả việc đáp ứng mọi yêu cầu của chính quyền hoặc cơ quan quản lý nhà nước và/hoặc (2) nếu chúng tôi tin rằng việc tiết lộ là cần thiết hoặc phù hợp để bảo vệ quyền, tài sản, hoặc sự an toàn của Cruebee, người dùng và khách truy cập Trang Web và Mobile App của chúng tôi hoặc những người khác."
+                android:textSize="16sp" />
+
+            <!-- 3. Thời gian lưu trữ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="3. Bảo mật dữ liệu"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Sự an toàn, toàn vẹn và bảo mật thông tin cá nhân của bạn là vô cùng quan trọng đối với chúng tôi. Cruebee đã triển khai các biện pháp an ninh kỹ thuật và hành chính được thiết kế nhằm bảo vệ thông tin cá nhân khỏi bị truy cập, phá hủy, tiết lộ, sử dụng hoặc sửa đổi trái phép hoặc bất hợp pháp. Xin lưu ý rằng, bất chấp những nỗ lực tốt nhất của chúng tôi, không có biện pháp bảo mật nào là hoàn hảo hoặc không thể thâm nhập. \n\n
+Chúng tôi lưu trữ dữ liệu cá nhân của bạn tại máy chủ của nhà cung cấp dịch vụ CNTT chuyên nghiệp. Ngoài ra, chúng tôi sử dụng các biện pháp kỹ thuật để bảo vệ thông tin cá nhân của bạn như tường lửa, tài khoản quản trị. Chỉ có đội ngũ CNTT được cấp quyền truy cập vào hệ thống lưu trữ dữ liệu. \n\n
+Thông Tin Cá Nhân của bạn sẽ được lưu trữ cho đến khi bạn yêu cầu hủy bỏ hoặc bạn có thể đăng nhập và tự mình thực hiện việc hủy bỏ."
+                android:textSize="16sp" />
+
+            <!-- 4. Chia sẻ với bên thứ ba -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="4. Quyền và nghĩa vụ của bạn"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Là chủ thể dữ liệu, bạn có các quyền sau: (i) Quyền được biết; (ii) Quyền đồng ý; (iii) Quyền truy cập; (iv) Quyền rút lại sự đồng ý; (v) Quyền yêu cầu xóa dữ liệu; (vi) Quyền hạn chế xử lý dữ liệu; (vii) Quyền cung cấp dữ liệu; (viii) Quyền phản đối xử lý dữ liệu; (ix) Quyền khiếu nại, tố cáo, khởi kiện; (x) Quyền yêu cầu bồi thường thiệt hại; (xi) Quyền tự bảo vệ và các quyền khác có liên quan theo quy định của pháp luật. \n\n
+Trong phạm vi pháp luật cho phép, bạn có thể thực hiện các quyền của mình bằng cách liên hệ với Cruebee qua thông tin được nêu chi tiết trong Mục 6 bên dưới. Cruebee sẽ thực hiện yêu cầu hợp pháp và hợp lệ từ bạn trong vòng 72 giờ kể từ ngày nhận được yêu cầu hợp lệ từ bạn. Trong trường hợp bạn rút lại sự đồng ý của mình đối với việc xử lý dữ liệu cá nhân, hãy yêu cầu xóa dữ liệu và/hoặc thực hiện các quyền liên quan khác đối với bất kỳ hoặc tất cả dữ liệu cá nhân của mình. Tùy thuộc vào bản chất yêu cầu của bạn, Cruebee có thể xem xét và quyết định ngừng cung cấp dịch vụ của chúng tôi cho bạn. Cruebee sẽ không chịu trách nhiệm với bạn về bất kỳ tổn thất nào phát sinh từ trường hợp này. Cruebee dựa vào dữ liệu cá nhân của bạn để cung cấp các sản phẩm và dịch vụ cho bạn, do đó bạn cần đảm bảo rằng tại mọi thời điểm, thông tin bạn cung cấp cho Cruebee là đúng, chính xác và đầy đủ. Bạn cần cập nhật kịp thời mọi thay đổi đối với thông tin đã cung cấp cho Cruebee. Bạn có các nghĩa vụ như được liệt kê dưới đây trong việc bảo vệ dữ liệu cá nhân của chính bạn và của các cá nhân khác: \n\n
+    •   Bảo vệ dữ liệu cá nhân của riêng bạn; yêu cầu tổ chức, cá nhân khác có liên quan bảo vệ dữ liệu cá nhân của mình. \n\n
+    •   Tôn trọng và bảo vệ dữ liệu cá nhân của người khác. \n\n
+    •   Cung cấp dữ liệu cá nhân đầy đủ và chính xác khi đồng ý cho phép xử lý dữ liệu cá nhân. \n\n
+    •   Tham gia tuyên truyền, phổ biến kỹ năng bảo vệ dữ liệu cá nhân. \n\n
+    •   Trong trường hợp bạn đã cung cấp dữ liệu cá nhân của các cá nhân khác cho chúng tôi, bạn phải đảm bảo rằng bạn đã nhận được sự đồng ý hoặc ủy quyền hợp lệ của những cá nhân này trước khi bạn cung cấp dữ liệu cá nhân của họ cho chúng tôi."
+                android:textSize="16sp" />
+
+            <!-- 5. Quyền và lựa chọn của người dùng -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="5. Sửa đổi, bổ sung Chính Sách này"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Chính Sách này có thể được Cruebee sửa đổi và bổ sung tùy từng thời điểm. Thông báo sửa đổi, bổ sung sẽ được Cruebee đăng tải trên trang web của Cruebee (https://Cruebee.com.vn/) và/hoặc các phương thức khác mà Cruebee cho là phù hợp. "
+                android:textSize="16sp" />
+
+            <!-- 6. Thay đổi chính sách -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="6. Liên hệ với Cruebee"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Nếu bạn có bất kỳ câu hỏi nào liên quan đến Chính Sách này hoặc việc Cruebee xử lý dữ liệu cá nhân của bạn, bạn có thể liên hệ với chúng tôi theo thông tin sau: \n\n
+    •   Hotline:19001533 \n\n
+    •   E-mail: nhunguyetpy206@gmail.com"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
