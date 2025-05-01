@@ -66,15 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Cách 1: Thanh toán trực tiếp tại nơi giao hàng: \n
-Sau khi đặt hàng, nhân viên giao hàng của Cruebee Việt Nam sẽ thông báo cho khách hàng về việc giao hàng. Khách hàng vui lòng thanh toán bằng tiền mặt Việt Nam đồng (VNĐ) tại nơi giao hàng, người giao hàng sẽ cung cấp hóa đơn bán hàng hợp lệ sau khi khách hàng kiểm tra đơn
-hàng. \n
-Cách 2: Thanh toán trực tuyến bằng ZaloPay \n
-Bước 1: Khách hàng chọn địa điểm, chọn món \n
-Bước 2: Khách hàng đặt hàng; nhập thông tin vận chuyển \n
-Bước 3: Khách hàng thanh toán bằng hình thức ZaloPay và nhấn 'Xác nhận' hoàn tất đặt hàng \n
-Bước 4: Cruebee Việt Nam xác nhận thông tin Khách hàng và giao hàng \n
-Sau khi đặt hàng, nhân viên giao hàng của Cruebee Việt Nam sẽ thông báo cho khách hàng về việc giao hàng. Tại nơi giao hàng, người giao hàng sẽ cung cấp hóa đơn bán hàng hợp lệ sau khi khách hàng kiểm tra đơn hàng."
+                android:text="@string/doc_order"
                 android:textSize="16sp" />
 
             <!-- 2. Hoạt động xử lý dữ liệu cá nhân -->
@@ -91,10 +83,7 @@ Sau khi đặt hàng, nhân viên giao hàng của Cruebee Việt Nam sẽ thôn
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Hệ thống thanh toán thẻ được cung cấp bởi các đối tác cổng thanh toán ('Đối tác Cổng thanh toán') đã được cấp phép hoạt động hợp pháp tại Việt Nam. \n
-Khách hàng không nên đưa thông tin chi tiết về việc thanh toán với bất kỳ ai bằng email hoặc hình thức liên lac khác, Cruebee Việt Nam không chịu trách nhiệm về những thiệt hai hay rủi ro thành viên có thể gánh chiu trong việc trao đổi thông tin của mình với người khác. \n
-Khách hàng tuyệt đối không sử dụng bất kỳ chương trình, công cụ hay hình thức nào khác để can thiệp vào hệ thống hay làm thay đổi cấu trúc dữ liệu. Nghiêm cấm việc phát tán, truyền bá hay cổ vũ cho bất kỳ hoạt đông nào nhằm can thiệp, phá hoại hay xâm của hệ thống ứng dụng. Mọi vi phạm sẽ bị xử lý theo Quy chế và quy định của pháp luật. \n
-Mọi thông tin giao dịch được bảo mật, trừ trường hợp buộc phải cung cấp khi Cơ quan pháp luật yêu cầu."
+                android:text="@string/doc_payment"
                 android:textSize="16sp" />
 
         </LinearLayout>

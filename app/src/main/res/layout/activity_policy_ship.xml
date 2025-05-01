@@ -67,14 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Nhân viên của Cruebee Việt Nam tiếp nhận đơn hàng, xác nhận đơn đặt hàng và giao hàng trong thời gian cụ thể như bên dưới tính từ thời điểm tiếp nhận đơn hàng: \n
- + Phạm vi giao hàng bằng hoặc dưới 3km, thời gian giao hàng trong vòng 30 phút, cho các đơn hàng có giá trị từ 60.000 VNĐ trở lên \n
- + Phạm vi giao hàng trên hoặc bằng 3km đến dưới 5km, thời gian giao hàng trong vòng 45 phút, cho các đơn hàng có giá tri từ 100.000 VNĐ trở lên \n
- + Pham vi giao hàng trên hoặc bằng 5km đến dưới hoặc bằng 8km, thời gian giao hàng trong vòng 60 phút, cho các đơn hàng có giá trị từ 150.000 VNĐ trở lên \n
-* Lưu ý: Khi đặt hàng trên ứng dụng Cruebee Việt Nam, Khách hàng hiểu và chấp nhân các điều kiên/ lưu ý sau: \n
- - Cruebee Việt Nam chỉ tiếp nhân đơn hàng trực tuyến từ 09:00 sáng đến 21:00 tối. \n
- - Cruebee Việt Nam chỉ tiếp nhận đơn hàng có tổng giá tối thiểu 60.000 VNĐ.
-"
+                android:text="@string/shipping_info"
                 android:textSize="16sp" />
 
             <!-- 2. Hoạt động xử lý dữ liệu cá nhân -->
@@ -91,9 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Sau khi hoàn thành việc đặt hàng trực tuyến trên ứng dụng Cruebee Việt Nam, hệ thống sẽ tự động cập nhật tình trạng đơn hàng trên ứng dụng. \n
-Trong vòng 5 phút, nhân viên trực tổng đài của Cruebee Việt Nam sẽ xử lý, hoàn thành các thủ tục đặt hàng. \n
-Trong hầu hết trường hợp, khách hàng sẽ theo dõi được tình trạng của đơn hàng, thời gian nhận hàng dự kiến."
+                android:text="@string/shipping_info_2"
                 android:textSize="16sp" />
 
             <TextView
