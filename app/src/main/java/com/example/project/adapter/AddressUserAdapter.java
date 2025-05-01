@@ -2,7 +2,6 @@ package com.example.project.adapter;
 
 import static android.view.View.VISIBLE;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;

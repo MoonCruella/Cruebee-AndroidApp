@@ -1,7 +1,5 @@
 package com.example.project;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,27 +10,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleyHelper;
-import com.example.project.volley.VolleySingleton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EditAccountActivity extends AppCompatActivity {
     private TextInputEditText sdtTxt,usernameTxt,emailTxt;
@@ -40,7 +29,6 @@ public class EditAccountActivity extends AppCompatActivity {
     private TextView saveTxt;
     private TinyDB tinyDB;
     private String token;
-    private RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +49,6 @@ public class EditAccountActivity extends AppCompatActivity {
         tinyDB = new TinyDB(this);
         token = tinyDB.getString("token");
         Log.d("TOKEN",token);
-        requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
         List<String> genderList = Arrays.asList("Nam", "Nữ", "Khác");
 
         // Tạo Adapter cho dropdown
@@ -111,7 +98,6 @@ public class EditAccountActivity extends AppCompatActivity {
                 requestBody,
                 true,
                 response -> {
-                    Log.d("UpdateUser", "Response: " + response);
                     Toast.makeText(this, "Cập nhật tài khoản thành công!", Toast.LENGTH_SHORT).show();
                 },
                 error -> {

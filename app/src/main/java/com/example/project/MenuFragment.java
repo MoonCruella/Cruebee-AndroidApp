@@ -1,54 +1,54 @@
-    package com.example.project;
+package com.example.project;
 
-    import android.os.Bundle;
-    import android.util.DisplayMetrics;
-    import android.view.LayoutInflater;
-    import android.view.View;
-    import android.view.ViewGroup;
-    import android.widget.Toast;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
-    import androidx.annotation.NonNull;
-    import androidx.annotation.Nullable;
-    import androidx.fragment.app.Fragment;
-    import androidx.recyclerview.widget.DividerItemDecoration;
-    import androidx.recyclerview.widget.LinearLayoutManager;
-    import androidx.recyclerview.widget.LinearSmoothScroller;
-    import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.RecyclerView;
 
-    import com.android.volley.Request;
-    import com.android.volley.RequestQueue;
-    import com.android.volley.Response;
-    import com.android.volley.VolleyError;
-    import com.android.volley.toolbox.JsonArrayRequest;
-    import com.example.project.adapter.CategoryListAdapter;
-    import com.example.project.interfaces.OnCategoryScrollListener;
-    import com.example.project.interfaces.OnFragmentSwitchListener;
-    import com.example.project.interfaces.OnItemClickListener;
-    import com.example.project.model.Category;
-    import com.example.project.adapter.CategoryAdapter;
-    import com.example.project.model.Food;
-    import com.example.project.utils.UrlUtil;
-    import com.example.project.volley.VolleySingleton;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.example.project.adapter.CategoryListAdapter;
+import com.example.project.interfaces.OnCategoryScrollListener;
+import com.example.project.interfaces.OnFragmentSwitchListener;
+import com.example.project.interfaces.OnItemClickListener;
+import com.example.project.model.Category;
+import com.example.project.adapter.CategoryAdapter;
+import com.example.project.model.Food;
+import com.example.project.utils.UrlUtil;
+import com.example.project.volley.VolleySingleton;
 
-    import org.json.JSONArray;
-    import org.json.JSONException;
-    import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    import java.util.ArrayList;
-    import java.util.LinkedHashMap;
-    import java.util.List;
-    import java.util.Map;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
     public class MenuFragment extends Fragment {
         private RecyclerView recyclerViewCategory;
         private RecyclerView recyclerView;
         private RequestQueue requestQueue;
-        CategoryListAdapter itemAdapter;
+        private CategoryListAdapter itemAdapter;
         private List<Food> foodList;
         private List<Category> categoryList1;
         private OnFragmentSwitchListener listener;
         private List<Category> categoryList;
-        CategoryAdapter adapter;
+        private CategoryAdapter adapter;
         private Map<Integer, Category> categoryMap = new LinkedHashMap<>();
         private int position;
         private int totalCategories = 0; // ??m t?ng s? danh m?c c?n t?i
@@ -91,7 +91,6 @@
 
         public void fetchCategoryList() {
 
-            // Fetch all categories
             String url = UrlUtil.ADDRESS + "categories";
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                 @Override
@@ -107,6 +106,7 @@
                             Category category = new Category(id, name, image);
                             categoryList1.add(category);
                             categoryMap.put(id, new Category(name, new ArrayList<>()));
+
                             // Tien hanh fetch cac san pham thuoc category nay
                             fetchFoodByCategoryId(id, name);
 
@@ -129,12 +129,9 @@
                                         return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
                                     }
                                 };
-                                // Set the target position to scroll to
+
                                 smoothScroller.setTargetPosition(position);
-
-                                // Smoothly scroll to the position
                                 layoutManager.startSmoothScroll(smoothScroller);
-
                                 LinearLayoutManager layoutManagerCate = (LinearLayoutManager) recyclerViewCategory.getLayoutManager();
                                 LinearSmoothScroller smoothScrollerCate = new LinearSmoothScroller(recyclerViewCategory.getContext()) {
                                     @Override
@@ -143,10 +140,7 @@
                                     }
                                 };
 
-                                // Set the target position to scroll to
                                 smoothScrollerCate.setTargetPosition(position);
-
-                                // Smoothly scroll to the position
                                 layoutManagerCate.startSmoothScroll(smoothScrollerCate);
                             }
                         });
@@ -165,7 +159,6 @@
 
         public void fetchFoodByCategoryId(final int categoryId, final String categoryName) {
 
-            // Fetch all products
             String url = UrlUtil.ADDRESS + "products/" + categoryId;
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                 @Override
@@ -226,11 +219,7 @@
                                     return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
                                 }
                             };
-
-                            // Set the target position to scroll to
                             smoothScrollerCate.setTargetPosition(position);
-
-                            // Smoothly scroll to the position
                             layoutManagerCate.startSmoothScroll(smoothScrollerCate);
                         }
                     }

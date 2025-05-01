@@ -5,17 +5,12 @@ import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -24,7 +19,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -37,24 +31,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
-import com.example.project.model.Address;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
-import com.google.gson.JsonObject;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
-import eightbitlab.com.blurview.BlurView;
-import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText email, password;
@@ -122,12 +108,12 @@ public class LoginActivity extends AppCompatActivity {
         password.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Thực hiện hành động nếu cần trước khi text thay đổi
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Bạn có thể cập nhật giao diện khi text thay đổi nếu cần
+
             }
 
             @Override
@@ -166,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Bạn có thể cập nhật giao diện khi text thay đổi nếu cần
+
             }
 
             @Override
@@ -189,6 +175,7 @@ public class LoginActivity extends AppCompatActivity {
         email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+
                 // Khi mất focus (người dùng rời khỏi ô nhập)
                 if (!hasFocus) {
                     String input = email.getText().toString().trim();
@@ -241,7 +228,6 @@ public class LoginActivity extends AppCompatActivity {
                                 String refresh_token = jsonResponse.getString("refresh_token");
                                 JSONObject user = jsonResponse.getJSONObject("user");
 
-                                // Store the token in SharedPreferences for future use
                                 tinyDB.putString("token",token);
                                 tinyDB.putString("refresh_token",refresh_token);
                                 username = user.getString("username");
@@ -277,7 +263,7 @@ public class LoginActivity extends AppCompatActivity {
         ){
             @Override
             public byte[] getBody() throws AuthFailureError {
-                // Create a JSONObject and put data into it
+
                 JSONObject jsonBody = new JSONObject();
                 try {
                     jsonBody.put("email", email1);
@@ -286,7 +272,6 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                // Return the byte[] of the JSON string
                 return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
             }
 

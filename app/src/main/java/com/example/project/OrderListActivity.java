@@ -17,15 +17,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
-import com.example.project.adapter.AddressUserAdapter;
 import com.example.project.adapter.PaymentListAdapter;
 import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
 
-import com.example.project.model.Address;
 import com.example.project.model.AddressShop;
 import com.example.project.model.Food;
 import com.example.project.model.Payment;
@@ -39,19 +36,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class OrderListActivity extends AppCompatActivity {
-    TinyDB tinyDB;
+    private TinyDB tinyDB;
     private RecyclerView recyclerView;
     private PaymentListAdapter paymentListAdapter;
-    List<Payment> payments;
+    private List<Payment> payments;
     private RequestQueue requestQueue;
 
     @Override
@@ -75,8 +68,8 @@ public class OrderListActivity extends AppCompatActivity {
     }
 
     private void getPayment() {
-        String url = "";
-        int userId = 0;
+        String url;
+        int userId;
         if(tinyDB.getBoolean("is_logged_in")){
             User savedUser = tinyDB.getObject("savedUser", User.class);
             userId = savedUser.getId();
@@ -92,74 +85,59 @@ public class OrderListActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET,
                 url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            Log.d("FULL_RESPONSE", response);
-                            payments.clear();
-                            // Parse the response manually
-                            JSONArray jsonArray = new JSONArray(response);
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+                response -> {
+                    try {
+                        Log.d("FULL_RESPONSE", response);
+                        payments.clear();
+                        JSONArray jsonArray = new JSONArray(response);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject payment = jsonArray.getJSONObject(i);
+                            JSONObject shop = payment.getJSONObject("shop");
+                            AddressShop addressShop = new AddressShop(shop.getString("name"));
+                            String addressUser = payment.getString("addressUser");
+                            String fullname = payment.getString("fullName");
+                            Long totalprice = payment.getLong("totalPrice");
+                            Boolean utensils = payment.getBoolean("utensils");
+                            String sdt = payment.getString("sdt");
+                            String note = payment.getString("note");
+                            String status = payment.getString("status");
+                            String orDate = payment.getString("orderDate");
+                            LocalDateTime orderDate = parseTime(orDate);
+                            String method = payment.getString("paymentMethod");
+                            JSONArray productsArray = payment.getJSONArray("products");
+                            List<PaymentProduct> productList = new ArrayList<>();
 
-                            // Iterate through the JSON array
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject payment = jsonArray.getJSONObject(i);
-
-                                // Extract shop details
-                                int id = payment.getInt("id");
-                                JSONObject shop = payment.getJSONObject("shop");
-                                AddressShop addressShop = new AddressShop(shop.getString("name"));
-                                String addressUser = payment.getString("addressUser");
-                                String fullname = payment.getString("fullName");
-                                Long totalprice = payment.getLong("totalPrice");
-                                Boolean utensils = payment.getBoolean("utensils");
-                                String sdt = payment.getString("sdt");
-                                String note = payment.getString("note");
-                                String status = payment.getString("status");
-                                String orDate = payment.getString("orderDate");
-                                LocalDateTime orderDate = parseTime(orDate);
-                                String method = payment.getString("paymentMethod");
-                                JSONArray productsArray = payment.getJSONArray("products");
-                                List<PaymentProduct> productList = new ArrayList<>();
-
-                                for (int j = 0; j < productsArray.length(); j++) {
-                                    JSONObject productObj = productsArray.getJSONObject(j);
-                                    JSONObject jsonObject = productObj.getJSONObject("product");
-                                    int productId = jsonObject.getInt("id");
-                                    String name = jsonObject.getString("name");
-                                    int price = jsonObject.getInt("price");
-                                    String imageId = jsonObject.getString("attachmentId");
-                                    String image = UrlUtil.ADDRESS + "download/" + imageId;
-                                    String des = jsonObject.isNull("description") ? "" : jsonObject.getString("description");
-                                    int soldCount = jsonObject.getInt("soldCount");
-                                    int quantity = productObj.getInt("quantity");
-                                    Food food =new Food(id, name, price, image,soldCount, des);
-                                    PaymentProduct product = new PaymentProduct(food, quantity);
-                                    productList.add(product);
-                                }
-                                Log.d("productlist",productList.toString());
-                                User user = new User(finalUserId);
-                                Payment payment1 = new Payment(user, addressUser, addressShop, fullname, sdt, note, utensils, totalprice, orderDate,productList,method,status);
-                                payments.add(payment1);
+                            for (int j = 0; j < productsArray.length(); j++) {
+                                JSONObject productObj = productsArray.getJSONObject(j);
+                                JSONObject jsonObject = productObj.getJSONObject("product");
+                                int productId = jsonObject.getInt("id");
+                                String name = jsonObject.getString("name");
+                                int price = jsonObject.getInt("price");
+                                String imageId = jsonObject.getString("attachmentId");
+                                String image = UrlUtil.ADDRESS + "download/" + imageId;
+                                String des = jsonObject.isNull("description") ? "" : jsonObject.getString("description");
+                                int soldCount = jsonObject.getInt("soldCount");
+                                int quantity = productObj.getInt("quantity");
+                                Food food =new Food(productId, name, price, image,soldCount, des);
+                                PaymentProduct product = new PaymentProduct(food, quantity);
+                                productList.add(product);
                             }
-                            // Cập nhật adapter cho RecyclerView
-                            paymentListAdapter = new PaymentListAdapter(OrderListActivity.this, payments);
-                            recyclerView.setAdapter(paymentListAdapter);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.e("JSON_ERROR", "Invalid JSON response: " + response);
-                            Toast.makeText(OrderListActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
-
+                            User user = new User(finalUserId);
+                            Payment payment1 = new Payment(user, addressUser, addressShop, fullname, sdt, note, utensils, totalprice, orderDate,productList,method,status);
+                            payments.add(payment1);
                         }
+
+                        // Cập nhật adapter cho RecyclerView
+                        paymentListAdapter = new PaymentListAdapter(OrderListActivity.this, payments);
+                        recyclerView.setAdapter(paymentListAdapter);
+
+                    } catch (JSONException e) {
+                        Toast.makeText(OrderListActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                error -> {
 
-                    }
                 }
         ) {
             @Override
@@ -189,7 +167,6 @@ public class OrderListActivity extends AppCompatActivity {
         int second = Integer.parseInt(parts[5]);
         int nano = Integer.parseInt(parts[6]);
 
-        LocalDateTime receiveTime = LocalDateTime.of(year, month, day, hour, minute, second, nano);
-        return receiveTime;
+        return LocalDateTime.of(year, month, day, hour, minute, second, nano);
     }
 }

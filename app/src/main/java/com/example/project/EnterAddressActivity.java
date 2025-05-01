@@ -1,7 +1,7 @@
 package com.example.project;
 
 import android.Manifest;
-import android.app.ProgressDialog;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -15,6 +15,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -22,27 +23,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.adapter.AddressAdapter;
 import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
-import com.example.project.utils.UrlUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -52,24 +44,24 @@ import java.util.Locale;
 
 public class EnterAddressActivity extends AppCompatActivity {
 
-    EditText edtAddress,edtHouseNumber, edtStreet, edtWard, edtDistrict, edtProvince;
-    ListView listView;
-    String selectedAddress;
-    Double lng,lat;
-
-    ProgressBar progressBar;
-    private ProgressDialog progressDialog;
-    TinyDB tinyDB;
+    private EditText edtAddress,edtHouseNumber, edtStreet, edtWard, edtDistrict, edtProvince;
+    private ImageView clearTextBtn;
+    private ListView listView;
+    private String selectedAddress;
+    private Double lng,lat;
+    private ProgressBar progressBar;
+    private TinyDB tinyDB;
     private FusedLocationProviderClient fusedLocationClient;
-    AddressAdapter addressAdapter;
-    List<String> addressList = new ArrayList<>();
-    RequestQueue requestQueue;
-    List<JSONObject> addressJsonList = new ArrayList<>();
-    LinearLayout addressForm;
-    TextView btnSave,txtAccessAddress;
+    private AddressAdapter addressAdapter;
+    private List<String> addressList = new ArrayList<>();
+    private RequestQueue requestQueue;
+    private List<JSONObject> addressJsonList = new ArrayList<>();
+    private LinearLayout addressForm;
+    private TextView btnSave,txtAccessAddress;
 
     com.example.project.model.Address address;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +77,7 @@ public class EnterAddressActivity extends AppCompatActivity {
         edtWard = findViewById(R.id.edtWard);
         edtStreet = findViewById(R.id.edtStreet);
         edtDistrict = findViewById(R.id.edtDistrict);
+        clearTextBtn = findViewById(R.id.clearTextBtn);
         edtProvince = findViewById(R.id.edtProvince);
         btnSave = findViewById(R.id.btnOk);
         progressBar = findViewById(R.id.progressBar);
@@ -107,6 +100,17 @@ public class EnterAddressActivity extends AppCompatActivity {
         edtAddress.setOnClickListener(v -> {
             addressForm.setVisibility(View.GONE); // Ẩn form nhập địa chỉ
             listView.setVisibility(View.VISIBLE); // Hiển thị danh sách gợi ý
+        });
+
+        clearTextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                edtAddress.setText("");
+                addressForm.setVisibility(View.GONE); // Ẩn form nhập địa chỉ
+                addressList.clear();
+                addressAdapter.notifyDataSetChanged();
+                listView.setVisibility(View.VISIBLE); // Hiển thị danh sách gợi ý
+            }
         });
 
 
@@ -135,12 +139,10 @@ public class EnterAddressActivity extends AppCompatActivity {
             try {
                 JSONObject selectedJson = addressJsonList.get(position);
                 JSONObject addressDetails = selectedJson.getJSONObject("address");
+
                 // Lấy thông tin latitude và longitude từ đối tượng JSON
                 double latitude = selectedJson.getDouble("lat");
                 double longitude = selectedJson.getDouble("lon");
-                // In ra log để kiểm tra
-                Log.d("Coordinates", "Latitude: " + latitude + ", Longitude: " + longitude);
-                Log.d("Address" , addressDetails.toString());
 
                 // Lấy từng phần của địa chỉ
                 String houseNumber = addressDetails.optString("aeroway", "");// Số nhà

@@ -1,18 +1,12 @@
 package com.example.project;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,11 +19,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
-import com.example.project.adapter.AddressShopAdapter;
 import com.example.project.adapter.AddressUserAdapter;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.Address;
-import com.example.project.model.AddressShop;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
@@ -44,11 +36,10 @@ import java.util.List;
 
 public class DeliveryAddressActivity extends AppCompatActivity {
 
-    TinyDB tinyDB;
+    private TinyDB tinyDB;
     private RecyclerView recyclerView;
     private AddressUserAdapter adapter;
-
-    List<Address> addresses;
+     private List<Address> addresses;
     private RequestQueue requestQueue;
     private TextView addAddressBtn;
     private User user;
@@ -105,14 +96,10 @@ public class DeliveryAddressActivity extends AppCompatActivity {
                         try {
 
                             addresses.clear();
-                            // Parse the response manually
                             JSONArray jsonArray = new JSONArray(response);
 
-                            // Iterate through the JSON array
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject address = jsonArray.getJSONObject(i);
-
-                                // Extract shop details
                                 int id = address.getInt("id");
                                 int isPrimary = address.getInt("isPrimary");
                                 String addressDetails = address.getString("addressDetails");
@@ -125,6 +112,7 @@ public class DeliveryAddressActivity extends AppCompatActivity {
                                 Log.d("ADDRESS",address1.toString());
                                 addresses.add(address1);
                             }
+
                             // Cập nhật adapter cho RecyclerView
                             adapter = new AddressUserAdapter(DeliveryAddressActivity.this,addresses);
                             recyclerView.setAdapter(adapter);

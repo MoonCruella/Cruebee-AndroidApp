@@ -2,32 +2,23 @@ package com.example.project.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.project.R;
 import com.example.project.ShowDetailActivity;
-import com.example.project.model.Category;
 import com.example.project.model.Food;
-
 import java.text.DecimalFormat;
 import java.util.List;
 
 public class RcmFoodAdapter extends RecyclerView.Adapter<RcmFoodAdapter.FoodViewHolder> {
     private List<Food> foodList;
     private Context context;
-
-    private AdapterView.OnItemClickListener listener;
-
 
     public RcmFoodAdapter(Context context,List<Food> foodList) {
         this.context = context;

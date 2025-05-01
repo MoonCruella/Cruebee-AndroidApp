@@ -28,12 +28,14 @@ public class StringHelper {
         return password.matches(PASSWORD_REGEXP);
     }
     public static String getSubstringBetween(String str, char startChar, char endChar) {
+
         // Tìm vị trí của ký tự bắt đầu và kết thúc
         int startIndex = str.indexOf(startChar);
         int endIndex = str.indexOf(endChar, startIndex + 1);
 
         // Kiểm tra nếu tìm thấy cả hai ký tự
         if (startIndex != -1 && endIndex != -1) {
+
             // Cắt chuỗi từ startChar đến endChar
             return str.substring(startIndex + 1, endIndex).trim();
         } else {
@@ -41,6 +43,7 @@ public class StringHelper {
         }
     }
     public static String createPaymentIdsQuery(ArrayList<Integer> paymentIds) {
+
         // Sử dụng stream để tạo chuỗi theo định dạng "paymentIds=1&paymentIds=2&paymentIds=3"
         return paymentIds.stream()
                 .map(id -> "paymentIds=" + id)  // Tạo chuỗi "paymentIds=ID"

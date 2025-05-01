@@ -1,14 +1,11 @@
 package com.example.project;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,12 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.User;
@@ -34,17 +26,12 @@ import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ChangePwdActivity extends AppCompatActivity {
 
     private TextInputEditText edtPassword,newPassword,cfPassword;
     private TextView tvError, tvError2, tvError3,savePw;
     private TinyDB tinyDB;
-    private String token;
-    private RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +44,6 @@ public class ChangePwdActivity extends AppCompatActivity {
             v.setPadding(0, 0, 0, navBarInsets.bottom); // đẩy layout lên khỏi nav bar
             return insets;
         });
-        requestQueue = Volley.newRequestQueue(this);
         edtPassword = findViewById(R.id.edtPassword);
         newPassword = findViewById(R.id.newPassword);
         cfPassword = findViewById(R.id.cfPassword);
@@ -66,7 +52,6 @@ public class ChangePwdActivity extends AppCompatActivity {
         tvError3 = findViewById(R.id.tvError3);
         savePw = findViewById(R.id.savePw);
         tinyDB = new TinyDB(this);
-        token = tinyDB.getString("token");
 
         edtPassword.addTextChangedListener(new TextWatcher() {
             @Override
@@ -257,7 +242,6 @@ public class ChangePwdActivity extends AppCompatActivity {
                     }
                 },
                 error -> {
-                    Log.e("UpdatePassword", "Lỗi: " + error.toString());
                     Toast.makeText(this, "Lỗi cập nhật: " + "Sai mật khẩu", Toast.LENGTH_SHORT).show();
                 }
         );
