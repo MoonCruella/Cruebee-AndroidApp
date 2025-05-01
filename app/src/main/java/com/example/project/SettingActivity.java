@@ -1,23 +1,15 @@
 package com.example.project;
 
 import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.Manifest;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 
 import com.example.project.helpers.TinyDB;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import android.content.Intent;
-import android.net.Uri;
 import android.provider.Settings;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -31,32 +23,22 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
-            getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        }
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         // Ánh xạ
         switchNotification = findViewById(R.id.switch_notification);
         changeLanguBtn = findViewById(R.id.changeLanguBtn);
         btn_login = findViewById(R.id.btn_login);
 
-        btn_login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TinyDB tinyDB = new TinyDB(SettingActivity.this);
-                tinyDB.remove("addressShop");
-                startActivity(new Intent(SettingActivity.this,LoginActivity.class));
-            }
+        btn_login.setOnClickListener(v -> {
+            TinyDB tinyDB = new TinyDB(SettingActivity.this);
+            tinyDB.remove("addressShop");
+            startActivity(new Intent(SettingActivity.this,LoginActivity.class));
         });
 
-        changeLanguBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SettingActivity.this,ChangeLanguageActivity.class));
-            }
-        });
+        changeLanguBtn.setOnClickListener(v -> startActivity(new Intent(SettingActivity.this,ChangeLanguageActivity.class)));
 
 
         // Cập nhật trạng thái switch khi mở app
@@ -78,13 +60,8 @@ public class SettingActivity extends AppCompatActivity {
 
     private void openNotificationSettings() {
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-        } else {
-            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-        }
+        intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

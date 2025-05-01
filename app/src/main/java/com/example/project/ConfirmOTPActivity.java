@@ -2,7 +2,6 @@ package com.example.project;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
@@ -39,7 +37,6 @@ import com.example.project.volley.VolleySingleton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,7 +93,6 @@ public class ConfirmOTPActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            // Parse the JSON response from the backend
                             JSONObject jsonResponse = new JSONObject(response);
                             String mess = jsonResponse.getString("message");
                             if(mess.equals("OTP verified. You can login.")){

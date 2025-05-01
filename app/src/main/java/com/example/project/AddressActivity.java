@@ -1,8 +1,7 @@
 package com.example.project;
 
-import static android.widget.Toast.LENGTH_LONG;
-
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,6 +16,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -56,6 +55,7 @@ import java.util.Locale;
 public class AddressActivity extends AppCompatActivity {
 
     private EditText edtAddress,edtHouseNumber, edtStreet, edtWard, edtDistrict, edtProvince;
+    private ImageView clearTextBtn;
     private ListView listView;
     private String selectedAddress;
     private Double lng,lat;
@@ -71,6 +71,7 @@ public class AddressActivity extends AppCompatActivity {
     private LinearLayout addressForm;
     private TextView btnSave,txtAccessAddress;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +87,7 @@ public class AddressActivity extends AppCompatActivity {
         edtWard = findViewById(R.id.edtWard);
         edtStreet = findViewById(R.id.edtStreet);
         edtDistrict = findViewById(R.id.edtDistrict);
+        clearTextBtn = findViewById(R.id.clearTextBtn);
         edtProvince = findViewById(R.id.edtProvince);
         btnSave = findViewById(R.id.btnOk);
         progressBar = findViewById(R.id.progressBar);
@@ -108,6 +110,16 @@ public class AddressActivity extends AppCompatActivity {
             listView.setVisibility(View.VISIBLE); // Hiển thị danh sách gợi ý
         });
 
+        clearTextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                edtAddress.setText("");
+                addressForm.setVisibility(View.GONE); // Ẩn form nhập địa chỉ
+                addressList.clear();
+                addressAdapter.notifyDataSetChanged();
+                listView.setVisibility(View.VISIBLE); // Hiển thị danh sách gợi ý
+            }
+        });
 
         Handler handler = new Handler();
         final Runnable[] searchRunnable = {null};
@@ -121,6 +133,8 @@ public class AddressActivity extends AppCompatActivity {
                 if (s.length() > 2) { // Chỉ tìm kiếm khi nhập từ 3 ký tự trở lên
                     if (searchRunnable[0] != null) {
                         handler.removeCallbacks(searchRunnable[0]);
+                        addressForm.setVisibility(View.GONE); // Ẩn form nhập địa chỉ
+                        listView.setVisibility(View.VISIBLE); // Hiển thị danh sách gợi ý
                     }
                     searchRunnable[0] = () -> fetchAddresses(s.toString());
                     handler.postDelayed(searchRunnable[0], 500); // Đợi 500ms rồi gọi API
@@ -134,12 +148,10 @@ public class AddressActivity extends AppCompatActivity {
             try {
                 JSONObject selectedJson = addressJsonList.get(position);
                 JSONObject addressDetails = selectedJson.getJSONObject("address");
+
                 // Lấy thông tin latitude và longitude từ đối tượng JSON
                 double latitude = selectedJson.getDouble("lat");
                 double longitude = selectedJson.getDouble("lon");
-                // In ra log để kiểm tra
-                Log.d("Coordinates", "Latitude: " + latitude + ", Longitude: " + longitude);
-                Log.d("Address" , addressDetails.toString());
 
                 // Lấy từng phần của địa chỉ
                 String houseNumber = addressDetails.optString("aeroway", "");// Số nhà
@@ -198,12 +210,12 @@ public class AddressActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            // Hiện Form nhập địa chỉ
-            addressForm.setVisibility(View.VISIBLE );
-            listView.setVisibility(View.GONE);
             selectedAddress = addressList.get(position);
             edtAddress.setText(selectedAddress);
 
+            // Hiện Form nhập địa chỉ
+            addressForm.setVisibility(View.VISIBLE );
+            listView.setVisibility(View.GONE);
 
         });
 
@@ -256,9 +268,6 @@ public class AddressActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-    // lay dia chi hien tai bang cach truy cap gps
-    private Location lastLocation; // Lưu vị trí trước đó
-
     private void findAddress() {
         progressBar.setVisibility(View.VISIBLE);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -287,8 +296,6 @@ public class AddressActivity extends AppCompatActivity {
                     Location newLocation = locationResult.getLastLocation();
                     progressBar.setVisibility(View.GONE);
 
-                  // Kiểm tra nếu vị trí thay đổi 50m
-                    lastLocation = newLocation;
                     handleLocationResult(newLocation);
 
                 }
@@ -317,7 +324,6 @@ public class AddressActivity extends AppCompatActivity {
                 if (addresses != null && !addresses.isEmpty()) {
                     Address address = addresses.get(0);
                     String uAddress =  addresses.get(0).getAddressLine(0);
-                    Log.d("Address",uAddress);
 
                     // Số nhà, đường
                     String streetAddress = address.getThoroughfare();
@@ -383,7 +389,6 @@ public class AddressActivity extends AppCompatActivity {
 
             String url = UrlUtil.ADDRESS + "addresses/save";
 
-            // Create the JSONObject for the POST request body
             JSONObject requestBody = null;
             try {
                 requestBody = addressRequest.toJson();
@@ -391,7 +396,6 @@ public class AddressActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            // Create the JsonObjectRequest
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.POST,
                     url,
@@ -407,21 +411,18 @@ public class AddressActivity extends AppCompatActivity {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            // Handle error
-                            progressDialog.dismiss(); // Dismiss loading dialog
-                            //Toast.makeText(AddressActivity.this, "Failed to save address: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+
                         }
                     }
             );
 
-            // Set a retry policy if necessary
             jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                    20 * 1000, // 20 seconds timeout
-                    2,          // Max retries
+                    20 * 1000,
+                    2,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
             ));
 
-            // Add the request to the RequestQueue
             requestQueue.add(jsonObjectRequest);
         }
 

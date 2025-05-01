@@ -17,11 +17,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -38,8 +35,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.adapter.FoodListPaymentAdapter;
@@ -80,11 +75,11 @@ public class PaymentActivity extends AppCompatActivity {
     private EditText fullName,sdt,note;
     private Switch utensils;
     private CheckBox checkBox;
-    String price;
+    private String price;
     private String paymentMethod = "Tiền mặt";
     private ActivityResultLauncher<Intent> paymentMethodLauncher;
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "SetTextI18n"})
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,26 +103,23 @@ public class PaymentActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
         ZaloPaySDK.init(2553, Environment.SANDBOX);
 
-        btnDatHang.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(sdt.getText().toString().isEmpty()){
-                    tvError1.setText("Không được để trống");
-                    tvError1.setVisibility(View.VISIBLE);
+        btnDatHang.setOnClickListener(v -> {
+            if(sdt.getText().toString().isEmpty()){
+                tvError1.setText("Không được để trống");
+                tvError1.setVisibility(View.VISIBLE);
+            }
+            if(fullName.getText().toString().isEmpty()){
+                tvError.setText("Không được để trống");
+                tvError.setVisibility(View.VISIBLE);
+            }
+            if(tvError.isShown() || tvError1.isShown()){
+                return;
+            }else{
+                if ("ZaloPay".equals(paymentMethod)) {
+                    thanhToanZalopay();
                 }
-                if(fullName.getText().toString().isEmpty()){
-                    tvError.setText("Không được để trống");
-                    tvError.setVisibility(View.VISIBLE);
-                }
-                if(tvError.isShown() || tvError1.isShown()){
-                    return;
-                }else{
-                    if ("ZaloPay".equals(paymentMethod)) {
-                        thanhToanZalopay();
-                    }
-                    else{
-                        payment();
-                    }
+                else{
+                    payment();
                 }
             }
         });
@@ -210,69 +202,63 @@ public class PaymentActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
                 url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        progressDialog.hide();
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            if(jsonResponse.has("paymentId"))
-                            {
-                                int id = jsonResponse.getInt("paymentId");
-                                if(!tinyDB.getBoolean("is_logged_in")){
+                response -> {
+                    progressDialog.hide();
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        if(jsonResponse.has("paymentId"))
+                        {
+                            int id = jsonResponse.getInt("paymentId");
+                            if(!tinyDB.getBoolean("is_logged_in")){
 
-                                    // Neu chua cho listpayment, tao moi 1 listpayment
-                                    if(!tinyDB.getAll().containsKey("paymentList")){
-                                        ArrayList<Integer> payments = new ArrayList<>();
-                                        tinyDB.putListInt("paymentList",payments);
-                                    }
-                                    ArrayList<Integer> payments = tinyDB.getListInt("paymentList");
-                                    payments.add(id);
+                                // Neu chua cho listpayment, tao moi 1 listpayment
+                                if(!tinyDB.getAll().containsKey("paymentList")){
+                                    ArrayList<Integer> payments = new ArrayList<>();
                                     tinyDB.putListInt("paymentList",payments);
                                 }
-                                try {
-                                    managementCart.getListCart(new CartResponse() {
-                                        @Override
-                                        public void onSuccess(ArrayList<Food> listFood) {
-                                            try {
-                                                managementCart.clearCart(listFood, new ChangeNumberItemsListener() {
-                                                    @Override
-                                                    public void change() throws JSONException {
-
-                                                    }
-                                                });
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onError(String errorMessage) {
-                                            Toast.makeText(PaymentActivity.this, "Không thể lấy giỏ hàng: " + errorMessage, Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                showErrorDialog();
+                                ArrayList<Integer> payments = tinyDB.getListInt("paymentList");
+                                payments.add(id);
+                                tinyDB.putListInt("paymentList",payments);
                             }
-                            else{
-                                Toast.makeText(PaymentActivity.this, "Thanh toán that bai", Toast.LENGTH_SHORT).show();
-                            }
+                            try {
+                                managementCart.getListCart(new CartResponse() {
+                                    @Override
+                                    public void onSuccess(ArrayList<Food> listFood) {
+                                        try {
+                                            managementCart.clearCart(listFood, new ChangeNumberItemsListener() {
+                                                @Override
+                                                public void change() throws JSONException {
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(PaymentActivity.this, "Error processing login response.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(String errorMessage) {
+                                        Toast.makeText(PaymentActivity.this, "Không thể lấy giỏ hàng: " + errorMessage, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                            showErrorDialog();
+                        }
+                        else{
+                            Toast.makeText(PaymentActivity.this, "Thanh toán that bai", Toast.LENGTH_SHORT).show();
                         }
 
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(PaymentActivity.this, "Error processing login response.", Toast.LENGTH_SHORT).show();
                     }
+
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressDialog.hide();
-                        Toast.makeText(PaymentActivity.this,"Error :" + error,Toast.LENGTH_SHORT).show();
-                    }
+                error -> {
+                    progressDialog.hide();
+                    Toast.makeText(PaymentActivity.this,"Error :" + error,Toast.LENGTH_SHORT).show();
                 }
         ){
             @Override
@@ -343,13 +329,13 @@ public class PaymentActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
     private void initView(){
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         btnShop = findViewById(R.id.imageViewAddress);
-        giaTxt = (TextView) findViewById(R.id.txtTotalCost);
-        themMonBtn = (TextView) findViewById(R.id.btnAddFood);
-        giaDKTxt = (TextView) findViewById(R.id.txtCost);
+        giaTxt = findViewById(R.id.txtTotalCost);
+        themMonBtn = findViewById(R.id.btnAddFood);
+        giaDKTxt = findViewById(R.id.txtCost);
         addressTxt = findViewById(R.id.txtAddress);
-        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        checkBox = findViewById(R.id.checkBox);
         btnDatHang = findViewById(R.id.btnDatHang);
         btnDatHang.setAlpha(0.5f);
         fullName = findViewById(R.id.fullName);
@@ -380,31 +366,22 @@ public class PaymentActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
         addressTxt.setText(addUser);
-        btnShop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(PaymentActivity.this, AddressShopActivity.class);
-                startActivity(intent);
-            }
+        btnShop.setOnClickListener(view -> {
+            Intent intent = new Intent(PaymentActivity.this, AddressShopActivity.class);
+            startActivity(intent);
         });
-        themMonBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(PaymentActivity.this,BaseActivity.class);
-                intent.putExtra("opened_fragment", "MENU");
-                startActivity(intent);
-            }
+        themMonBtn.setOnClickListener(v -> {
+            Intent intent=new Intent(PaymentActivity.this,BaseActivity.class);
+            intent.putExtra("opened_fragment", "MENU");
+            startActivity(intent);
         });
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    btnDatHang.setAlpha(1.0f);
-                    btnDatHang.setEnabled(true);
-                } else {
-                    btnDatHang.setAlpha(0.5f);
-                    btnDatHang.setEnabled(false);
-                }
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                btnDatHang.setAlpha(1.0f);
+                btnDatHang.setEnabled(true);
+            } else {
+                btnDatHang.setAlpha(0.5f);
+                btnDatHang.setEnabled(false);
             }
         });
         sdt.addTextChangedListener(new TextWatcher() {
@@ -416,6 +393,7 @@ public class PaymentActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void afterTextChanged(Editable s) {
                 String phone = s.toString().trim();
@@ -463,12 +441,7 @@ public class PaymentActivity extends AppCompatActivity {
         managementCart.getListCart(new CartResponse() {
             @Override
             public void onSuccess(ArrayList<Food> cartList) {
-                adapter = new FoodListPaymentAdapter(cartList,PaymentActivity.this, new ChangeNumberItemsListener() {
-                    @Override
-                    public void change() throws JSONException {
-                        updateTotal();
-                    }
-                });
+                adapter = new FoodListPaymentAdapter(cartList,PaymentActivity.this, () -> updateTotal());
                 RecyclerView.ItemDecoration decoration = new DividerItemDecoration(PaymentActivity.this,DividerItemDecoration.VERTICAL);
                 recyclerView.addItemDecoration(decoration);
                 recyclerView.setAdapter(adapter);
@@ -510,14 +483,11 @@ public class PaymentActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(view);
         final AlertDialog alertDialog = builder.create();
-        okBtn.findViewById(R.id.okBtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                Intent intent = new Intent(PaymentActivity.this,BaseActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        okBtn.findViewById(R.id.okBtn).setOnClickListener(v -> {
+            alertDialog.dismiss();
+            Intent intent = new Intent(PaymentActivity.this,BaseActivity.class);
+            startActivity(intent);
+            finish();
         });
         if(alertDialog.getWindow() != null){
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));

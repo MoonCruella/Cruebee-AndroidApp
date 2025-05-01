@@ -3,22 +3,14 @@ package com.example.project;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -28,36 +20,29 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.project.adapter.AddressShopAdapter;
-import com.example.project.adapter.PromotionAdapter;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.Address;
 import com.example.project.model.AddressShop;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AddressShopActivity extends AppCompatActivity {
 
-    ImageView editAddress;
-    TextView addressTxt;
-    TinyDB tinyDB;
+    private ImageView editAddress;
+    private TextView addressTxt;
+    private TinyDB tinyDB;
     private RecyclerView recyclerView;
     private AddressShopAdapter adapter;
     double lat,lng;
 
-    List<AddressShop> addressShops;
+    private List<AddressShop> addressShops;
     private RequestQueue requestQueue;
 
     @Override

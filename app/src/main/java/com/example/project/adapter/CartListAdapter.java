@@ -14,10 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.project.R;
 import com.example.project.helpers.ManagementCart;
-import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.model.Food;
-import com.example.project.model.User;
 
 import org.json.JSONException;
 

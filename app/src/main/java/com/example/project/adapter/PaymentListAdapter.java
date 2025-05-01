@@ -1,7 +1,5 @@
 package com.example.project.adapter;
 
-import static android.view.View.VISIBLE;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -9,17 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.project.AddressDetailsActivity;
 import com.example.project.OrderDetailActivity;
 import com.example.project.R;
-import com.example.project.model.Address;
-import com.example.project.model.AddressShop;
 import com.example.project.model.Payment;
 
 import java.text.DecimalFormat;
@@ -52,14 +44,11 @@ public class PaymentListAdapter extends RecyclerView.Adapter<PaymentListAdapter.
         String formattedDate = payment.getOrderDate().format(formatter);
         holder.timeOrder.setText(formattedDate);
         holder.detailTxt.setText(payment.getProducts().size() + " phần - " + formattedPrice);
-        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, OrderDetailActivity.class);
-                intent.putExtra("object",payment);
-                intent.putExtra("stt",position + 1);
-                context.startActivity(intent);
-            }
+        holder.constraintLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(context, OrderDetailActivity.class);
+            intent.putExtra("object",payment);
+            intent.putExtra("stt",position + 1);
+            context.startActivity(intent);
         });
     }
 

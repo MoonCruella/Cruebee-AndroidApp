@@ -148,6 +148,7 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
         viewPager.setAdapter(new ViewPager2Adapter(getSupportFragmentManager(),getLifecycle(),this));
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+
             // Gán layout tùy chỉnh cho từng tab
             View customTab = LayoutInflater.from(this).inflate(R.layout.item_tab, null);
             ImageView tabIcon = customTab.findViewById(R.id.tabIcon);

@@ -1,8 +1,5 @@
 package com.example.project;
 
-import static android.content.Context.MODE_PRIVATE;
-
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +16,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.project.adapter.PromotionAdapter;
-import com.example.project.adapter.RcmFoodAdapter;
-import com.example.project.model.Food;
 import com.example.project.model.Promotion;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;

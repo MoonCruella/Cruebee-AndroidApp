@@ -11,38 +11,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
-import androidx.lifecycle.GenericLifecycleObserver;
-
 import com.bumptech.glide.Glide;
 import com.example.project.helpers.ManagementCart;
 import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.InsertCartCallback;
 import com.example.project.model.Food;
-import com.example.project.utils.UrlUtil;
-
 import org.json.JSONException;
-
 import java.text.DecimalFormat;
-
 import eightbitlab.com.blurview.BlurView;
-import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class ShowDetailActivity extends AppCompatActivity {
     private TextView addToCartBtn,thanhtoanBtn;

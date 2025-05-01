@@ -1,10 +1,7 @@
 package com.example.project;
 
-import static android.view.View.GONE;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,44 +11,26 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.Manifest;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleyHelper;
-import com.example.project.volley.VolleySingleton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
 import androidx.core.app.NotificationManagerCompat;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
 public class SettingUserActivity extends AppCompatActivity {
     private SwitchMaterial switchNotification;
-    TextView logoutBtn,deleteBtn;
-    TinyDB tinyDB;
-    private RequestQueue requestQueue;
-    ConstraintLayout changePwdBtn,changeLanguBtn;
+    private TextView logoutBtn,deleteBtn;
+    private TinyDB tinyDB;
+    private ConstraintLayout changePwdBtn,changeLanguBtn;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -70,7 +49,6 @@ public class SettingUserActivity extends AppCompatActivity {
         changeLanguBtn = findViewById(R.id.changeLanguBtn);
         deleteBtn = findViewById(R.id.deleteAccBtn);
         logoutBtn = findViewById(R.id.logoutBtn);
-        requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
         tinyDB = new TinyDB(this);
 
         deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -247,7 +225,6 @@ public class SettingUserActivity extends AppCompatActivity {
                         tinyDB.remove("addressShop");
                         tinyDB.remove("savedUser");
                         tinyDB.putBoolean("is_logged_in", false);
-
                         alertDialog.dismiss();
                         showAnnDeleteSuccess();
                     } else {

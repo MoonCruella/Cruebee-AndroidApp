@@ -1,7 +1,6 @@
 package com.example.project;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,27 +13,20 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.airbnb.lottie.LottieAnimationView;
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.project.helpers.StringHelper;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class ForgotPassActivity extends AppCompatActivity {
 
@@ -62,12 +54,12 @@ public class ForgotPassActivity extends AppCompatActivity {
         email.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Thực hiện hành động nếu cần trước khi text thay đổi
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Bạn có thể cập nhật giao diện khi text thay đổi nếu cần
+
             }
 
             @Override

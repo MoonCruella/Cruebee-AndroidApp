@@ -2,35 +2,26 @@ package com.example.project;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.project.adapter.FoodListDetailAdapter;
-import com.example.project.adapter.FoodListPaymentAdapter;
-import com.example.project.interfaces.ChangeNumberItemsListener;
-import com.example.project.model.Address;
 import com.example.project.model.Payment;
-
-import org.json.JSONException;
 
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 
 public class OrderDetailActivity extends AppCompatActivity {
-    TextView idDonHang, timeOrder, phiGD, chiPhiDK, totalPrice, ptThanhtoan, nameSdt, diaChiOrder,statusOrder;
-    RecyclerView recyclerView2;
-    Payment payment;
-    FoodListDetailAdapter adapter;
+    private TextView idDonHang, timeOrder, phiGD, chiPhiDK, totalPrice, ptThanhtoan, nameSdt, diaChiOrder,statusOrder;
+    private RecyclerView recyclerView2;
+    private Payment payment;
+    private FoodListDetailAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

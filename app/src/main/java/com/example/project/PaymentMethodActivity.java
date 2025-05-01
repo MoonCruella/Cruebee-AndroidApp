@@ -2,19 +2,12 @@ package com.example.project;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
 
 public class PaymentMethodActivity extends AppCompatActivity {
 
@@ -40,18 +33,15 @@ public class PaymentMethodActivity extends AppCompatActivity {
         TextView confirm = findViewById(R.id.btn_confirm);
         RadioGroup radioGroup = findViewById(R.id.payment_group);
 
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int selectedId = radioGroup.getCheckedRadioButtonId();
-                RadioButton selectedRadioButton = findViewById(selectedId);
-                String method = selectedRadioButton.getText().toString();
+        confirm.setOnClickListener(view -> {
+            int selectedId = radioGroup.getCheckedRadioButtonId();
+            RadioButton selectedRadioButton = findViewById(selectedId);
+            String method1 = selectedRadioButton.getText().toString();
 
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("method", method);
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("method", method1);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
     }
 }

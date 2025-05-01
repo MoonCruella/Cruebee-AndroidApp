@@ -1,56 +1,33 @@
 package com.example.project.helpers;
 
 import static android.content.ContentValues.TAG;
-
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.example.project.LoginActivity;
-import com.example.project.R;
 import com.example.project.interfaces.CartResponse;
 import com.example.project.interfaces.ChangeNumberItemsListener;
 import com.example.project.interfaces.InsertCartCallback;
 import com.example.project.interfaces.TotalFeeResponse;
 import com.example.project.interfaces.UpdateCartCallback;
-import com.example.project.model.Address;
 import com.example.project.model.Food;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleyHelper;
 import com.example.project.volley.VolleySingleton;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ManagementCart {
     private Context context;
     private TinyDB tinyDB;
     private Boolean is_logged_in;
     private int userId;
-    private RequestQueue requestQueue;
     String token;
     User user;
-    private static boolean isDialogShown = false;
+
 
     public ManagementCart(Context context) {
         this.context = context;
@@ -62,7 +39,6 @@ public class ManagementCart {
             this.token = tinyDB.getString("token");
         }
         this.is_logged_in = tinyDB.getBoolean("is_logged_in");
-        requestQueue = VolleySingleton.getmInstance(context).getRequestQueue();
     }
 
     public void insertFood(Food food, InsertCartCallback callback) throws JSONException {

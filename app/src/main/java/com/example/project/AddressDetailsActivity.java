@@ -1,41 +1,29 @@
 package com.example.project;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.Address;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleyHelper;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AddressDetailsActivity extends AppCompatActivity {
 
-    TextView usernameTxt,sdtTxt, addressTxt,noteTxt,saveBtn,removeBtn;
-    TextInputLayout address_form;
-    SwitchMaterial switch_is_primary;
+    private TextView usernameTxt,sdtTxt, addressTxt,noteTxt,saveBtn,removeBtn;
+    private TextInputLayout address_form;
+    private SwitchMaterial switch_is_primary;
     int is_primary,addressId;
-    TinyDB tinyDB;
-    RequestQueue requestQueue;
-    Address address;
+    private TinyDB tinyDB;
+    private Address address;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +53,6 @@ public class AddressDetailsActivity extends AppCompatActivity {
         sdtTxt.setText(address.getSdt());
         addressTxt.setText(address.getAddress_details());
         noteTxt.setText(address.getNote());
-        requestQueue = Volley.newRequestQueue(this);
         tinyDB = new TinyDB(this);
         addressId = address.getId();
         switch_is_primary.setChecked(address.getIs_primary() == 1);

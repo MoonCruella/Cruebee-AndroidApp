@@ -1,5 +1,6 @@
 package com.example.project.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,7 @@ public class FoodListPaymentAdapter extends RecyclerView.Adapter<FoodListPayment
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FoodListPaymentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FoodListPaymentViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Food food = foods.get(position);
         holder.title.setText(food.getName());
         holder.des.setText(food.getDescription());

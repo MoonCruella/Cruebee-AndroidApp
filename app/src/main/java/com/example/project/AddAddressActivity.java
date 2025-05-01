@@ -1,40 +1,29 @@
 package com.example.project;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.Address;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleyHelper;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AddAddressActivity extends AppCompatActivity {
 
-    TextView usernameTxt,sdtTxt, addressTxt,noteTxt,saveBtn;
-    TextInputLayout address_form;
-    SwitchMaterial switch_is_primary;
+    private TextView usernameTxt,sdtTxt, addressTxt,noteTxt,saveBtn;
+    private TextInputLayout address_form;
+    private SwitchMaterial switch_is_primary;
     int is_primary,addressId;
-    TinyDB tinyDB;
-    RequestQueue requestQueue;
-    Address address;
+    private TinyDB tinyDB;
+    private Address address;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +52,6 @@ public class AddAddressActivity extends AppCompatActivity {
         sdtTxt.setText(address.getSdt());
         addressTxt.setText(address.getAddress_details());
         noteTxt.setText(address.getNote());
-        requestQueue = Volley.newRequestQueue(this);
         tinyDB = new TinyDB(this);
         addressId = address.getId();
         switch_is_primary.setChecked(address.getIs_primary() == 1);
@@ -112,7 +100,6 @@ public class AddAddressActivity extends AppCompatActivity {
     public void addAddress(Address address){
 
         String url = UrlUtil.ADDRESS + "addresses/add";
-        // Create the JSONObject for the POST request body
         JSONObject requestBody = null;
         try {
             requestBody = address.toJson();
@@ -121,10 +108,11 @@ public class AddAddressActivity extends AppCompatActivity {
         }
         VolleyHelper.getInstance(this).sendJsonObjectRequestWithAuth(
                 Request.Method.POST,
-                UrlUtil.ADDRESS + "addresses/add",
+                url,
                 requestBody,
                 true,
                 response -> {
+
                     // Xử lý khi thành công
                     Toast.makeText(this, "Thêm địa chỉ thành công!", Toast.LENGTH_SHORT).show();
                 },
@@ -140,6 +128,7 @@ public class AddAddressActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK && requestCode == 133) {
             if (data != null) {
+
                 // Kiểm tra xem có dữ liệu trả về không
                 Address updatedAddress = (Address) data.getSerializableExtra("updated_address");
 

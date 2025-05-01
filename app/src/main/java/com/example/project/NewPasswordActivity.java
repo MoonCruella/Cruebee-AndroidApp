@@ -2,7 +2,6 @@ package com.example.project;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -135,7 +133,7 @@ public class NewPasswordActivity extends AppCompatActivity {
         ){
             @Override
             public byte[] getBody() throws AuthFailureError {
-                // Create a JSONObject and put data into it
+
                 JSONObject jsonBody = new JSONObject();
                 try {
                     jsonBody.put("email", email.trim());
@@ -144,7 +142,6 @@ public class NewPasswordActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                // Return the byte[] of the JSON string
                 return jsonBody.toString().getBytes(StandardCharsets.UTF_8);
             }
 
@@ -156,7 +153,6 @@ public class NewPasswordActivity extends AppCompatActivity {
             }
         };
 
-        //Fix Volley time out error
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
     }
