@@ -6,7 +6,6 @@ import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -192,10 +191,6 @@ public class PaymentActivity extends AppCompatActivity {
             dcu = true;
         }
         List<PaymentProduct> products = adapter.getFoodList();
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Loading... Please wait...!!");
-        progressDialog.show();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url = UrlUtil.ADDRESS + "payment/order";
         boolean finalDcu = dcu;
@@ -203,7 +198,6 @@ public class PaymentActivity extends AppCompatActivity {
                 Request.Method.POST,
                 url,
                 response -> {
-                    progressDialog.hide();
                     try {
                         JSONObject jsonResponse = new JSONObject(response);
                         if(jsonResponse.has("paymentId"))
@@ -257,7 +251,6 @@ public class PaymentActivity extends AppCompatActivity {
 
                 },
                 error -> {
-                    progressDialog.hide();
                     Toast.makeText(PaymentActivity.this,"Error :" + error,Toast.LENGTH_SHORT).show();
                 }
         ){
