@@ -25,8 +25,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.helpers.StringHelper;
@@ -107,28 +105,22 @@ public class NewPasswordActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.PUT,
                 UrlUtil.ADDRESS +"reset-password",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        loadingOverlay.setVisibility(View.GONE);
-                        loadingBar.cancelAnimation();
-                        Toast.makeText(NewPasswordActivity.this,"" + response,Toast.LENGTH_SHORT).show();
-                        if(response.equals("Change password successful!")){
-                            Intent intent = new Intent(NewPasswordActivity.this,LoginActivity.class);
-                            startActivity(intent);
-                        }
-                        else{
-                            Toast.makeText(NewPasswordActivity.this, "Change Password failed. Please try again.", Toast.LENGTH_SHORT).show();
-                        }
+                response -> {
+                    loadingOverlay.setVisibility(View.GONE);
+                    loadingBar.cancelAnimation();
+                    if(response.equals("Change password successful!")){
+                        Toast.makeText(NewPasswordActivity.this,"Thay đổi mật khẩu thành công!",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(NewPasswordActivity.this,LoginActivity.class);
+                        startActivity(intent);
+                    }
+                    else{
+                        Toast.makeText(NewPasswordActivity.this, "Lỗi hệ thống. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        loadingOverlay.setVisibility(View.GONE);
-                        loadingBar.cancelAnimation();
-                        Toast.makeText(NewPasswordActivity.this,"" + error,Toast.LENGTH_SHORT).show();
-                    }
+                error -> {
+                    loadingOverlay.setVisibility(View.GONE);
+                    loadingBar.cancelAnimation();
+                    Toast.makeText(NewPasswordActivity.this,"" + error,Toast.LENGTH_SHORT).show();
                 }
         ){
             @Override

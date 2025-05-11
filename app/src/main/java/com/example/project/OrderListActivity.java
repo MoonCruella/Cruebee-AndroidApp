@@ -1,28 +1,28 @@
 package com.example.project;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-
-import com.android.volley.Response;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.project.adapter.PaymentListAdapter;
 import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
-
 import com.example.project.model.AddressShop;
 import com.example.project.model.Food;
 import com.example.project.model.Payment;
@@ -30,12 +30,9 @@ import com.example.project.model.PaymentProduct;
 import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,50 +43,61 @@ public class OrderListActivity extends AppCompatActivity {
     private PaymentListAdapter paymentListAdapter;
     private List<Payment> payments;
     private RequestQueue requestQueue;
+    private ProgressBar loading_spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_list);
-        getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
-        getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        ConstraintLayout mainLayout = findViewById(R.id.main);
+        EdgeToEdge.enable(this);
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.red));
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
+            Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, systemInsets.top, 0, systemInsets.bottom); // tránh cả status và navigation bar
+            return insets;
+        });
 
         payments = new ArrayList<>();
+        loading_spinner = findViewById(R.id.loading_spinner);
         requestQueue = VolleySingleton.getmInstance(this).getRequestQueue();
         recyclerView = findViewById(R.id.paymentList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         tinyDB = new TinyDB(this);
+        paymentListAdapter = new PaymentListAdapter(OrderListActivity.this, payments);
+        recyclerView.setAdapter(paymentListAdapter);
 
-        getPayment();
+        getPayment(0);
 
 
     }
 
-    private void getPayment() {
+    private void getPayment(int currentPage) {
         String url;
         int userId;
-        if(tinyDB.getBoolean("is_logged_in")){
+
+        if (tinyDB.getBoolean("is_logged_in")) {
             User savedUser = tinyDB.getObject("savedUser", User.class);
             userId = savedUser.getId();
-            url = UrlUtil.ADDRESS + "payment?userId=" + userId;
-        }
-        else{
+            url = UrlUtil.ADDRESS + "payment?userId=" + userId + "&page=" + currentPage + "&pageSize=" + 6;
+        } else {
             ArrayList<Integer> payments = tinyDB.getListInt("paymentList");
             userId = 1;
             String tem = StringHelper.createPaymentIdsQuery(payments);
             url = UrlUtil.ADDRESS + "payment/findByIds?" + tem;
         }
+
         int finalUserId = userId;
-        StringRequest stringRequest = new StringRequest(
+        loading_spinner.setVisibility(VISIBLE);
+        JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
+                null,
                 response -> {
                     try {
-                        Log.d("FULL_RESPONSE", response);
-                        payments.clear();
-                        JSONArray jsonArray = new JSONArray(response);
+                        JSONArray jsonArray = response.getJSONArray("content");
+                        boolean hasMoreData = jsonArray.length() > 0; // Check if there are more items
+
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject payment = jsonArray.getJSONObject(i);
                             JSONObject shop = payment.getJSONObject("shop");
@@ -118,41 +126,38 @@ public class OrderListActivity extends AppCompatActivity {
                                 String des = jsonObject.isNull("description") ? "" : jsonObject.getString("description");
                                 int soldCount = jsonObject.getInt("soldCount");
                                 int quantity = productObj.getInt("quantity");
-                                Food food =new Food(productId, name, price, image,soldCount, des);
+                                Food food = new Food(productId, name, price, image, soldCount, des);
                                 PaymentProduct product = new PaymentProduct(food, quantity);
                                 productList.add(product);
                             }
+
                             User user = new User(finalUserId);
-                            Payment payment1 = new Payment(user, addressUser, addressShop, fullname, sdt, note, utensils, totalprice, orderDate,productList,method,status);
+                            Payment payment1 = new Payment(user, addressUser, addressShop, fullname, sdt, note, utensils, totalprice, orderDate, productList, method, status);
                             payments.add(payment1);
                         }
+                        loading_spinner.setVisibility(GONE);
+                        paymentListAdapter.notifyDataSetChanged();
 
-                        // Cập nhật adapter cho RecyclerView
-                        paymentListAdapter = new PaymentListAdapter(OrderListActivity.this, payments);
-                        recyclerView.setAdapter(paymentListAdapter);
+                        // Tự động tăng số trang khi load xong trang này
+                        if (hasMoreData) {
+                            getPayment(currentPage + 1);
+                        }
 
                     } catch (JSONException e) {
                         Toast.makeText(OrderListActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
-
+                        Log.e("ERROR", e.toString());
+                        loading_spinner.setVisibility(GONE);
                     }
                 },
                 error -> {
 
+                    Log.e("NETWORK_ERROR", error.toString());
+                    loading_spinner.setVisibility(GONE);
                 }
-        ) {
-            @Override
-            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                try {
-                    String utf8 = new String(response.data, StandardCharsets.UTF_8);
-                    return Response.success(utf8, HttpHeaderParser.parseCacheHeaders(response));
-                } catch (Exception e) {
-                    return Response.error(new ParseError(e));
-                }
-            }
-        };
+        );
 
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(stringRequest);
+        request.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(request);
     }
     private LocalDateTime parseTime(String dateTimeJson)
     {

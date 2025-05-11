@@ -23,11 +23,17 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -75,7 +81,7 @@ public class PaymentActivity extends AppCompatActivity {
     private Switch utensils;
     private CheckBox checkBox;
     private String price;
-    private String paymentMethod = "Tiền mặt";
+    private String paymentMethod;
     private ActivityResultLauncher<Intent> paymentMethodLauncher;
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n"})
@@ -84,10 +90,14 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
-        getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
-        getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        ConstraintLayout mainLayout = findViewById(R.id.main);
+        EdgeToEdge.enable(this);
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.red));
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
+            Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, systemInsets.top, 0, systemInsets.bottom); // tránh cả status và navigation bar
+            return insets;
+        });
 
         managementCart = new ManagementCart(this);
         initView();
@@ -96,6 +106,10 @@ public class PaymentActivity extends AppCompatActivity {
             User user = tinyDB.getObject("savedUser", User.class);
             fullName.setText(user.getUsername());
             sdt.setText(user.getSdt());
+            paymentMethod = "Tiền mặt";
+        }
+        else{
+            paymentMethod = "ZaloPay";
         }
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -130,14 +144,14 @@ public class PaymentActivity extends AppCompatActivity {
                         String updatedMethod = result.getData().getStringExtra("method");
                         if (updatedMethod != null) {
                             paymentMethod = updatedMethod;
-                            Button method = findViewById(R.id.btnPayment);
-                            method.setText("Thanh toán bằng \n " + paymentMethod);
+                            TextView method = findViewById(R.id.btnPayment);
+                            method.setText(paymentMethod);
                         }
                     }
                 }
         );
-        Button method = findViewById(R.id.btnPayment);
-        method.setText("Thanh toán bằng \n " + paymentMethod);
+        TextView method = findViewById(R.id.btnPayment);
+        method.setText( paymentMethod);
         method.setOnClickListener(view -> {
             Intent intent = new Intent(PaymentActivity.this, PaymentMethodActivity.class);
             intent.putExtra("method", paymentMethod);

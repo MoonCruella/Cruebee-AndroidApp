@@ -1,20 +1,23 @@
 package com.example.project;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
 import com.example.project.helpers.StringHelper;
 import com.example.project.helpers.TinyDB;
@@ -31,17 +34,22 @@ public class ChangePwdActivity extends AppCompatActivity {
 
     private TextInputEditText edtPassword,newPassword,cfPassword;
     private TextView tvError, tvError2, tvError3,savePw;
+    private LottieAnimationView loadingBar;
+    private FrameLayout loadingOverlay;
     private TinyDB tinyDB;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_pwd);
-        ConstraintLayout mainLayout = findViewById(R.id.main);
+        FrameLayout mainLayout = findViewById(R.id.main);
         EdgeToEdge.enable(this);
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.red));
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.white));
         ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
-            Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
-            v.setPadding(0, 0, 0, navBarInsets.bottom); // đẩy layout lên khỏi nav bar
+            Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, systemInsets.top, 0, systemInsets.bottom); // tránh cả status và navigation bar
             return insets;
         });
         edtPassword = findViewById(R.id.edtPassword);
@@ -51,17 +59,18 @@ public class ChangePwdActivity extends AppCompatActivity {
         tvError2 = findViewById(R.id.tvError2);
         tvError3 = findViewById(R.id.tvError3);
         savePw = findViewById(R.id.savePw);
+        loadingBar = findViewById(R.id.loadingBar);
+        loadingOverlay = findViewById(R.id.loadingOverlay);
+
         tinyDB = new TinyDB(this);
 
         edtPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Thực hiện hành động nếu cần trước khi text thay đổi
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Bạn có thể cập nhật giao diện khi text thay đổi nếu cần
             }
 
             @Override
@@ -217,7 +226,8 @@ public class ChangePwdActivity extends AppCompatActivity {
     }
     private void savePassNewPw(User user, String password, String newPassword) {
         String url = UrlUtil.ADDRESS + "user/change-pw";
-
+        loadingOverlay.setVisibility(View.VISIBLE);
+        loadingBar.playAnimation();
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("email", user.getEmail());
@@ -235,14 +245,23 @@ public class ChangePwdActivity extends AppCompatActivity {
                 true,
                 response -> {
                     if (response.equals("Change password successful!")) {
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
                         Toast.makeText(this,"Cập nhật mật khẩu thành công",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(ChangePwdActivity.this, SettingUserActivity.class);
                         startActivity(intent);
                         finish();
                     }
+                    else{
+                        loadingOverlay.setVisibility(View.GONE);
+                        loadingBar.cancelAnimation();
+                        Toast.makeText(this, "Sai mật khẩu", Toast.LENGTH_SHORT).show();
+                    }
                 },
                 error -> {
-                    Toast.makeText(this, "Lỗi cập nhật: " + "Sai mật khẩu", Toast.LENGTH_SHORT).show();
+                    loadingOverlay.setVisibility(View.GONE);
+                    loadingBar.cancelAnimation();
+                    Toast.makeText(this, "Lỗi cập nhật. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
                 }
         );
     }

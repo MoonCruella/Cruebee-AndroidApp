@@ -35,19 +35,15 @@
             android:text="Hỗ trợ"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-            app:layout_constraintTop_toTopOf="@+id/toolbar"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="151dp" />
+            android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/constraint"
+        app:layout_constraintBottom_toTopOf="@+id/bottomApp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.42"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
@@ -68,69 +64,13 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/red"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/bottomApp"
-        app:layout_constraintTop_toBottomOf="@id/constraint">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:id="@+id/supportBtn"
-            android:foreground="?attr/selectableItemBackground"
-            android:layout_height="70dp"
-            android:background="@color/white"
-            tools:ignore="MissingConstraints">
-
-
-            <ImageView
-                android:id="@+id/cardView"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/purchase_order"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-            </ImageView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Hướng dẫn đặt hàng"
-                android:textColor="#383838"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/cardView"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints">
-            </TextView>
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/next"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-            </ImageView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/red"
         android:orientation="vertical"
         android:id="@+id/bottomApp"
         android:padding="16dp"
-        app:layout_constraintHeight_percent="0.41"
+        app:layout_constraintHeight_percent="0.45"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -166,7 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Hộp thư góp ý: nhunguyetpy206@gmail.com"
+            android:text="Hộp thư góp ý (1): nhunguyetpy206@gmail.com"
             android:textColor="#ffffff"
             android:textSize="16sp">
         </TextView>
@@ -175,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Hộp thư góp ý: pnhpy2306@gmail.com"
+            android:text="Hộp thư góp ý (2): pnhpy2306@gmail.com"
             android:textColor="#ffffff"
             android:textSize="16sp">
         </TextView>

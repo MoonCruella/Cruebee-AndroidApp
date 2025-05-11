@@ -117,7 +117,6 @@ public class ForgotPassActivity extends AppCompatActivity {
                 response -> {
                     loadingOverlay.setVisibility(View.GONE);
                     loadingBar.cancelAnimation();
-                    Toast.makeText(ForgotPassActivity.this, response, Toast.LENGTH_SHORT).show();
                     if (response.equals("Email sent ... please verify account within 3 minute")) {
                         Intent intent = new Intent(ForgotPassActivity.this, ForgotPassOTPActivity.class);
                         intent.putExtra("USER_EMAIL", email1);

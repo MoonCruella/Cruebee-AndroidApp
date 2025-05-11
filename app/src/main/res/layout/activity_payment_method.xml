@@ -88,7 +88,7 @@
                 android:background="@color/white"
                 android:buttonTint="@color/red"
                 android:tag="Tiền mặt"
-                android:text="Tiền Mặt" />
+                android:text="Tiền mặt" />
         </RadioGroup>
 
         <!-- Nút xác nhận -->
@@ -108,12 +108,6 @@
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Lưu ý cho trường hợp hủy đơn hàng:\n\nĐơn hàng hủy của quý khách sẽ được ghi nhận xử lý và Thời gian quý khách sẽ được hoàn tiền theo quy định\ncủa ngân hàng phát hành thẻ như sau:\n\n- Thẻ nội địa/Ví điện tử/Tài khoản ngân hàng: từ 10 - 14 ngày làm việc.\n- Thẻ quốc tế: từ 8 - 17 ngày làm việc.\n\n*Ngày làm việc: Không bao gồm Thứ 7, Chủ nhật và ngày Lễ"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

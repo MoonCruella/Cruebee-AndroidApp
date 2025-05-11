@@ -256,38 +256,6 @@
                 </Switch>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_margin = "16dp"
-                android:gravity="center"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/eTxtCoupon"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="12dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/edit_text_design"
-                    android:hint="Nhập mã khuyến mãi/coupon"
-                    android:inputType="text"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/btnCoupon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="12dp"
-                    android:paddingStart="28dp"
-                    android:paddingEnd="28dp"
-                    android:textStyle="bold"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:textSize="14dp"
-                    android:textColor="@color/white"
-                    android:background="@drawable/orange_button"
-                    android:text="Chọn" />
-            </LinearLayout>
             <CheckBox
                 android:id="@+id/checkBox"
                 android:layout_marginEnd="10dp"
@@ -342,7 +310,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="Cruelbee chỉ tính phí giao hàng với đơn có giá trị dưới 200.000 đ" />
+                android:text="Cruelbee miễn phí ship với toàn bộ đơn hàng" />
     </LinearLayout>
     </ScrollView>
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -365,14 +333,56 @@
                 android:gravity="center"
                 android:layout_marginTop="16dp"
                 android:layout_height="wrap_content">
-                <Button
-                    android:id="@+id/btnPayment"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
-                    android:text="Thanh toán bằng \n Tiền mặt" />
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thanh toán bằng: "
+                        android:textColor="@color/black" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginEnd="16dp"
+                            android:src="@drawable/payment_icon" />
+                        <TextView
+                            android:id="@+id/btnPayment"
+                            android:textStyle="bold"
+                            android:textSize="16dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/white"
+                            android:textColor="@color/black"
+                            android:text="Chọn phương thức \n thanh toán" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_height="16dp"
+                            android:layout_marginStart="10dp"
+                            android:src="@drawable/next" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    />
                 <TextView
                     android:id="@+id/txtTotalCost"
                     android:layout_width="wrap_content"

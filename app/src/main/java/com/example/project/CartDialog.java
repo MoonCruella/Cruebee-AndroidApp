@@ -184,7 +184,6 @@ public class CartDialog extends Dialog {
         if (context instanceof Activity) {
             Activity activity = (Activity) context;
             if (activity.isFinishing()) {
-                Log.e(TAG, "Activity đang kết thúc, không thể hiển thị dialog.");
                 return;
             }
         }
@@ -207,7 +206,6 @@ public class CartDialog extends Dialog {
 
         Activity activity = (Activity) context;
         if (activity.isFinishing() || activity.isDestroyed()) {
-            Log.e(TAG, "Không thể hiển thị alertDialog vì Activity đã bị destroy.");
             return;
         }
 

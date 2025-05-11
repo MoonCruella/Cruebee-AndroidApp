@@ -13,11 +13,15 @@
         android:layout_height="match_parent"
         android:background="#80F5DEB3">
     </View>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#80F5F5F5">
+        android:background="#80F5F5F5"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
     </View>
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -61,12 +65,22 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/paymentList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="20dp"
         android:divider="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView"
-        tools:ignore="MissingConstraints"/>
+        tools:ignore="MissingConstraints" />
+
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/paymentList" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -152,6 +152,7 @@ public class ShowDetailActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+
                     //Quay tro lai man hinh chon menu
                     finish();
                 }
@@ -201,7 +202,7 @@ public class ShowDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-                finish(); // 👈 Chỉ gọi finish() sau khi bấm OK
+                finish(); // Chỉ gọi finish() sau khi bấm OK
             }
         });
 

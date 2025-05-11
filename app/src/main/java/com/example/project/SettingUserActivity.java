@@ -3,14 +3,14 @@ package com.example.project;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.android.volley.Request;
@@ -20,9 +20,13 @@ import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleyHelper;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import android.content.Intent;
-import android.net.Uri;
 import android.provider.Settings;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,12 +41,14 @@ public class SettingUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_user);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().setNavigationBarColor(getResources().getColor(R.color.white, getTheme()));
-            getWindow().setStatusBarColor(getResources().getColor(R.color.red, getTheme()));
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        }
+        ConstraintLayout mainLayout = findViewById(R.id.main);
+        EdgeToEdge.enable(this);
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.red));
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
+            Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, systemInsets.top, 0, systemInsets.bottom); // tránh cả status và navigation bar
+            return insets;
+        });
         // Ánh xạ
         switchNotification = findViewById(R.id.switch_notification);
         changePwdBtn = findViewById(R.id.changePwdBtn);
@@ -51,45 +57,36 @@ public class SettingUserActivity extends AppCompatActivity {
         logoutBtn = findViewById(R.id.logoutBtn);
         tinyDB = new TinyDB(this);
 
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showConfirmDialog();
-            }
-        });
+        deleteBtn.setOnClickListener(v -> showConfirmDialog());
 
-        logoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = UrlUtil.ADDRESS + "logout";
+        logoutBtn.setOnClickListener(v -> {
+            String url = UrlUtil.ADDRESS + "logout";
 
-                VolleyHelper.getInstance(SettingUserActivity.this).sendStringRequestWithAuth(
-                        Request.Method.GET,
-                        url,
-                        null,
-                        true,
-                        response -> {
-                            // ✅ Xoá thông tin local
-                            tinyDB.remove("token");
-                            tinyDB.remove("addressShop");
-                            tinyDB.remove("refresh_token");
-                            tinyDB.remove("savedUser");
-                            tinyDB.putBoolean("is_logged_in", false);
+            VolleyHelper.getInstance(SettingUserActivity.this).sendStringRequestWithAuth(
+                    Request.Method.GET,
+                    url,
+                    null,
+                    true,
+                    response -> {
 
-                            Log.d("Logout", "Token after logout: " + tinyDB.getString("token"));
+                        // Xoá thông tin local
+                        tinyDB.remove("token");
+                        tinyDB.remove("addressShop");
+                        tinyDB.remove("refresh_token");
+                        tinyDB.remove("savedUser");
+                        tinyDB.putBoolean("is_logged_in", false);
 
-                            Toast.makeText(SettingUserActivity.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SettingUserActivity.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
 
-                            // Chuyển về màn hình đăng nhập
-                            Intent intent = new Intent(SettingUserActivity.this, LoginActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // clear backstack
-                            startActivity(intent);
-                        },
-                        error -> {
-                            Toast.makeText(SettingUserActivity.this, "Lỗi khi đăng xuất: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                );
-            }
+                        // Chuyển về màn hình đăng nhập
+                        Intent intent = new Intent(SettingUserActivity.this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // clear backstack
+                        startActivity(intent);
+                    },
+                    error -> {
+                        Toast.makeText(SettingUserActivity.this, "Lỗi khi đăng xuất: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+            );
         });
 
         changePwdBtn.setOnClickListener(new View.OnClickListener() {
@@ -125,13 +122,8 @@ public class SettingUserActivity extends AppCompatActivity {
 
     private void openNotificationSettings() {
         Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-        } else {
-            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-        }
+        intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -210,8 +202,8 @@ public class SettingUserActivity extends AppCompatActivity {
         try {
             jsonBody.put("email", email);
             jsonBody.put("password", password);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (JSONException ignored) {
+
         }
 
         VolleyHelper.getInstance(this).sendStringRequestWithAuth(
@@ -220,7 +212,7 @@ public class SettingUserActivity extends AppCompatActivity {
                 jsonBody.toString(),
                 true,
                 response -> {
-                    if (response.toString().equals("Delete Success!")) {
+                    if (response.equals("Delete Success!")) {
                         tinyDB.remove("token");
                         tinyDB.remove("addressShop");
                         tinyDB.remove("savedUser");

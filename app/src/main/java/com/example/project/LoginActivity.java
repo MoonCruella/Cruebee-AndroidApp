@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
         email.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Thực hiện hành động nếu cần trước khi text thay đổi
+
             }
 
             @Override

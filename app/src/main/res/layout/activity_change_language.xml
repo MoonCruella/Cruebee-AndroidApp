@@ -18,9 +18,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#80F5F5F5"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="-356dp">
+            android:background="#80F5F5F5">
         </View>
 
         <androidx.appcompat.widget.Toolbar
