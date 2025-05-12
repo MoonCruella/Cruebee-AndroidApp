@@ -15,22 +15,22 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -54,10 +54,11 @@ public class EnterAddressActivity extends AppCompatActivity {
 
     private EditText edtAddress,edtHouseNumber, edtStreet, edtWard, edtDistrict, edtProvince;
     private ImageView clearTextBtn;
+    private LottieAnimationView loadingBar;
+    private FrameLayout loadingOverlay;
     private ListView listView;
     private String selectedAddress;
     private Double lng,lat;
-    private ProgressBar progressBar;
     private TinyDB tinyDB;
     private FusedLocationProviderClient fusedLocationClient;
     private AddressAdapter addressAdapter;
@@ -74,7 +75,7 @@ public class EnterAddressActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_address);
-        ConstraintLayout mainLayout = findViewById(R.id.main);
+        FrameLayout mainLayout = findViewById(R.id.main);
         EdgeToEdge.enable(this);
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.red));
         ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
@@ -88,17 +89,17 @@ public class EnterAddressActivity extends AppCompatActivity {
         edtHouseNumber = findViewById(R.id.edtHouseNumber);
         edtWard = findViewById(R.id.edtWard);
         edtStreet = findViewById(R.id.edtStreet);
+        loadingBar = findViewById(R.id.loadingBar);
+        loadingOverlay = findViewById(R.id.loadingOverlay);
         edtDistrict = findViewById(R.id.edtDistrict);
         clearTextBtn = findViewById(R.id.clearTextBtn);
         edtProvince = findViewById(R.id.edtProvince);
         btnSave = findViewById(R.id.btnOk);
-        progressBar = findViewById(R.id.progressBar);
         txtAccessAddress = findViewById(R.id.txtAccessAddress);
         requestQueue = Volley.newRequestQueue(this);
         tinyDB = new TinyDB(this);
 
         address = (com.example.project.model.Address) getIntent().getSerializableExtra("object");
-        Log.d("ADDRESS",address.toString());
         addressAdapter = new AddressAdapter(this, addressList);
         listView.setAdapter(addressAdapter);
 
@@ -248,7 +249,6 @@ public class EnterAddressActivity extends AppCompatActivity {
     }
 
     private void fetchAddresses(String query) {
-
         String url = "https://nominatim.openstreetmap.org/search?format=json&countrycodes=VN&bounded=1&viewbox=102.14441,23.393395,109.46911,8.179066&addressdetails=1&q=" + query;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -266,7 +266,8 @@ public class EnterAddressActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }, error -> error.printStackTrace());
+                }, error -> {
+        });
 
         requestQueue.add(jsonArrayRequest);
     }
@@ -275,7 +276,8 @@ public class EnterAddressActivity extends AppCompatActivity {
     private Location lastLocation; // Lưu vị trí trước đó
 
     private void findAddress() {
-        progressBar.setVisibility(View.VISIBLE);
+        loadingOverlay.setVisibility(View.VISIBLE);
+        loadingBar.playAnimation();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Kiểm tra quyền truy cập vị trí
@@ -300,7 +302,8 @@ public class EnterAddressActivity extends AppCompatActivity {
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult != null && locationResult.getLastLocation() != null) {
                     Location newLocation = locationResult.getLastLocation();
-                    progressBar.setVisibility(View.GONE);
+                    loadingOverlay.setVisibility(View.GONE);
+                    loadingBar.cancelAnimation();
 
                     // Kiểm tra nếu vị trí thay đổi 50m
                     lastLocation = newLocation;
@@ -315,7 +318,6 @@ public class EnterAddressActivity extends AppCompatActivity {
     private void handleLocationResult(Location location) {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        Log.d("Location", "Lat: " + latitude + ", Lng: " + longitude);
         getAddressFromCoordinates(latitude, longitude);
     }
 
@@ -332,7 +334,6 @@ public class EnterAddressActivity extends AppCompatActivity {
                 if (addresses != null && !addresses.isEmpty()) {
                     Address address = addresses.get(0);
                     String uAddress =  addresses.get(0).getAddressLine(0);
-                    Log.d("Address",uAddress);
 
                     // Số nhà, đường
                     String streetAddress = address.getThoroughfare();

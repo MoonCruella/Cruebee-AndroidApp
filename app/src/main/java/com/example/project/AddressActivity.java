@@ -16,6 +16,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -32,6 +33,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -65,11 +67,11 @@ public class AddressActivity extends AppCompatActivity {
     private EditText edtAddress,edtHouseNumber, edtStreet, edtWard, edtDistrict, edtProvince;
     private ImageView clearTextBtn;
     private ListView listView;
+    private LottieAnimationView loadingBar;
+    private FrameLayout loadingOverlay;
     private String selectedAddress;
     private Double lng,lat;
     private User user;
-    private ProgressBar progressBar;
-    private ProgressDialog progressDialog;
     private TinyDB tinyDB;
     private FusedLocationProviderClient fusedLocationClient;
     private AddressAdapter addressAdapter;
@@ -84,7 +86,7 @@ public class AddressActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address);
-        ConstraintLayout mainLayout = findViewById(R.id.main);
+        FrameLayout mainLayout = findViewById(R.id.main);
         EdgeToEdge.enable(this);
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.red));
         ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
@@ -95,6 +97,8 @@ public class AddressActivity extends AppCompatActivity {
         edtAddress = findViewById(R.id.edtAddress);
         listView = findViewById(R.id.listView);
         addressForm = findViewById(R.id.address_form);
+        loadingBar = findViewById(R.id.loadingBar);
+        loadingOverlay = findViewById(R.id.loadingOverlay);
         edtHouseNumber = findViewById(R.id.edtHouseNumber);
         edtWard = findViewById(R.id.edtWard);
         edtStreet = findViewById(R.id.edtStreet);
@@ -102,7 +106,6 @@ public class AddressActivity extends AppCompatActivity {
         clearTextBtn = findViewById(R.id.clearTextBtn);
         edtProvince = findViewById(R.id.edtProvince);
         btnSave = findViewById(R.id.btnOk);
-        progressBar = findViewById(R.id.progressBar);
         txtAccessAddress = findViewById(R.id.txtAccessAddress);
         requestQueue = Volley.newRequestQueue(this);
         tinyDB = new TinyDB(this);
@@ -259,7 +262,6 @@ public class AddressActivity extends AppCompatActivity {
     private void fetchAddresses(String query) {
 
         String url = "https://nominatim.openstreetmap.org/search?format=json&countrycodes=VN&bounded=1&viewbox=102.14441,23.393395,109.46911,8.179066&addressdetails=1&q=" + query;
-
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     addressList.clear();
@@ -275,13 +277,16 @@ public class AddressActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }, error -> error.printStackTrace());
+                }, error -> {
+        });
 
         requestQueue.add(jsonArrayRequest);
     }
 
     private void findAddress() {
-        progressBar.setVisibility(View.VISIBLE);
+        loadingOverlay.setVisibility(View.VISIBLE);
+        loadingBar.playAnimation();
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Kiểm tra quyền truy cập vị trí
@@ -306,8 +311,8 @@ public class AddressActivity extends AppCompatActivity {
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult != null && locationResult.getLastLocation() != null) {
                     Location newLocation = locationResult.getLastLocation();
-                    progressBar.setVisibility(View.GONE);
-
+                    loadingOverlay.setVisibility(View.GONE);
+                    loadingBar.cancelAnimation();
                     handleLocationResult(newLocation);
 
                 }
@@ -391,12 +396,8 @@ public class AddressActivity extends AppCompatActivity {
             int is_primary = 1;
             com.example.project.model.Address addressRequest = new com.example.project.model.Address(userId,latitude,longitude,addressDetails,is_primary,username,"",sdt);
             tinyDB.putObject("address",addressRequest);
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Loading");
-            progressDialog.setMessage("Saving your address...");
-            progressDialog.setCancelable(false);
-
-            progressDialog.show();
+            loadingOverlay.setVisibility(View.VISIBLE);
+            loadingBar.playAnimation();
 
             String url = UrlUtil.ADDRESS + "addresses/save";
 
@@ -415,14 +416,16 @@ public class AddressActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
 
-                            progressDialog.dismiss();
+                            loadingOverlay.setVisibility(View.GONE);
+                            loadingBar.cancelAnimation();
                             Toast.makeText(AddressActivity.this, "Address saved successfully!", Toast.LENGTH_SHORT).show();
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            progressDialog.dismiss();
+                            loadingOverlay.setVisibility(View.GONE);
+                            loadingBar.cancelAnimation();
 
                         }
                     }

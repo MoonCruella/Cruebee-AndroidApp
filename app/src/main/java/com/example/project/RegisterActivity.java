@@ -26,8 +26,11 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.project.helpers.StringHelper;
+import com.example.project.model.User;
 import com.example.project.utils.UrlUtil;
 import com.example.project.volley.VolleySingleton;
 
@@ -91,39 +94,49 @@ public class RegisterActivity extends AppCompatActivity {
 
         gender.setOnItemClickListener((parent, view, position, id) -> itemGender = adapter.getItem(position).toString());
 
-        register_btn = (TextView) findViewById(R.id.register);
+        register_btn = findViewById(R.id.register);
         checkInput();
         register_btn.setOnClickListener(v -> {
+            boolean hasError = false;
+
             if(email.getText().toString().isEmpty()){
                 tvError1.setText("Không được để trống");
                 tvError1.setVisibility(View.VISIBLE);
+                hasError = true;
             }
             if(password.getText().toString().isEmpty()){
                 tvError3.setText("Không được để trống");
                 tvError3.setVisibility(View.VISIBLE);
+                hasError = true;
             }
             if(re_password.getText().toString().isEmpty()){
                 tvError4.setText("Không được để trống");
                 tvError4.setVisibility(View.VISIBLE);
+                hasError = true;
             }
             if(sdt.getText().toString().isEmpty()){
                 tvError.setText("Không được để trống");
                 tvError.setVisibility(View.VISIBLE);
+                hasError = true;
             }
             if(gender.getText().toString().isEmpty()){
                 tvError5.setText("Không được để trống");
                 tvError5.setVisibility(View.VISIBLE);
+                hasError = true;
             }
             if(username.getText().toString().isEmpty()){
                 tvError2.setText("Không được để trống");
                 tvError2.setVisibility(View.VISIBLE);
+                hasError = true;
             }
-            if(tvError.isShown() || tvError2.isShown() || tvError1.isShown() || tvError3.isShown() || tvError4.isShown() || tvError5.isShown()){
-                return;
-            }else{
-                registerUser(v);
+
+            if (hasError) {
+                return; // Ngừng gọi API nếu có lỗi
             }
+
+            registerUser(v); // Gọi API nếu không có lỗi
         });
+
     }
 
     public void registerUser(View view){
@@ -140,24 +153,33 @@ public class RegisterActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST, UrlUtil.ADDRESS +
                 "register",
-                response -> {
+                new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
                     loadingOverlay.setVisibility(View.GONE);
                     loadingBar.cancelAnimation();
-                    Toast.makeText(RegisterActivity.this,"" + response,Toast.LENGTH_SHORT).show();
-                    register_btn.setEnabled(true);
-                    if(response.equals("User registration successful")){
+                    if(response.trim().equals("User registration successful")){
                         Intent intent = new Intent(RegisterActivity.this,ConfirmOTPActivity.class);
                         // Su dung putExtra để pass biến email1 qua Activity khác
                         intent.putExtra("USER_EMAIL",email1);
                         startActivity(intent);
+                        finish();
                     }
-                },
-                error -> {
+                    else if(response.trim().equals("Email existed!!!")){
+                        register_btn.setEnabled(true);
+                        Toast.makeText(RegisterActivity.this,"Email đã tồn tại",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
                     loadingOverlay.setVisibility(View.GONE);
                     loadingBar.cancelAnimation();
                     Toast.makeText(RegisterActivity.this,"" + error,Toast.LENGTH_SHORT).show();
                     register_btn.setEnabled(true);
                 }
+            }
         ){
             @Override
             public byte[] getBody() throws AuthFailureError {
@@ -181,7 +203,7 @@ public class RegisterActivity extends AppCompatActivity {
                 return headerMap;
             }
         };
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(60 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
     }
 

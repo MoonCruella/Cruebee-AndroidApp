@@ -7,4 +7,9 @@
         <item name="cornerSizeBottomLeft">60dp</item> <!-- 1/2 chiều rộng -->
         <item name="cornerSizeBottomRight">60dp</item>
     </style>
+    <style name="DimDialogTheme" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item> <!-- Độ mờ -->
+    </style>
 </resources>

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Payment implements Serializable {
+    private int id;
     private User user;
     private String addressUser;
     private AddressShop shop;
@@ -18,7 +19,8 @@ public class Payment implements Serializable {
     private List<PaymentProduct> products;
     private String paymentMethod;
 
-    public Payment(User user, String addressUser, AddressShop shop, String fullName, String sdt, String note, Boolean utensils, Long totalPrice, LocalDateTime orderDate, List<PaymentProduct> products, String paymentMethod,String status) {
+    public Payment(int id,User user, String addressUser, AddressShop shop, String fullName, String sdt, String note, Boolean utensils, Long totalPrice, LocalDateTime orderDate, List<PaymentProduct> products, String paymentMethod,String status) {
+        this.id = id;
         this.user = user;
         this.addressUser = addressUser;
         this.shop = shop;
@@ -127,5 +129,13 @@ public class Payment implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

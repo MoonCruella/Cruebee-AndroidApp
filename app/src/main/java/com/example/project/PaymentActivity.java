@@ -344,7 +344,6 @@ public class PaymentActivity extends AppCompatActivity {
         addressTxt = findViewById(R.id.txtAddress);
         checkBox = findViewById(R.id.checkBox);
         btnDatHang = findViewById(R.id.btnDatHang);
-        btnDatHang.setAlpha(0.5f);
         fullName = findViewById(R.id.fullName);
         sdt = findViewById(R.id.eTxtPhone);
         note = findViewById(R.id.eTxtNote);
@@ -361,6 +360,12 @@ public class PaymentActivity extends AppCompatActivity {
         {
             Address addressUser = tinyDB.getObject("address", Address.class);
             addUser = addressUser.getAddress_details();
+        }
+        if(checkBox.isChecked()){
+            btnDatHang.setAlpha(1f);
+        }
+        else {
+            btnDatHang.setAlpha(0.5f);
         }
         try {
             initList();
@@ -384,11 +389,11 @@ public class PaymentActivity extends AppCompatActivity {
         });
         checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                btnDatHang.setAlpha(1.0f);
                 btnDatHang.setEnabled(true);
+                btnDatHang.setAlpha(1f);
             } else {
-                btnDatHang.setAlpha(0.5f);
                 btnDatHang.setEnabled(false);
+                btnDatHang.setAlpha(0.5f);
             }
         });
         sdt.addTextChangedListener(new TextWatcher() {
@@ -489,6 +494,7 @@ public class PaymentActivity extends AppCompatActivity {
         TextView okBtn = view.findViewById(R.id.okBtn);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(view);
+        builder.setCancelable(false);
         final AlertDialog alertDialog = builder.create();
         okBtn.findViewById(R.id.okBtn).setOnClickListener(v -> {
             alertDialog.dismiss();

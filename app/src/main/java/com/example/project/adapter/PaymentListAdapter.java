@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,11 +22,13 @@ import java.util.List;
 
 public class PaymentListAdapter extends RecyclerView.Adapter<PaymentListAdapter.PaymentListHolder>{
     private Context context;
+    private ActivityResultLauncher<Intent> launcher;
     private List<Payment> paymentList;
 
-    public PaymentListAdapter(Context context, List<Payment> paymentList) {
+    public PaymentListAdapter(Context context, List<Payment> paymentList, ActivityResultLauncher<Intent> launcher) {
         this.context = context;
         this.paymentList = paymentList;
+        this.launcher = launcher;
     }
 
     @NonNull
@@ -46,9 +50,9 @@ public class PaymentListAdapter extends RecyclerView.Adapter<PaymentListAdapter.
         holder.detailTxt.setText(payment.getProducts().size() + " phần - " + formattedPrice);
         holder.constraintLayout.setOnClickListener(v -> {
             Intent intent = new Intent(context, OrderDetailActivity.class);
-            intent.putExtra("object",payment);
-            intent.putExtra("stt",position + 1);
-            context.startActivity(intent);
+            intent.putExtra("object", payment);
+            intent.putExtra("stt", position + 1);
+            launcher.launch(intent);
         });
     }
 

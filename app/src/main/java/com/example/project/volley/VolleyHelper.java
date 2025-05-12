@@ -197,8 +197,6 @@ public class VolleyHelper {
                         JSONObject obj = new JSONObject(response);
                         tinyDB.putString("token", obj.getString("accessToken"));
                         tinyDB.putString("refresh_token", obj.getString("refreshToken"));
-                        Log.e(TAG, "TOKEN REFRESHED.");
-                        Toast.makeText(context, "Đã làm mới token", Toast.LENGTH_SHORT).show();
                         onSuccess.run(); // Gọi lại các request bị chặn
                     } catch (JSONException e) {
                         e.printStackTrace();

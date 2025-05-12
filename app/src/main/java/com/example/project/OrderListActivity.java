@@ -2,12 +2,18 @@ package com.example.project;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -16,6 +22,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -40,10 +48,11 @@ import java.util.List;
 public class OrderListActivity extends AppCompatActivity {
     private TinyDB tinyDB;
     private RecyclerView recyclerView;
+    private ActivityResultLauncher<Intent> orderDetailLauncher;
     private PaymentListAdapter paymentListAdapter;
     private List<Payment> payments;
     private RequestQueue requestQueue;
-    private ProgressBar loading_spinner;
+    private LottieAnimationView loading_spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +73,21 @@ public class OrderListActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.paymentList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         tinyDB = new TinyDB(this);
-        paymentListAdapter = new PaymentListAdapter(OrderListActivity.this, payments);
-        recyclerView.setAdapter(paymentListAdapter);
 
+        orderDetailLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null && data.getBooleanExtra("canceled", false)) {
+                            payments.clear();
+                            getPayment(0);
+                        }
+                    }
+                }
+        );
+        paymentListAdapter = new PaymentListAdapter(OrderListActivity.this, payments,orderDetailLauncher);
+        recyclerView.setAdapter(paymentListAdapter);
         getPayment(0);
 
 
@@ -84,7 +105,7 @@ public class OrderListActivity extends AppCompatActivity {
             ArrayList<Integer> payments = tinyDB.getListInt("paymentList");
             userId = 1;
             String tem = StringHelper.createPaymentIdsQuery(payments);
-            url = UrlUtil.ADDRESS + "payment/findByIds?" + tem;
+            url = UrlUtil.ADDRESS + "payment/findByIds?" + tem + "&page=" + currentPage + "&pageSize=" + 6;
         }
 
         int finalUserId = userId;
@@ -107,6 +128,7 @@ public class OrderListActivity extends AppCompatActivity {
                             Long totalprice = payment.getLong("totalPrice");
                             Boolean utensils = payment.getBoolean("utensils");
                             String sdt = payment.getString("sdt");
+                            int paymentId = payment.getInt("id");
                             String note = payment.getString("note");
                             String status = payment.getString("status");
                             String orDate = payment.getString("orderDate");
@@ -132,31 +154,38 @@ public class OrderListActivity extends AppCompatActivity {
                             }
 
                             User user = new User(finalUserId);
-                            Payment payment1 = new Payment(user, addressUser, addressShop, fullname, sdt, note, utensils, totalprice, orderDate, productList, method, status);
+                            Payment payment1 = new Payment(paymentId,user, addressUser, addressShop, fullname, sdt, note, utensils, totalprice, orderDate, productList, method, status);
+                            Log.e("ID", String.valueOf(payment1.getId()));
                             payments.add(payment1);
                         }
-                        loading_spinner.setVisibility(GONE);
-                        paymentListAdapter.notifyDataSetChanged();
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            loading_spinner.setVisibility(GONE);
+                            paymentListAdapter.notifyDataSetChanged();
 
-                        // Tự động tăng số trang khi load xong trang này
-                        if (hasMoreData) {
-                            getPayment(currentPage + 1);
-                        }
+                            // Tự động tăng số trang khi load xong trang này
+                            if (hasMoreData) {
+                                getPayment(currentPage + 1);
+                            }
+                        }, 2000);
 
                     } catch (JSONException e) {
                         Toast.makeText(OrderListActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
                         Log.e("ERROR", e.toString());
-                        loading_spinner.setVisibility(GONE);
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            loading_spinner.setVisibility(GONE);
+                        }, 2000);
                     }
                 },
                 error -> {
 
                     Log.e("NETWORK_ERROR", error.toString());
-                    loading_spinner.setVisibility(GONE);
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        loading_spinner.setVisibility(GONE);
+                    }, 2000);
                 }
         );
 
-        request.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        request.setRetryPolicy(new DefaultRetryPolicy(60 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(request);
     }
     private LocalDateTime parseTime(String dateTimeJson)
@@ -174,4 +203,5 @@ public class OrderListActivity extends AppCompatActivity {
 
         return LocalDateTime.of(year, month, day, hour, minute, second, nano);
     }
+
 }

@@ -10,16 +10,21 @@ public class StringHelper {
         return EMAIL_REGEX.matcher(email).matches();
     }
     public static boolean isValidVietnamPhone(String input) {
-        // Loại bỏ ký tự không phải số
-        String phone = input.replaceAll("[^0-9]", "");
-
-        // Chuyển từ 84 -> 0 nếu cần
-        if (phone.startsWith("84")) {
-            phone = "0" + phone.substring(2);
+        // Không được chứa ký tự không phải số (trừ + ở đầu)
+        if (!input.matches("^\\+?\\d+$")) {
+            return false;
         }
 
-        // Kiểm tra độ dài và bắt đầu bằng các đầu số hợp lệ
-        return (phone.length() == 10 || phone.length() == 11) && phone.matches("0[1-9][0-9]{8,9}");
+        // Xử lý chuyển đổi 84 về 0
+        String phone = input;
+        if (phone.startsWith("84")) {
+            phone = "0" + phone.substring(2);
+        } else if (phone.startsWith("+84")) {
+            phone = "0" + phone.substring(3);
+        }
+
+        // Kiểm tra định dạng số Việt Nam (10 chữ số, bắt đầu bằng 0[1-9])
+        return phone.matches("0[1-9][0-9]{8}");
     }
     public static boolean isValidPassword(String password){
         String PASSWORD_SPECIAL_CHARS = "@#$%^`<>&+=\"!ºª·#~%&'¿¡€,:;*/+-.=_\\[\\]\\(\\)\\|\\_\\?\\\\";

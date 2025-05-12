@@ -1,5 +1,8 @@
 package com.example.project;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
@@ -10,12 +13,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -60,7 +63,7 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
-        ConstraintLayout mainLayout = findViewById(R.id.main);
+        FrameLayout mainLayout = findViewById(R.id.main);
         EdgeToEdge.enable(this);
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.red));
         ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
@@ -236,8 +239,11 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
 
         Bundle b = getIntent().getExtras();
         String name = (b != null) ? b.getString("opened_fragment") : null;
-
         if ("MENU".equals(name)) {
+            if(!hasShopAddress){
+                showErrorDialog("Bạn vui lòng nhập địa chỉ/chọn cửa hàng nhé!");
+                return;
+            }
             viewPager.setCurrentItem(1, true);
         }
         else if("SHOW_MORE".equals(name)){
@@ -279,23 +285,35 @@ public class BaseActivity extends AppCompatActivity implements OnFragmentSwitchL
             super.onBackPressed();  // Default back press behavior
         }
     }
-    private void showErrorDialog(String mess){
-        ConstraintLayout errorConstrlayout = findViewById(R.id.errrorConstraintLayout);
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_error,errorConstrlayout);
+    private void showErrorDialog(String mess) {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_error, null);
+
         TextView errorClose = view.findViewById(R.id.errorClose);
         TextView errorDes = view.findViewById(R.id.errorDes);
         errorDes.setText(mess);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(view);
+        builder.setCancelable(false);
+
         final AlertDialog alertDialog = builder.create();
-        errorClose.findViewById(R.id.errorClose).setOnClickListener(new View.OnClickListener() {
+
+        View overlayView = findViewById(R.id.overlayView);
+        if (overlayView != null) {
+            overlayView.setVisibility(VISIBLE); // Hiển thị nền mờ
+        }
+
+        errorClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+                if (overlayView != null) {
+                    overlayView.setVisibility(GONE); // Ẩn nền mờ
+                }
             }
         });
-        if(alertDialog.getWindow() != null){
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0)); // Nền trong suốt
         }
         alertDialog.show();
     }

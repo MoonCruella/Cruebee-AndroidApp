@@ -1,5 +1,8 @@
 package com.example.project;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
@@ -7,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +30,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +38,7 @@ import org.json.JSONObject;
 public class SettingUserActivity extends AppCompatActivity {
     private SwitchMaterial switchNotification;
     private TextView logoutBtn,deleteBtn;
+    private View overlayView;
     private TinyDB tinyDB;
     private ConstraintLayout changePwdBtn,changeLanguBtn;
 
@@ -41,7 +47,7 @@ public class SettingUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_user);
-        ConstraintLayout mainLayout = findViewById(R.id.main);
+        FrameLayout mainLayout = findViewById(R.id.main);
         EdgeToEdge.enable(this);
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.red));
         ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
@@ -55,6 +61,7 @@ public class SettingUserActivity extends AppCompatActivity {
         changeLanguBtn = findViewById(R.id.changeLanguBtn);
         deleteBtn = findViewById(R.id.deleteAccBtn);
         logoutBtn = findViewById(R.id.logoutBtn);
+        overlayView = findViewById(R.id.overlayView);
         tinyDB = new TinyDB(this);
 
         deleteBtn.setOnClickListener(v -> showConfirmDialog());
@@ -141,11 +148,19 @@ public class SettingUserActivity extends AppCompatActivity {
         TextView cancelBtn = view.findViewById(R.id.cancelBtn);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(view);
+        builder.setCancelable(false);
+        if (overlayView != null) {
+            overlayView.setVisibility(VISIBLE); // Hiển thị nền mờ
+        }
+
         final AlertDialog alertDialog = builder.create();
         cancelBtn.findViewById(R.id.cancelBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+                if (overlayView != null) {
+                    overlayView.setVisibility(GONE);
+                }
             }
         });
         okBtn.findViewById(R.id.okBtn).setOnClickListener(new View.OnClickListener() {
@@ -173,12 +188,16 @@ public class SettingUserActivity extends AppCompatActivity {
         String email = user.getEmail();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(view);
+        builder.setCancelable(false);
         final AlertDialog alertDialog = builder.create();
 
         cancelBtn.findViewById(R.id.cancelBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+                if (overlayView != null) {
+                    overlayView.setVisibility(GONE);
+                }
             }
         });
 
@@ -235,11 +254,15 @@ public class SettingUserActivity extends AppCompatActivity {
         TextView okBtn = view.findViewById(R.id.okBtn);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(view);
+        builder.setCancelable(false);
         final AlertDialog alertDialog = builder.create();
         okBtn.findViewById(R.id.okBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+                if (overlayView != null) {
+                    overlayView.setVisibility(GONE);
+                }
                 Intent intent = new Intent(SettingUserActivity.this,LoginActivity.class);
                 startActivity(intent);
                 finish();

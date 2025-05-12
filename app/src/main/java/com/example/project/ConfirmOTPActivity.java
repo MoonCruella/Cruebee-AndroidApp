@@ -86,7 +86,6 @@ public class ConfirmOTPActivity extends AppCompatActivity {
         loadingOverlay.setVisibility(View.VISIBLE);
         loadingBar.playAnimation();
 
-
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST, UrlUtil.ADDRESS + "verify-account",
                 new Response.Listener<String>() {
@@ -146,7 +145,7 @@ public class ConfirmOTPActivity extends AppCompatActivity {
             }
 
         };
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(60 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
     }
     public void resendOTP(View view)
@@ -183,7 +182,7 @@ public class ConfirmOTPActivity extends AppCompatActivity {
             }
 
         };
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(60 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
     }
     private void showErrorDialog(){

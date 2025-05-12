@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,9 +48,10 @@ public class CartDialog extends Dialog {
     private OnFragmentSwitchListener listener;
     private TinyDB tinyDB;
     private boolean hasShopAddress;
-
-    public CartDialog(@NonNull Context context, OnFragmentSwitchListener listener) {
-        super(context);
+    private final Activity activity;
+    public CartDialog(@NonNull Activity activity, OnFragmentSwitchListener listener) {
+        super(activity);
+        this.activity = activity;
         this.listener = listener;
     }
 
@@ -109,18 +109,17 @@ public class CartDialog extends Dialog {
         thanhToanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!hasShopAddress){
+                if (!hasShopAddress) {
                     if (listener != null) {
                         listener.onSwitchToFragment("HOME"); // Gọi phương thức để chuyển Fragment
                     }
                     dismiss();
-                }
-                else if(cartList_temp.isEmpty()){
-                    showDialog();
-                }
-                else {
+                } else if (cartList_temp.isEmpty()) {
                     dismiss();
-                    Intent intent = new Intent(getContext(),PaymentActivity.class);
+                    showDialog();
+                } else {
+                    dismiss();
+                    Intent intent = new Intent(getContext(), PaymentActivity.class);
                     getContext().startActivity(intent);
                 }
 
@@ -168,6 +167,7 @@ public class CartDialog extends Dialog {
                 String formattedPrice = decimalFormat.format(totalFee) + " đ";
                 giaTxt.setText(formattedPrice);
             }
+
             @Override
             public void onError(String errorMessage) {
                 Log.e(TAG, "Lỗi khi tính tổng tiền: " + errorMessage);
@@ -176,49 +176,25 @@ public class CartDialog extends Dialog {
 
     }
 
-    @Override
-    public void show() {
-        Context context = getContext();
-
-        // Nếu là activity thì kiểm tra thêm
-        if (context instanceof Activity) {
-            Activity activity = (Activity) context;
-            if (activity.isFinishing()) {
-                return;
-            }
-        }
-
-        try {
-            super.show();              // Hiển thị dialog
-            initList();                // Load lại giỏ hàng
-            updateTotalPrice();        // Cập nhật giá
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (Exception ex) {
-            Log.e(TAG, "Lỗi khi hiển thị dialog: " + ex.getMessage());
-        }
-    }
-
-
     private void showDialog() {
         Context context = getContext();
-        if (!(context instanceof Activity)) return;
-
-        Activity activity = (Activity) context;
-        if (activity.isFinishing() || activity.isDestroyed()) {
-            return;
+        View overlayView = activity.findViewById(R.id.overlayView);
+        if (overlayView != null) {
+            overlayView.setVisibility(View.VISIBLE);
         }
-
-        ConstraintLayout errorConstrlayout = findViewById(R.id.successConstraintLayout);
-        View view = LayoutInflater.from(context).inflate(R.layout.dialog_empty_cart, errorConstrlayout);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_empty_cart, null);
         TextView okBtn = view.findViewById(R.id.okBtn);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(view);
+        builder.setCancelable(false);
         final AlertDialog alertDialog = builder.create();
 
         okBtn.setOnClickListener(v -> {
             alertDialog.dismiss();
+            if (overlayView != null) {
+                overlayView.setVisibility(View.GONE);
+            }
             if (listener != null) {
                 listener.onSwitchToFragment("MENU");
             }
@@ -230,12 +206,6 @@ public class CartDialog extends Dialog {
         }
 
         alertDialog.show();
-    }
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (isShowing()) {
-            dismiss(); // Tránh rò rỉ
-        }
+
     }
 }

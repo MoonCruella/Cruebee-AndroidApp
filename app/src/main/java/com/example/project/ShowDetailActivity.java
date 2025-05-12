@@ -1,13 +1,14 @@
 package com.example.project;
 
-import android.app.AlertDialog;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Outline;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
@@ -17,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -32,7 +32,7 @@ import eightbitlab.com.blurview.BlurView;
 
 public class ShowDetailActivity extends AppCompatActivity {
     private TextView addToCartBtn,thanhtoanBtn;
-    private TextView titleTxt,feeTxt,desTxt,countTxt;
+    private TextView titleTxt,feeTxt,desTxt,countTxt,soldCount;
     private ImageView plusBtn,minusBtn,picFood;
     private ManagementCart managementCart;
     private Food object;
@@ -45,7 +45,7 @@ public class ShowDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_show_detail);
-        ConstraintLayout mainLayout = findViewById(R.id.main);
+        FrameLayout mainLayout = findViewById(R.id.main);
 
         ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
             Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
@@ -66,6 +66,7 @@ public class ShowDetailActivity extends AppCompatActivity {
         desTxt = findViewById(R.id.descriptionTxt);
         countTxt = findViewById(R.id.countTxt);
         plusBtn = findViewById(R.id.plusImgView);
+        soldCount = findViewById(R.id.soldCount);
         minusBtn = findViewById(R.id.minusImgView);
         picFood = findViewById(R.id.foodImgView);
         tinyDB = new TinyDB(this);
@@ -114,6 +115,7 @@ public class ShowDetailActivity extends AppCompatActivity {
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         String formattedPrice = decimalFormat.format(object.getPrice()) + " đ";
         feeTxt.setText(formattedPrice);
+        soldCount.setText("Đã bán: " + String.valueOf(object.getSoldCount()) + " ");
         desTxt.setText(object.getDescription());
         Glide.with(this).load(object.getImage()).into(picFood);
         plusBtn.setOnClickListener(new View.OnClickListener() {
@@ -191,29 +193,30 @@ public class ShowDetailActivity extends AppCompatActivity {
         });
     }
     private void showErrorDialogAndFinish() {
-        ConstraintLayout errorConstrlayout = findViewById(R.id.errrorConstraintLayout);
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_error, errorConstrlayout);
-        TextView errorClose = view.findViewById(R.id.errorClose);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(view);
-        final AlertDialog alertDialog = builder.create();
-
-        errorClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                finish(); // Chỉ gọi finish() sau khi bấm OK
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_error);
+        View overlayView = findViewById(R.id.overlayView);
+        if (overlayView != null) {
+            overlayView.setVisibility(VISIBLE); // Hiển thị nền mờ
+        }
+        dialog.setCancelable(false);
+        TextView errorClose = dialog.findViewById(R.id.errorClose);
+        errorClose.setOnClickListener(v -> {
+            dialog.dismiss();
+            if(overlayView != null){
+                overlayView.setVisibility(GONE);
             }
+            finish();
         });
 
-        if (alertDialog.getWindow() != null) {
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0)); // Nền trong suốt
         }
-
-        alertDialog.show();
+        if (overlayView != null) {
+            overlayView.setVisibility(VISIBLE); // Hiển thị nền mờ
+        }
+        dialog.show();
     }
-
-
 
 
 }
