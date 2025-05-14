@@ -252,7 +252,7 @@ public class PaymentActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);
                             }
-                            showErrorDialog();
+                            showDialog();
                         }
                         else{
                             Toast.makeText(PaymentActivity.this, "Thanh toán that bai", Toast.LENGTH_SHORT).show();
@@ -488,7 +488,7 @@ public class PaymentActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         ZaloPaySDK.getInstance().onResult(intent);
     }
-    private void showErrorDialog(){
+    private void showDialog(){
         ConstraintLayout errorConstrlayout = findViewById(R.id.successConstraintLayout);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_order_success,errorConstrlayout);
         TextView okBtn = view.findViewById(R.id.okBtn);

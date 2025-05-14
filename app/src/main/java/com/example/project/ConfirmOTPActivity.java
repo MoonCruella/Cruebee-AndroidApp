@@ -104,6 +104,7 @@ public class ConfirmOTPActivity extends AppCompatActivity {
                                 tinyDB.putString("refresh_token",refresh_token);
                                 showErrorDialog();
                             }
+
                             // Hiện nút resend
                             else if (mess.equals("OTP has expired. Please regenerate and try again.")) {
                                 loadingOverlay.setVisibility(View.GONE);
@@ -111,6 +112,7 @@ public class ConfirmOTPActivity extends AppCompatActivity {
                                 resend_tv.setVisibility(View.VISIBLE);
                                 Toast.makeText(ConfirmOTPActivity.this,"Mã OTP đã quá hạn. Vui lòng gửi lại mã", Toast.LENGTH_SHORT).show();
                             }
+
                             // Hiện nút resend
                             else if (mess.equals("Invalid OTP. Please check and try again.")) {
                                 loadingOverlay.setVisibility(View.GONE);

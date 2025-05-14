@@ -181,7 +181,7 @@ public class ManagementCart {
                 @Override
                 public void onSuccess() {
                     try {
-                        changeNumberItemsListener.change(); // ✅ chỉ gọi khi server OK
+                        changeNumberItemsListener.change();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -209,7 +209,7 @@ public class ManagementCart {
                     @Override
                     public void onSuccess() {
                         try {
-                            changeNumberItemsListener.change(); // ✅ chỉ gọi khi server OK
+                            changeNumberItemsListener.change();
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -235,7 +235,7 @@ public class ManagementCart {
                     @Override
                     public void onSuccess() {
                         try {
-                            changeNumberItemsListener.change(); // ✅ chỉ gọi khi server OK
+                            changeNumberItemsListener.change();
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -263,7 +263,7 @@ public class ManagementCart {
                 @Override
                 public void onSuccess() {
                     try {
-                        changeNumberItemsListener.change(); // ✅ chỉ gọi khi server OK
+                        changeNumberItemsListener.change();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -286,7 +286,7 @@ public class ManagementCart {
                 @Override
                 public void onSuccess() {
                     try {
-                        changeNumberItemsListener.change(); // ✅ chỉ gọi khi server OK
+                        changeNumberItemsListener.change();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -325,7 +325,6 @@ public class ManagementCart {
         });
     }
 
-    // Hàm gọi API để cập nhật giỏ hàng khi người dùng đã đăng nhập
     private void deleteFromCart(Food food, UpdateCartCallback callback) {
         String url = UrlUtil.ADDRESS + "cart/delete";
 
