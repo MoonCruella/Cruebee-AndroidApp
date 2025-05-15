@@ -35,7 +35,7 @@
                 android:layout_marginTop="100dp"
                 android:layout_gravity="center|top"
                 android:textColor="@color/white"
-                android:fontFamily="@font/fonts_com_merge_bold" />
+                android:fontFamily="@font/fonts_nunito_black" />
 
             <androidx.cardview.widget.CardView
                 app:cardCornerRadius="32dp"
@@ -62,7 +62,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="20dp"
                             android:layout_marginTop="10dp"
-                            android:fontFamily="@font/fonts_com_merge_bold"
+                            android:fontFamily="@font/fonts_nunito_black"
                             android:text="Đăng nhập"
                             android:textColor="@color/red"
                             android:textSize="22sp"
@@ -111,7 +111,7 @@
                                 android:id="@+id/password"
                                 android:layout_width="match_parent"
                                 android:hint="Mật khẩu *"
-                                android:text="Munlatrang.04"
+                                android:text=""
                                 android:background="@drawable/border_btn_1"
                                 android:layout_height="wrap_content"
                                 android:padding="12dp"
@@ -161,7 +161,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/btn_more_radius"
-                        android:fontFamily="@font/fonts_com_merge_bold"
+                        android:fontFamily="@font/fonts_nunito_black"
                         android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:id="@+id/loginBtn"
@@ -184,7 +184,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="20dp"
                         android:background="@drawable/btn_more_radius"
-                        android:fontFamily="@font/fonts_com_merge_bold"
+                        android:fontFamily="@font/fonts_nunito_black"
                         android:gravity="center"
                         android:padding="12dp"
                         android:text="Đặt Hàng Không Cần Đăng Nhập"

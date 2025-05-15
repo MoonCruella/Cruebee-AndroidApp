@@ -41,7 +41,7 @@
             android:layout_marginBottom="30dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:fontFamily="@font/fonts_com_merge_bold"
+            android:fontFamily="@font/fonts_nunito_black"
             android:text="Shop"
             android:textStyle="bold"
             android:textColor="@color/red"

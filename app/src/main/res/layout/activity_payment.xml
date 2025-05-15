@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/fonts_com_merge_bold"
+            android:fontFamily="@font/fonts_nunito_black"
             android:text="Thông tin đơn hàng"
             android:textColor="@color/white"
             android:textSize="20sp"
@@ -180,7 +180,7 @@
                     android:text="Món ăn đã chọn"
                     android:textSize="16sp"
                     android:textColor="@color/black"
-                    android:fontFamily="@font/fonts_com_merge_bold" />
+                    android:fontFamily="@font/fonts_nunito_black" />
                 <TextView
                     android:id="@+id/btnAddFood"
                     android:layout_width="wrap_content"

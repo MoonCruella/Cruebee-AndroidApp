@@ -72,6 +72,7 @@ public class EditAccountActivity extends AppCompatActivity {
         emailTxt.setText(user.getEmail());
         sdtTxt.setText(user.getSdt());
         genderTxt.setText(user.getGender(),false);
+        Log.d("gender",user.getGender());
         saveTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

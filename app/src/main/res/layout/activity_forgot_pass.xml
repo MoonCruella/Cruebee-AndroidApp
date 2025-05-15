@@ -35,7 +35,7 @@
         android:layout_marginTop="100dp"
         android:layout_gravity="center|top"
         android:textColor="@color/white"
-        android:fontFamily="@font/fonts_com_merge_bold" />
+        android:fontFamily="@font/fonts_nunito_black" />
 
     <androidx.cardview.widget.CardView
         app:cardCornerRadius="32dp"
@@ -56,7 +56,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/fonts_com_merge_bold"
+            android:fontFamily="@font/fonts_nunito_black"
             android:text="Quên mật khẩu "
             android:layout_marginBottom="20dp"
             android:textColor="@color/red"
