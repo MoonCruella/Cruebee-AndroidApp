@@ -23,7 +23,7 @@
         app:layout_constraintWidth_max="130dp"
         android:layout_height="wrap_content"
         android:maxLines="2"
-        android:fontFamily="@font/fonts_com_merge_bold"
+        android:fontFamily="@font/fonts_nunito_black"
         android:ellipsize="end"
         android:text="Name"
         android:textColor="@color/black"

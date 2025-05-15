@@ -35,7 +35,7 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/red_button"
             android:backgroundTint="#20BF55"
-            android:fontFamily="@font/fonts_com_merge_bold"
+            android:fontFamily="@font/fonts_nunito_black"
             android:foreground="?attr/selectableItemBackground"
             android:paddingStart="26dp"
             android:paddingTop="14dp"

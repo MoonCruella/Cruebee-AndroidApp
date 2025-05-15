@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:fontFamily="@font/fonts_com_merge_bold"
+                android:fontFamily="@font/fonts_nunito_black"
                 android:maxWidth="200dp"
                 android:textSize="16sp"
                 android:text="Combo ăn một mình"
@@ -60,13 +60,13 @@
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/red"
                 android:textSize="16sp"
-                android:fontFamily="@font/fonts_com_merge_bold" />
+                android:fontFamily="@font/fonts_nunito_black" />
 
             <TextView
                 android:id="@+id/btnBuy"
                 android:background="@drawable/border"
                 android:backgroundTint="@color/red"
-                android:fontFamily="@font/fonts_com_merge_bold"
+                android:fontFamily="@font/fonts_nunito_black"
                 android:paddingStart="30dp"
                 android:paddingEnd="30dp"
                 android:paddingTop="10dp"

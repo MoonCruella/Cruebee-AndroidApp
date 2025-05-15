@@ -50,7 +50,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.txtCategory.setText(category.getName());
         Glide.with(context).load(category.getImage()).into(holder.imgCategory);
         Typeface normalFont = ResourcesCompat.getFont(context, R.font.roboto);
-        Typeface boldFont = ResourcesCompat.getFont(context, R.font.fonts_com_merge_bold);
+        Typeface boldFont = ResourcesCompat.getFont(context, R.font.fonts_nunito_black);
         holder.viewUnderline.setVisibility(position == selectedPosition ? View.VISIBLE : View.GONE);
         holder.txtCategory.setTypeface(position == selectedPosition ? boldFont : normalFont);
         // Xử lý sự kiện click

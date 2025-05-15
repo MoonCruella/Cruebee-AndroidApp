@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:fontFamily="@font/fonts_com_merge_bold"
+            android:fontFamily="@font/fonts_nunito_black"
             android:textColor="#ffffff"
             android:text="Nhập địa chỉ"
             android:textSize="20sp"

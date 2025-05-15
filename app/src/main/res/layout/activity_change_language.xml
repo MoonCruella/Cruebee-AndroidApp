@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/fonts_com_merge_bold"
+                android:fontFamily="@font/fonts_nunito_black"
                 android:text="Thay đổi ngôn ngữ"
                 android:textColor="@color/white"
                 android:textSize="20sp"
