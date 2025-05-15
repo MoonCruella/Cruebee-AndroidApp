@@ -12,7 +12,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.project.OrderDetailActivity;
+import com.example.project.activity.OrderDetailActivity;
 import com.example.project.R;
 import com.example.project.model.Payment;
 

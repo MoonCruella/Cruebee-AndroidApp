@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddressDetailsActivity">
+    tools:context=".activity.AddressDetailsActivity">
   <View
       android:id="@+id/view2"
       android:layout_width="match_parent"

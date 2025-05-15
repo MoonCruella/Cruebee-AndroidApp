@@ -42,7 +42,7 @@
                 android:id="@+id/cardView"
                 android:layout_gravity="center"
                 app:cardElevation="20dp"
-                tools:context=".CartDialog"
+                tools:context=".activity.CartDialog"
                 app:cardUseCompatPadding="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

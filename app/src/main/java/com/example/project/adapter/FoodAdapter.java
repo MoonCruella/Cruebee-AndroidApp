@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.project.R;
-import com.example.project.ShowDetailActivity;
+import com.example.project.activity.ShowDetailActivity;
 import com.example.project.model.Food;
 
 import java.text.DecimalFormat;

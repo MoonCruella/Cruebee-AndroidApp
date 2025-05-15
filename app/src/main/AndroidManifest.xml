@@ -25,46 +25,46 @@
         tools:replace="android:theme"
         tools:targetApi="31">
         <activity
-            android:name=".PolicyTransactionActivity"
+            android:name=".activity.PolicyTransactionActivity"
             android:exported="false" />
         <activity
-            android:name=".PolicyShipActivity"
+            android:name=".activity.PolicyShipActivity"
             android:exported="false" />
         <activity
-            android:name=".PolicyPaymentActivity"
+            android:name=".activity.PolicyPaymentActivity"
             android:exported="false" />
         <activity
-            android:name=".PolicyCustomerActivity"
+            android:name=".activity.PolicyCustomerActivity"
             android:exported="false" />
         <activity
-            android:name=".EditAccountActivity"
+            android:name=".activity.EditAccountActivity"
             android:exported="false" />
         <activity
-            android:name=".AddAddressActivity"
+            android:name=".activity.AddAddressActivity"
             android:exported="false" />
         <activity
-            android:name=".OrderDetailActivity"
+            android:name=".activity.OrderDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".OrderListActivity"
+            android:name=".activity.OrderListActivity"
             android:exported="false" />
         <activity
-            android:name=".PaymentMethodActivity"
+            android:name=".activity.PaymentMethodActivity"
             android:exported="false" />
         <activity
-            android:name=".EnterAddressActivity"
+            android:name=".activity.EnterAddressActivity"
             android:exported="false" />
         <activity
-            android:name=".AddressDetailsActivity"
+            android:name=".activity.AddressDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".DeliveryAddressActivity"
+            android:name=".activity.DeliveryAddressActivity"
             android:exported="false" />
         <activity
-            android:name=".AddressShopActivity"
+            android:name=".activity.AddressShopActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".activity.SplashScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,49 +73,49 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingUserActivity"
+            android:name=".activity.SettingUserActivity"
             android:exported="false" />
         <activity
-            android:name=".ChangeLanguageActivity"
+            android:name=".activity.ChangeLanguageActivity"
             android:exported="false" />
         <activity
-            android:name=".ChangePwdActivity"
+            android:name=".activity.ChangePwdActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingActivity"
+            android:name=".activity.SettingActivity"
             android:exported="false" />
         <activity
-            android:name=".CouponActivity"
+            android:name=".activity.CouponActivity"
             android:exported="false" />
         <activity
-            android:name=".AdvantageActivity"
+            android:name=".activity.AdvantageActivity"
             android:exported="false" />
         <activity
-            android:name=".SupportActivity"
+            android:name=".activity.SupportActivity"
             android:exported="false" />
         <activity
-            android:name=".PolicyActivity"
+            android:name=".activity.PolicyActivity"
             android:exported="false" />
         <activity
-            android:name=".PromotionDetailActivity"
+            android:name=".activity.PromotionDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".ShowDetailActivity"
+            android:name=".activity.ShowDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".BaseActivity"
+            android:name=".activity.BaseActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".activity.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".ConfirmOTPActivity"
+            android:name=".activity.ConfirmOTPActivity"
             android:exported="false" />
         <activity
-            android:name=".PaymentActivity"
+            android:name=".activity.PaymentActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
@@ -131,15 +131,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ForgotPassActivity"
+            android:name=".activity.ForgotPassActivity"
             android:exported="false" />
         <activity
-            android:name=".NewPasswordActivity"
+            android:name=".activity.NewPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".ForgotPassOTPActivity"
+            android:name=".activity.ForgotPassOTPActivity"
             android:exported="false" />
-        <activity android:name=".AddressActivity" />
+        <activity android:name=".activity.AddressActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

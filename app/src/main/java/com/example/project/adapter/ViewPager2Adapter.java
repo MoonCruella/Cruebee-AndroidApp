@@ -7,11 +7,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.project.DiscountFragment;
-import com.example.project.HomeFragment;
-import com.example.project.MenuFragment;
-import com.example.project.ShowMoreFragment;
-import com.example.project.ShowMore_User_Fragment;
+import com.example.project.activity.DiscountFragment;
+import com.example.project.activity.HomeFragment;
+import com.example.project.activity.MenuFragment;
+import com.example.project.activity.ShowMoreFragment;
+import com.example.project.activity.ShowMore_User_Fragment;
 import com.example.project.helpers.TinyDB;
 import com.example.project.interfaces.OnFragmentSwitchListener;
 

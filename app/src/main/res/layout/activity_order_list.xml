@@ -4,7 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OrderListActivity">
+    tools:context=".activity.OrderListActivity">
 
     <!-- Overlay View (nếu không cần thì xóa để tránh che) -->
     <View

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.project.BaseActivity;
+import com.example.project.activity.BaseActivity;
 import com.example.project.R;
 import com.example.project.helpers.TinyDB;
 import com.example.project.model.AddressShop;

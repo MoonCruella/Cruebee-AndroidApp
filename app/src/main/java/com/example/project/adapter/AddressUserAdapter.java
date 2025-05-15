@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.project.AddressDetailsActivity;
+import com.example.project.activity.AddressDetailsActivity;
 import com.example.project.R;
 import com.example.project.model.Address;
 import java.util.List;
